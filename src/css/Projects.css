@@ -1,0 +1,74 @@
+/* Container Styles */
+.projects-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Title Styles */
+.projects-title {
+  color: #4caf50;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Card Container Styles */
+.projects-card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* Card Styles */
+.projects-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.projects-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Icon Wrapper Styles */
+.projects-icon-wrapper {
+  background-color: #e8f5e9;
+  color: #4caf50;
+  font-size: 2.5rem;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 1.5rem;
+}
+
+/* Card Content Styles */
+.projects-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Card Title Styles */
+.projects-card-title {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+/* Card Description Styles */
+.projects-card-description {
+  color: #7f8c8d;
+  font-size: 1rem;
+  line-height: 1.5;
+}

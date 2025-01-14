@@ -1,0 +1,90 @@
+/* Food Justice Container */
+.food-justice-container {
+  font-family: "Roboto", sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header Section */
+.food-justice-header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.food-justice-image {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 50%;
+  border: 5px solid #4caf50;
+  animation: bounce 2s infinite;
+}
+
+.food-justice-title {
+  font-size: 36px;
+  color: #21e90f;
+  margin-top: 15px;
+  animation: fadeIn 2s ease-out;
+}
+
+/* Content Section */
+.food-justice-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.food-justice-paragraph {
+  margin-bottom: 20px;
+  padding-left: 30px;
+  position: relative;
+}
+
+.food-justice-paragraph::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  background-color: #4caf50;
+  border-radius: 50%;
+}
+
+.food-justice-icon {
+  color: #0cee50;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.food-justice-subtitle {
+  font-size: 24px;
+  margin: 20px 0;
+  color: #4caf50;
+  text-align: center;
+}
+
+/* Animations */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

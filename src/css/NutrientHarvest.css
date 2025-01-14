@@ -1,0 +1,89 @@
+/* Nutrient Harvest Page Styles */
+.nutrient-harvest-container {
+  font-family: "Roboto", sans-serif;
+  padding: 20px;
+  text-align: center;
+  color: #333;
+}
+
+/* Animated Image */
+.nutrient-harvest-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.nutrient-harvest-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  animation: rotateImage 4s linear infinite;
+  border: 5px solid #4caf50;
+}
+
+@keyframes rotateImage {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animated Heading */
+.nutrient-harvest-heading {
+  font-size: 32px;
+  color: #4caf50;
+  margin-bottom: 30px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Content Section */
+.nutrient-harvest-content {
+  text-align: left;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.nutrient-harvest-content p {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #555;
+}
+
+/* Icon Styles */
+.nutrient-harvest-icon {
+  color: #4caf50;
+  margin-right: 8px;
+  vertical-align: middle;
+  font-size: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nutrient-harvest-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .nutrient-harvest-heading {
+    font-size: 24px;
+  }
+
+  .nutrient-harvest-content {
+    font-size: 14px;
+  }
+}

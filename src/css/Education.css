@@ -1,0 +1,95 @@
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+/* General container for the page */
+.education-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header-image1 {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Main Text Section */
+.main-text {
+  text-align: justify;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Topics Section */
+.topics-section {
+  margin-top: 40px;
+}
+
+.topics-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.topics {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.topic-item {
+  display: flex;
+  margin-bottom: 20px;
+  width: 30%;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.topic-item img {
+  width: 40%;
+  height: auto;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+
+.topic-info {
+  flex-grow: 1;
+}
+
+.topic-info h3 {
+  font-size: 18px;
+  color: #1ae82b;
+  margin-bottom: 10px;
+}
+
+.topic-info p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .topic-item {
+    width: 100%;
+    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .topic-item img {
+    width: 60%;
+    margin-bottom: 10px;
+  }
+}

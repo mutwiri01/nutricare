@@ -1,0 +1,59 @@
+.health-coaching-page {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.header-image23 {
+  width: 50%;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.toggle-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.toggle-buttons button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-buttons button.active {
+  background-color: #357a38;
+}
+
+.toggle-buttons button:hover {
+  background-color: #45a049;
+}
+
+.content {
+  text-align: left;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content h2 {
+  color: #4caf50;
+  margin-bottom: 10px;
+}
+
+.content p {
+  line-height: 1.6;
+  margin: 10px 0;
+  color: #333;
+}

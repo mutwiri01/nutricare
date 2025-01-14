@@ -1,0 +1,90 @@
+/* Health Freedom Page Styles */
+.health-freedom-container {
+  font-family: "Roboto", sans-serif;
+  padding: 20px;
+  text-align: center;
+  color: #333;
+}
+
+/* Animated Image */
+.health-freedom-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.health-freedom-image {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  border-radius: 50%;
+  animation: bounceImage 3s ease-in-out infinite;
+  border: 5px solid #4caf50;
+}
+
+@keyframes bounceImage {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Animated Heading */
+.health-freedom-heading {
+  font-size: 32px;
+  color: #4caf50;
+  margin-bottom: 30px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Content Section */
+.health-freedom-content {
+  text-align: left;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.health-freedom-content p {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #555;
+}
+
+/* Icon Styles */
+.health-freedom-icon {
+  color: #4caf50;
+  margin-right: 8px;
+  vertical-align: middle;
+  font-size: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .health-freedom-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .health-freedom-heading {
+    font-size: 24px;
+  }
+
+  .health-freedom-content {
+    font-size: 14px;
+  }
+}

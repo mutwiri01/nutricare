@@ -1,0 +1,162 @@
+/* General navbar styles */
+.navbar {
+  background-color: #f6f7f6;
+  padding: 1rem;
+  position: relative;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  height: 150px;
+  width: auto;
+  margin-right: 1rem;
+}
+
+.hamburger-menu {
+  display: none;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu.open {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navbar-item {
+  position: relative;
+  margin-left: 1.5rem;
+}
+
+.navbar-link {
+  background: none;
+  color: #09fd1d;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-link:hover {
+  color: #16ee3a;
+}
+
+.dropdown-icon {
+  margin-left: 0.5rem;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #444444;
+  list-style: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+}
+
+.navbar-item:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-item {
+  color: #41ff30;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  color: #24f810;
+}
+
+/* Link-specific dropdown item styling */
+.dropdown-link {
+  color: #41ff30;
+  text-decoration: none; /* Remove underline from the link */
+}
+
+.dropdown-link:hover {
+  color: #24f810; /* Change color on hover */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .navbar-logo {
+    height: 100px;
+    width: auto;
+  }
+
+  .hamburger-menu {
+    display: block;
+  }
+
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .navbar-menu.open {
+    display: flex;
+  }
+
+  .navbar-item {
+    margin: 0.5rem 0;
+  }
+
+  .dropdown-menu {
+    position: static;
+    margin-top: 0.5rem;
+  }
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 400px) {
+  .navbar-logo {
+    height: 80px;
+  }
+
+  .hamburger-menu {
+    display: block;
+  }
+
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .navbar-menu.open {
+    display: flex;
+  }
+
+  .navbar-item {
+    margin: 0.5rem 0;
+  }
+
+  .dropdown-menu {
+    position: static;
+    margin-top: 0.5rem;
+  }
+}
