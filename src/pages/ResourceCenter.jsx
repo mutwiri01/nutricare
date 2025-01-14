@@ -1,7 +1,7 @@
 import "../css/ResourceCenter.css";
 import { Link } from "react-router-dom";
 
-const ResourceCenter = () => {  
+const ResourceCenter = () => {
   const topics = [
     {
       title:
@@ -29,14 +29,14 @@ const ResourceCenter = () => {
       title: "Food Justice",
       description:
         "Understand the need for food justice and its role in ensuring universal access to nutritious, affordable, and sustainable food.",
-      link: "/food-justice",
+      link: "/food-justice", // Correct the route path
       image: "/v1.png",
     },
     {
       title: "Organic Diet Is Key To Restorative Health",
       description:
         "Delve into the benefits of organic diets for health and ecosystem restoration.",
-      link: "/organic",
+      link: "/organic", // Correct the route path
       image: "/la2.jpg",
     },
   ];

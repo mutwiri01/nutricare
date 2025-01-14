@@ -1,5 +1,6 @@
 import "../css/HomePage.css";
 import { useInView } from "react-intersection-observer";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
@@ -103,7 +104,7 @@ const HomePage = () => {
             {
               title: "Organic Diet",
               description:
-                "organic diets contribute to a healthier and more productive lifestyle",
+                "Organic diets contribute to a healthier and more productive lifestyle",
               link: "/organic",
             },
             {
@@ -117,14 +118,10 @@ const HomePage = () => {
               link: "/resources",
             },
           ].map((topic, index) => (
-            <div
-              className="card"
-              key={index}
-              onClick={() => (window.location.href = topic.link)}
-            >
+            <Link to={topic.link} key={index} className="card">
               <h3>{topic.title}</h3>
               <p>{topic.description}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
