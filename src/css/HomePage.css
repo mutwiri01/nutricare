@@ -108,8 +108,21 @@ body {
   margin-bottom: 2rem;
 }
 
+/* Topics Logo */
 .topics-logo img {
-  max-width: 400px;
+  max-width: 100%;
+  height: auto; /* Maintain aspect ratio */
+  max-height: 200px; /* Prevent the image from being too tall */
+  object-fit: contain; /* Ensure the image fits nicely within the container */
+}
+
+/* Responsive Styles for Small Screens */
+@media (max-width: 768px) {
+  .topics-logo img {
+    max-width: 80%; /* Reduce the width for smaller screens */
+    max-height: 150px; /* Further limit height */
+    margin: 0 auto; /* Center the logo */
+  }
 }
 
 .cards-container {
