@@ -30,13 +30,13 @@ const Campaign = () => {
     },
     {
       title: "Plant Protein Initiative",
-      link: "",
+      link: "/plant",
       img: "/p1.jpg",
     },
     {
-      title: "The National Food Plate",
-      link: "",
-      img: "/nf.png",
+      title: "Physical Education",
+      link: "/physical",
+      img: "/h4.png",
     },
     {
       title: "Water Campaign",

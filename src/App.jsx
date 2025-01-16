@@ -13,6 +13,8 @@ import HealthFreedom from './pages/HealthFreedom';
 import Projects from './pages/Projects';
 import ResourceCenter from './pages/ResourceCenter';
 import HealthCoachingPage from './pages/HealthCoachingPage';
+import PlantProtein from './pages/PlantProtein';
+import PhysicalEducation from './pages/PhysicalEducation';
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
           <Route path="/projects" element ={<Projects />}/>
           <Route path="/resources" element ={<ResourceCenter />}/>
           <Route path="/coaching" element ={<HealthCoachingPage />}/>
+          <Route path="/plant" element ={<PlantProtein />}/>
+          <Route path="/physical" element ={<PhysicalEducation/>}/>
           {/* Add more routes as needed */}
         </Routes>
       </div>

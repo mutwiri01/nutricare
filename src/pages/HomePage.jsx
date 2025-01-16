@@ -1,11 +1,21 @@
+import { useState, useEffect } from "react";
 import "../css/HomePage.css";
 import { useInView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
+  const [currentImage, setCurrentImage] = useState(0);
+  const heroImages = ["/la1.jpeg", "/p1.jpg", "/f2.jpg","h4.png"];
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
   const [statsRef, statsInView] = useInView({ triggerOnce: true });
   const [centerRef, centerInView] = useInView({ triggerOnce: true });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 3000); // Change image every 5 seconds
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
 
   return (
     <div className="homepage">
@@ -15,10 +25,7 @@ const HomePage = () => {
         ref={heroRef}
       >
         <div className="hero-text">
-          <h1>
-            DEVELOPING INNOVATIVE APPROACHES TO STOP THE RISING BURDEN OF
-            LIFESTYLE DISEASES
-          </h1>
+          <h1>Developing innovative approaches to combat lifestyle diseases</h1>
           <p>
             Lifestyle diseases have taken the place of infectious diseases and
             are indiscriminately afflicting people across the demographic
@@ -27,7 +34,10 @@ const HomePage = () => {
           </p>
         </div>
         <div className="hero-image">
-          <img src="/la1.jpeg" alt="Innovative Healthcare" />
+          <img
+            src={heroImages[currentImage]}
+            alt={`Healthcare Image ${currentImage + 1}`}
+          />
         </div>
       </section>
 
@@ -72,11 +82,6 @@ const HomePage = () => {
             Nutritional Healthcare is championing a shift in healthcare, by
             promoting and managing overall well-being of individuals through
             lifestyle change, and their empowerment towards healthier choices.
-            Through its programs, it intends to transform healthcare and make it
-            sustainable, comprehensive, and restorative. According to
-            nutritional healthcare science, diet and lifestyle are key
-            determinants of human health, while disease is a direct consequence
-            of improper application of the same.
           </p>
         </div>
         <div className="center-image">
@@ -104,7 +109,7 @@ const HomePage = () => {
             {
               title: "Organic Diet",
               description:
-                "Organic diets contribute to a healthier and more productive lifestyle",
+                "Organic diets contribute to a healthier and more productive lifestyle.",
               link: "/organic",
             },
             {

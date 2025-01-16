@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;700&family=Roboto+Slab:wght@400;700&display=swap");
+
+/* General Styles */
+:root {
+  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
+  font-weight: 400;
+  color: #757575;
+}
+p {
+  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
+  font-weight: 400;
+  color: #757575;
+}
+
+.plant-protein-container {
+  padding: 20px;
+  background-color: #f5f9f8;
+  font-family: "Arial", sans-serif;
+  color: #333;
+}
+
+.plant-protein-header {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0be90b;
+}
+
+.plant-protein-content {
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 800px;
+  text-align: justify;
+}
+
+.plant-protein-image {
+  display: block;
+  margin: 20px auto;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.plant-protein-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.plant-protein-icons i {
+  font-size: 30px;
+  color: #2e9d2a;
+  transition: transform 0.3s ease;
+}
+
+.plant-protein-icons i:hover {
+  transform: scale(1.2);
+  color: #1ff70b;
+}

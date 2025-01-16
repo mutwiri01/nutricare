@@ -14,10 +14,16 @@ const Navbar = () => {
     setMenuOpen(!menuOpen);
   };
 
+  // Close menu on link click
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setActiveDropdown(null); // Close dropdowns as well if needed
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">
+        <Link to="/" className="navbar-logo" onClick={closeMenu}>
           <img src="/l2.png" alt="Brand Logo" className="navbar-logo" />
         </Link>
         <button className="hamburger-menu" onClick={toggleMenu}>
@@ -33,7 +39,9 @@ const Navbar = () => {
             </button>
             {activeDropdown === "aboutUs" && (
               <ul className="dropdown-menu">
-                <li className="dropdown-item">Who Are We</li>
+                <li className="dropdown-item" onClick={closeMenu}>
+                  Who Are We
+                </li>
               </ul>
             )}
           </li>
@@ -47,22 +55,38 @@ const Navbar = () => {
             {activeDropdown === "whatWeDo" && (
               <ul className="dropdown-menu">
                 <li className="dropdown-item">
-                  <Link to="/coaching" className="dropdown-link">
+                  <Link
+                    to="/coaching"
+                    className="dropdown-link"
+                    onClick={closeMenu}
+                  >
                     Coaching
                   </Link>
                 </li>
                 <li className="dropdown-item">
-                  <Link to="/education" className="dropdown-link">
+                  <Link
+                    to="/education"
+                    className="dropdown-link"
+                    onClick={closeMenu}
+                  >
                     Education
                   </Link>
                 </li>
                 <li className="dropdown-item">
-                  <Link to="/campaign" className="dropdown-link">
+                  <Link
+                    to="/campaign"
+                    className="dropdown-link"
+                    onClick={closeMenu}
+                  >
                     Campaign
                   </Link>
                 </li>
                 <li className="dropdown-item">
-                  <Link to="/projects" className="dropdown-link">
+                  <Link
+                    to="/projects"
+                    className="dropdown-link"
+                    onClick={closeMenu}
+                  >
                     Projects
                   </Link>
                 </li>
@@ -79,7 +103,11 @@ const Navbar = () => {
             {activeDropdown === "resourceCenter" && (
               <ul className="dropdown-menu">
                 <li className="dropdown-item">
-                  <Link to="/resources" className="dropdown-link">
+                  <Link
+                    to="/resources"
+                    className="dropdown-link"
+                    onClick={closeMenu}
+                  >
                     Resources
                   </Link>
                 </li>

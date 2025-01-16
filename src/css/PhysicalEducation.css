@@ -1,0 +1,53 @@
+/* PhysicalEducation.css */
+
+:root {
+  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
+  font-weight: 400;
+}
+
+.physical-education-container {
+  padding: 20px;
+  background-color: #f5f9f8;
+  color: #333;
+}
+
+.physical-education-header {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  color: #3cb371;
+  margin-bottom: 20px;
+}
+
+.physical-education-content {
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 800px;
+  text-align: justify;
+  font-size: 16px;
+}
+
+.physical-education-icons {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin: 20px 0;
+}
+
+.physical-education-icons i {
+  font-size: 40px;
+  color: #777;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.physical-education-icons i:hover {
+  transform: scale(1.2);
+}
+
+.physical-education-image {
+  display: block;
+  margin: 20px auto;
+  width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
