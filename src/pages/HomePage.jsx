@@ -5,17 +5,38 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const heroImages = ["/la1.jpeg", "/p1.jpg", "/f2.jpg","h4.png"];
+  const heroImages = ["/f3.jpg", "/p1.jpg", "/f2.jpg", "strat.jpg"];
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
   const [statsRef, statsInView] = useInView({ triggerOnce: true });
-  const [centerRef, centerInView] = useInView({ triggerOnce: true });
+  const [counts, setCounts] = useState({ deaths: 0, admissions: 0, ncds: 0 });
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 3000); // Change image every 5 seconds
+    }, 3000); // Change image every 3 seconds
     return () => clearInterval(interval);
   }, [heroImages.length]);
+
+  useEffect(() => {
+    if (statsInView) {
+      const incrementCounts = (key, max) => {
+        let value = 0;
+        const step = Math.ceil(max / 100);
+        const interval = setInterval(() => {
+          value += step;
+          setCounts((prev) => ({
+            ...prev,
+            [key]: Math.min(value, max),
+          }));
+          if (value >= max) clearInterval(interval);
+        }, 30);
+      };
+
+      incrementCounts("deaths", 14000000);
+      incrementCounts("admissions", 50);
+      incrementCounts("ncds", 85);
+    }
+  }, [statsInView]);
 
   return (
     <div className="homepage">
@@ -64,66 +85,78 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Center Section */}
-      <section
-        className={`center-section ${centerInView ? "animate" : ""}`}
-        ref={centerRef}
-      >
-        <div className="center-text">
-          <p>
-            Families face imminent poverty due to high costs of treatment and
-            deaths of breadwinners. On a national scale, economic productivity
-            is scaled down by an ailing workforce and early deaths as well as
-            high budgetary allocations for health.
-          </p>
-          <p>
-            It is imperative that sustainable interventions are explored and
-            employed to checkmate this unfortunate scenario. Centre for
-            Nutritional Healthcare is championing a shift in healthcare, by
-            promoting and managing overall well-being of individuals through
-            lifestyle change, and their empowerment towards healthier choices.
-          </p>
+      {/* Interactive Statistics Card */}
+      <div className="stats-card">
+        <div className="stat">
+          <h2>{counts.deaths.toLocaleString()}</h2>
+          <p>Global deaths from NCDs yearly</p>
         </div>
-        <div className="center-image">
-          <img src="/fa1.jpg" alt="Center for Nutritional Healthcare" />
+        <div className="stat">
+          <h2>{counts.admissions}%</h2>
+          <p>Hospital admissions in Kenya yearly</p>
         </div>
-      </section>
+        <div className="stat">
+          <h2>{counts.ncds}%</h2>
+          <p>Deaths in developing countries from NCDs</p>
+        </div>
+      </div>
+
+      <div className="stats-text">
+        <p>
+          Families face imminent poverty due to high costs of treatment and
+          deaths of breadwinners. On a national scale, economic productivity is
+          scaled down by an ailing workforce and early deaths as well as high
+          budgetary allocations for health.
+        </p>
+        <p>
+          It is imperative that sustainable interventions are explored and
+          employed to checkmate this unfortunate scenario. Centre for
+          Nutritional Healthcare is championing a shift in healthcare, by
+          promoting and managing overall well-being of individuals through
+          lifestyle change, and their empowerment towards healthier choices.
+        </p>
+      </div>
 
       {/* Topics Section */}
       <section className="topics-section">
-        <div className="topics-logo">
-          <img src="/l2.png" alt="Centre for Nutritional Healthcare Logo" />
-        </div>
         <div className="cards-container">
           {[
             {
+              image: "/fd2.jpg",
               title: "Food Justice",
               description: "Ensuring equitable access to nutritious food.",
               link: "/food-justice",
             },
             {
+              image: "/pe.jpg",
               title: "Lifestyle and Health",
               description: "Promoting healthier lifestyle practices.",
               link: "/strategies",
             },
             {
+              image: "/or1.jpg",
               title: "Organic Diet",
               description:
                 "Organic diets contribute to a healthier and more productive lifestyle.",
               link: "/organic",
             },
             {
+              image: "/hf.jpg",
               title: "Health Freedom",
               description: "Empowering individuals with health choices.",
               link: "/health-freedom",
             },
             {
+              image: "/strat.jpg",
               title: "Publications",
               description: "Access our resources and research.",
               link: "/resources",
             },
           ].map((topic, index) => (
             <Link to={topic.link} key={index} className="card">
+              <div className="card-image">
+                <img src={topic.image} alt={topic.title} />
+              </div>
               <h3>{topic.title}</h3>
               <p>{topic.description}</p>
             </Link>

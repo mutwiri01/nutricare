@@ -5,7 +5,7 @@ import { FaSeedling, FaTags, FaWineBottle, FaTree, FaBan } from 'react-icons/fa'
 const Projects = () => {
   return (
     <div className="projects-container">
-      <h1 className="projects-title">Projects</h1>
+      <h1 className="projects-title">Projects and Programs</h1>
       <div className="projects-card-container">
         <div className="projects-card">
           <div className="projects-icon-wrapper">

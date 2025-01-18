@@ -4,14 +4,12 @@
 /* General Styles */
 :root {
   font-family: "Roboto Slab", "Roboto Flex", sans-serif;
-  font-weight: 400;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: "Roboto Slab", "Roboto Flex", sans-serif;
-  font-weight: 400;
   color: #757575;
 }
 
@@ -23,22 +21,34 @@ body {
 
 /* Header Section */
 .header {
-  text-align: center;
   margin-bottom: 20px;
 }
 
-.header-image1 {
-  width: 100%;
-  max-width: 800px;
-  height: auto;
-  border-radius: 10px;
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
 }
 
-/* Main Text Section */
-.main-text {
+.header-text {
+  flex: 1;
+  width: 50%;
   text-align: justify;
   line-height: 1.6;
-  margin-bottom: 30px;
+  color: #757575;
+}
+.header-text h1{
+  color: #116c3e;
+}
+
+.header-image1 {
+  flex: 1;
+  width: 50%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
 }
 
 /* Topics Section */
@@ -75,13 +85,9 @@ body {
   margin-right: 15px;
 }
 
-.topic-info {
-  flex-grow: 1;
-}
-
 .topic-info h3 {
   font-size: 18px;
-  color: #1ae82b;
+  color: #116c3e;
   margin-bottom: 10px;
 }
 
@@ -93,6 +99,20 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-text {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .header-image1 {
+    width: 100%;
+  }
+
   .topic-item {
     width: 100%;
     margin-bottom: 20px;

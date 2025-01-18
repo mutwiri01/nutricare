@@ -15,6 +15,7 @@ import ResourceCenter from './pages/ResourceCenter';
 import HealthCoachingPage from './pages/HealthCoachingPage';
 import PlantProtein from './pages/PlantProtein';
 import PhysicalEducation from './pages/PhysicalEducation';
+import AboutUs from './pages/AboutUs';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/coaching" element ={<HealthCoachingPage />}/>
           <Route path="/plant" element ={<PlantProtein />}/>
           <Route path="/physical" element ={<PhysicalEducation/>}/>
+          <Route path="/about" element ={<AboutUs/>}/>
           {/* Add more routes as needed */}
         </Routes>
       </div>

@@ -40,7 +40,13 @@ const Navbar = () => {
             {activeDropdown === "aboutUs" && (
               <ul className="dropdown-menu">
                 <li className="dropdown-item" onClick={closeMenu}>
-                  Who Are We
+                <Link
+                    to="/about"
+                    className="dropdown-link"
+                    onClick={closeMenu}
+                  >
+                    Who We Are
+                  </Link>
                 </li>
               </ul>
             )}

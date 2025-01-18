@@ -1,63 +1,90 @@
-import "../css/StrategiesForAlternativeHealthcare.css";
+import { Link } from "react-router-dom";
+
+import "../css/Education.css";
 
 const StrategiesForAlternativeHealthcare = () => {
   return (
-    <div className="healthcare-container">
-      {/* Header Section */}
+    <div className="education-container">
+      {/* Header Section with Image and Text */}
       <div className="header">
-        <img
-          src="/h2.png"
-          alt="Strategies for Alternative Healthcare"
-          className="header-image"
-        />
+        <div className="header-content">
+          <div className="header-text">
+            <h1>Campaign for Healthy Communities</h1>
+            <p>
+              Conventional healthcare relies on pharmaceutical medicine to
+              manage diseases. However, new scientific research findings have
+              opened doors to the need for alternative care for existing
+              lifestyle health conditions previously regarded as chronic.
+            </p>
+            <p>
+              This approach involves safer non-invasive and protective
+              safeguards that provide alternative resolutions and disrupt
+              disease progression. It eliminates threats caused by food and
+              environment (primary and secondary) and onboards health-promoting
+              and restorative solutions.
+            </p>
+            <p>
+              By redefining certain parameters of individual lifestyles, it
+              empowers the body and provides relief from exposure to undesirable
+              side effects of medicine. This program confers conservative,
+              comprehensive, and sustainable health benefits and eliminates the
+              strain caused by frequent health downtimes. Centre for Nutritional
+              Healthcare (CNH) has developed a revolutionary approach that will
+              deliver natural health-inspiring lifestyles.
+            </p>
+          </div>
+          <img src="/or1.jpg" alt="Education" className="header-image1" />
+        </div>
       </div>
 
-      {/* Content Section */}
-      <div className="content">
-        <h1>Strategies For Alternative Healthcare</h1>
-        <p>
-          Conventional healthcare relies on pharmaceutical medicine to manage
-          diseases. However, new scientific research findings have opened doors
-          to the need for alternative care for existing lifestyle health
-          conditions previously regarded as chronic.
-        </p>
-        <p>
-          This approach involves safer non-invasive and protective safeguards
-          that provide alternative resolutions and disrupt disease progression.
-        </p>
-        <p>
-          It eliminates threats caused by food and environment (primary and
-          secondary) and onboards health-promoting and restorative solutions.
-        </p>
-        <p>
-          By redefining certain parameters of individual lifestyles, it empowers
-          the body and provides relief from exposure to undesirable side effects
-          of medicine.
-        </p>
-        <p>
-          This program confers conservative, comprehensive, and sustainable
-          health benefits and eliminates the strain caused by frequent health
-          downtimes.
-        </p>
-        <p>
-          Centre for Nutritional Healthcare (CNH) has developed a revolutionary
-          approach that will deliver natural health-inspiring lifestyles.
-        </p>
-      </div>
+      {/* Topics Section */}
+      <div className="topics-section">
+        <div className="topics">
+          <div className="topic-item">
+            <img src="/n3.jpg" alt="Organic Diet" className="topic-image" />
+            <div className="topic-info">
+              <Link to="/organic">
+                <h3>Organic Diet</h3>
+              </Link>
+              <p>
+                Understand how organic diets contribute to a healthier and more
+                productive lifestyle.
+              </p>
+            </div>
+          </div>
 
-      {/* Images Section */}
-      <div className="image-gallery">
-        <div className="image-item">
-          <img src="/fd.jpg" alt="Natural Remedies" className="image" />
-          <p>Natural Remedies</p>
-        </div>
-        <div className="image-item">
-          <img src="/h4.png" alt="Healthy Lifestyle" className="image" />
-          <p>Healthy Lifestyle</p>
-        </div>
-        <div className="image-item">
-          <img src="/h7.png" alt="Holistic Health" className="image" />
-          <p>Holistic Health</p>
+          <div className="topic-item">
+            <img
+              src="/h5.png"
+              alt="High Nutrients for Healthier Communities"
+              className="topic-image"
+            />
+            <div className="topic-info">
+              <Link to="/high-nutrients">
+                <h3>High Nutrients for Healthier Communities</h3>
+              </Link>
+              <p>
+              Learn how nutrient-dense foods can lead to healthier and more
+              productive communities.
+              </p>
+            </div>
+          </div>
+
+          <div className="topic-item">
+            <img
+              src="/pe1.jpg"
+              alt="Physically Active"
+              className="topic-image"
+            />
+            <div className="topic-info">
+              <Link to="/physical">
+                <h3>Physically Active Life to Keep Diseases at Bay</h3>
+              </Link>
+              <p>
+                Understand the role of physical activity in preventing yourself from diseases
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

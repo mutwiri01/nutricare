@@ -2,10 +2,13 @@
 import { motion } from "framer-motion";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../css/PhysicalEducation.css";
+import { Link } from "react-router-dom";
+
+import "../css/Education.css";
 
 const PhysicalEducation = () => {
   return (
-    <div className="physical-education-container">
+    <><div className="physical-education-container">
       <div className="top-section">
         <motion.img
           className="physical-education-image"
@@ -13,8 +16,7 @@ const PhysicalEducation = () => {
           alt="Physical Activity"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.5 }}
-        />
+          transition={{ duration: 1.5 }} />
 
         <div className="physical-education-icons">
           <motion.i
@@ -102,7 +104,55 @@ const PhysicalEducation = () => {
         </p>
         <p>Physical activity is your key to healthier longer lives.</p>
       </motion.div>
-    </div>
+    </div><div className="topics-section">
+        <div className="topics">
+          <div className="topic-item">
+            <img src="/n3.jpg" alt="Organic Diet" className="topic-image" />
+            <div className="topic-info">
+              <Link to="/organic">
+                <h3>Organic Diet</h3>
+              </Link>
+              <p>
+                Understand how organic diets contribute to a healthier and more
+                productive lifestyle.
+              </p>
+            </div>
+          </div>
+
+          <div className="topic-item">
+            <img
+              src="/h5.png"
+              alt="High Nutrients for Healthier Communities"
+              className="topic-image" />
+            <div className="topic-info">
+              <Link to="/high-nutrients">
+                <h3>High Nutrients for Healthier Communities</h3>
+              </Link>
+              <p>
+                Learn how nutrient-dense foods can lead to healthier and more
+                productive communities.
+              </p>
+            </div>
+          </div>
+
+          <div className="topic-item">
+            <img
+              src="/pe1.jpg"
+              alt="Physically Active"
+              className="topic-image" />
+            <div className="topic-info">
+              <Link to="/physical">
+                <h3>Physically Active Life to Keep Diseases at Bay</h3>
+              </Link>
+              <p>
+                Understand the role of physical activity in preventing yourself from diseases
+              </p>
+            </div>
+          </div>
+        </div>
+      </div></>
+
+    
   );
 };
 

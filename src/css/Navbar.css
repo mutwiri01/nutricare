@@ -51,7 +51,7 @@
 
 .navbar-link {
   background: none;
-  color: #09fd1d;
+  color: #8fc744;
   border: none;
   font-size: 1rem;
   cursor: pointer;
@@ -60,7 +60,7 @@
 }
 
 .navbar-link:hover {
-  color: #16ee3a;
+  color: #8fc744;
 }
 
 .dropdown-icon {
@@ -82,22 +82,22 @@
 }
 
 .dropdown-item {
-  color: #41ff30;
+  color: #8fc744;
   padding: 0.5rem 0;
   cursor: pointer;
 }
 
 .dropdown-item:hover {
-  color: #24f810;
+  color: #8fc744;
 }
 
 .dropdown-link {
-  color: #41ff30;
+  color: #8fc744;
   text-decoration: none;
 }
 
 .dropdown-link:hover {
-  color: #24f810;
+  color: #8fc744;
 }
 
 /* Responsive styles */
