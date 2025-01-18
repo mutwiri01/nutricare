@@ -216,33 +216,60 @@ body {
 }
 
 /* Responsive Styles */
+/* Responsive Styles */
 @media (max-width: 768px) {
-  .hero-section,
-  .center-section {
+  .hero-section {
     flex-direction: column;
-    text-align: center;
-  }
-
-  .hero-text,
-  .center-text {
-    max-width: 100%;
-  }
-
-  .hero-image,
-  .center-image {
-    margin-top: 1rem;
-  }
-
-  .cards-container {
-    flex-direction: column;
-    align-items: center;
+    padding: 1.5rem;
   }
 
   .hero-text h1 {
-    font-size: 2.5rem; /* Adjust for smaller screens */
+    font-size: 2rem;
   }
 
   .hero-text p {
     font-size: 1rem;
+  }
+
+  .stats-card {
+    padding: 1rem;
+  }
+
+  .stat {
+    flex: 1 1 100%;
+  }
+
+  .cards-section {
+    padding: 1rem;
+  }
+
+  .card {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-text h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-text p {
+    font-size: 0.9rem;
+  }
+
+  .stat h2 {
+    font-size: 1.5rem;
+  }
+
+  .stat p {
+    font-size: 0.9rem;
+  }
+
+  .card h3 {
+    font-size: 1.2rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
   }
 }
