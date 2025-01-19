@@ -51,6 +51,13 @@ body {
   object-fit: cover;
 }
 
+.header-image2 {
+  flex: 1;
+  width: 50px;
+  height: 800px;
+  border-radius: 10px;
+  object-fit: contain;
+}
 /* Topics Section */
 .topics-section {
   margin-top: 40px;
