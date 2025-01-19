@@ -9,7 +9,6 @@ const NutrientHarvest = () => {
       <div className="header">
         <div className="header-content">
           <div className="header-text">
-            <h1>Nutrient Deficiency</h1>
             <h1>
               NUTRIENT DEFICIENCY - THE COMMON DENOMINATOR FOR DEGENERATIVE
               AILMENTS
