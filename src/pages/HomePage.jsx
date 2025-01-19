@@ -152,6 +152,13 @@ const HomePage = () => {
               description: "Access our resources and research.",
               link: "/resources",
             },
+            {
+              image: "/pe1.jpg",
+              title: "Physically Active Life to Keep Diseases at Bay",
+              description:
+                " Understand the role of physical activity in preventing yourself from diseases ",
+              link: "/physical",
+            },
           ].map((topic, index) => (
             <Link to={topic.link} key={index} className="card">
               <div className="card-image">

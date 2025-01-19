@@ -9,7 +9,7 @@ const ResourceCenter = () => {
       description:
         "Discover how nutrient deficiencies are at the core of many modern health issues and why a nutrient-rich diet is essential.",
       link: "/nutrient-harvest",
-      image: "/h7.png",
+      image: "/or1.jpg",
     },
     {
       title: "High Nutrient Diets Lead To Healthier Productive Communities",

@@ -1,100 +1,105 @@
+import { Link } from "react-router-dom";
 
-import "../css/HighNutrients.css";
+import "../css/Education.css";
 
 const HighNutrients = () => {
   return (
-    <div className="high-nutrients-container">
-      {/* Header Section */}
+    <div className="education-container">
+      {/* Header Section with Image and Text */}
       <div className="header">
-        <img
-          src="/h5.png"
-          alt="High Nutrients"
-          className="header-image12"
-        />
+        <div className="header-content">
+          <div className="header-text">
+            <h1>High Nutrient Diets Lead To Healthier Productive Communities</h1>
+            <p>
+              The growing demand for low nutrient, highly addictive processed
+              foods, preferred for its taste, poses one of the biggest health
+              challenges of modern society. The commercialization of the food
+              chain at the turn of the 20th century led to mechanized food
+              processing and chemical-based preservation methods to feed the
+              fast-growing population. As demand grew, market competition led to
+              a focus on taste and addiction rather than quality and safety.
+              This led to increased use of artificial food sweeteners and
+              reduced attention to nutrient retention.
+            </p>
+            <p>
+              Under these circumstances, the need for consumer empowerment has
+              never been so dire. Majority of consumers are hurtling blindly to
+              the cliff as they do not understand the cause and effect of the
+              disease cycle associated with this phenomenon. Centre for
+              Nutritional Healthcare has put together tools to empower
+              consumers, enable them to make the right choices, and give them
+              the much-needed independence to pure health.
+            </p>
+            <p>
+              All medical procedures should be preceded by exposing the root
+              cause of disease. This paints the whole picture on the status of
+              things and defines the course of action, leaving nothing to
+              chance. Self-medication is fully based on quelling symptoms in the
+              short term and postponing the problem in the long term. Majority
+              of patients who turn up with late stages of deadly diseases such
+              as cancer are victims of self-medication. In many other cases,
+              patients who self-medicate enable simple disease symptoms to
+              progress to chronic status. There is a pressing need for public
+              sensitization and education to foster behavior change in this
+              area.
+            </p>
+          </div>
+          <img src="/h5.png" alt="Education" className="header-image2" />
+        </div>
       </div>
 
-      {/* Content Section */}
-      <div className="content">
-        <h1>High Nutrient Diets Lead To Healthier Productive Communities</h1>
-        <p>
-          The growing demand for low nutrient, highly addictive processed foods,
-          preferred for its taste, poses one of the biggest health challenges of
-          modern society.
-        </p>
-        <p>
-          The commercialization of the food chain at the turn of the 20th
-          century led to mechanized food processing and chemical-based
-          preservation methods to feed the fast-growing population.
-        </p>
-        <p>
-          As demand grew, market competition led to a focus on taste and
-          addiction rather than quality and safety. This led to increased use of
-          artificial food sweeteners and reduced attention to nutrient
-          retention.
-        </p>
-        <p>
-          Unfortunately, this narrative fit well with the socio-economic growth
-          fueled by the industrial revolution that introduced fast-paced lives.
-        </p>
-        <p>
-          In the quest to maximize profits, the food industry pulled all stops
-          to attract the unsuspecting and innocent consumer to these
-          high-calorie foods.
-        </p>
-        <p>
-          Today, 90% of the global disease burden is caused by the consumption
-          of these low-nutrient, high-calorie foods. Unfortunately, the
-          government agenda globally is not keen on regulating the artificial
-          food industry in favor of the consumer, as this would disrupt trade
-          dynamics and upset the much-needed revenue flow.
-        </p>
-        <p>
-          Food preparation additives, processed food preservatives, artificial
-          sweeteners, and nutrients are today obvious risk factors for several
-          chronic degenerative diseases that plague society.
-        </p>
-        <p>
-          Under these circumstances, the need for consumer empowerment has never
-          been so dire. Majority of consumers are hurtling blindly to the cliff
-          as they do not understand the cause and effect of the disease cycle
-          associated with this phenomenon.
-        </p>
-        <p>
-          Centre for Nutritional Healthcare has put together tools to empower
-          consumers, enable them to make the right choices, and give them the
-          much-needed independence to pure health.
-        </p>
-      </div>
+      {/* Topics Section */}
+      <div className="topics-section">
+        <div className="topics">
+          <div className="topic-item">
+            <img
+              src="/st1.png"
+              alt="Strategies for Alternative Healthcare"
+              className="topic-image"
+            />
+            <div className="topic-info">
+              <Link to="/strategies">
+                <h3>Strategies for Alternative Healthcare</h3>
+              </Link>
+              <p>
+                Explore alternative healthcare methods that support a holistic
+                approach to well-being.
+              </p>
+            </div>
+          </div>
 
-      {/* Images Section */}
-      <div className="image-gallery">
-        <div className="image-item">
-          <img
-            src="/n1.jpg"
-            alt="Nutrient Dense Foods"
-            className="image"
-          />
-          <p>Nutrient Dense Foods</p>
-        </div>
-        <div className="image-item">
-          <img
-            src="/v1.png"
-            alt="Healthy Meals"
-            className="image"
-          />
-          <p>Healthy Meals</p>
-        </div>
-        <div className="image-item">
-          <img
-            src="/fa1.jpg"
-            alt="Empowered Consumers"
-            className="image"
-          />
-          <p>Empowered Consumers</p>
+          <div className="topic-item">
+            <img src="/nu2.png" alt="Organic Diet" className="topic-image" />
+            <div className="topic-info">
+              <Link to="/organic">
+                <h3>Organic Diet</h3>
+              </Link>
+              <p>
+                Understand how organic diets contribute to a healthier and more
+                productive lifestyle.
+              </p>
+            </div>
+          </div>
+
+          <div className="topic-item">
+            <img
+              src="/pe1.jpg"
+              alt="Physically Active"
+              className="topic-image"
+            />
+            <div className="topic-info">
+              <Link to="/physical">
+                <h3>Physically Active Life to Keep Diseases at Bay</h3>
+              </Link>
+              <p>
+                Understand the role of physical activity in preventing yourself
+                from diseases
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default HighNutrients;
