@@ -1,20 +1,23 @@
 import { Link } from "react-router-dom";
-
 import "../css/Education.css";
 import "../css/FoodJustice.css";
+import "../css/HomePage.css";
+import "../css/Campaign.css";
 
 const FoodJustice = () => {
   return (
-    <div className="education-container">
+    <div className="food-justice-container">
       {/* Header Section with Image and Text */}
       <div className="header">
         <div className="header-content">
           <div className="header-text">
             <h1>Food Justice</h1>
             <p>
-              &quot;We cannot eliminate the prevailing global threats to human
-              health without addressing the critical component of Food
-              Justice.&quot; Proponents of food justice advocate for universal
+              <h1>
+                &quot;We cannot eliminate the prevailing global threats to human
+                health without addressing the critical component of Food
+                Justice.&quot;{" "}
+              </h1>Proponents of food justice advocate for universal
               access to nutritious, affordable, healthy, and sustainable food as
               a human right. In the quest to meet demand, global food production
               and processing systems have sidelined nutritional value to
@@ -42,23 +45,23 @@ const FoodJustice = () => {
               and you have a recipe for disaster.
             </p>
           </div>
-          <img src="/fj.png" alt="Education" className="header-image1" />
+          <img src="/fj.png" alt="Food Justice" className="hero-image" />
         </div>
         <h2 className="food-justice-subtitle">
           Why is food justice important?
         </h2>
-        <p className="food-justice-paragraph">
+        <p>
           Food is the primary source of life support and health maintenance. Its
           quality and safety, therefore, define its capability to perform these
           functions. When food doesn&apos;t measure up to these standards, it
           becomes toxic and sets off the body on the path to disease.
         </p>
-        <p className="food-justice-paragraph">
+        <p>
           Consumers hardly comprehend this delicate but crucial balance and have
           become victims of the food environment that they find themselves in to
           sustain their lives.
         </p>
-        <p className="food-justice-paragraph">
+        <p>
           Food justice is a response to the serious issues that face food
           production and public health. Every government should protect its
           citizens from food and food production systems that endanger their
@@ -71,7 +74,11 @@ const FoodJustice = () => {
       <div className="topics-section">
         <div className="topics">
           <div className="topic-item">
-            <img src="/n3.jpg" alt="Organic Diet" className="topic-image" />
+            <img
+              src="/nu2.jpeg"
+              alt="Organic Diet"
+              className="campaign-card-image"
+            />
             <div className="topic-info">
               <Link to="/organic">
                 <h3>Organic Diet</h3>
@@ -85,9 +92,9 @@ const FoodJustice = () => {
 
           <div className="topic-item">
             <img
-              src="/h5.png"
+              src="/hnu2.jpeg"
               alt="High Nutrients for Healthier Communities"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/high-nutrients">
@@ -104,7 +111,7 @@ const FoodJustice = () => {
             <img
               src="/pe1.jpg"
               alt="Physically Active"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/physical">
@@ -112,7 +119,7 @@ const FoodJustice = () => {
               </Link>
               <p>
                 Understand the role of physical activity in preventing yourself
-                from diseases
+                from diseases.
               </p>
             </div>
           </div>
@@ -121,4 +128,5 @@ const FoodJustice = () => {
     </div>
   );
 };
+
 export default FoodJustice;

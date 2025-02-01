@@ -31,7 +31,7 @@ p {
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
-  color: #0be90b;
+  color: #116c3e;
 }
 
 .plant-protein-content {
@@ -58,11 +58,11 @@ p {
 
 .plant-protein-icons i {
   font-size: 30px;
-  color: #2e9d2a;
+  color: #116c3e;
   transition: transform 0.3s ease;
 }
 
 .plant-protein-icons i:hover {
   transform: scale(1.2);
-  color: #1ff70b;
+  color: #116c3e;
 }

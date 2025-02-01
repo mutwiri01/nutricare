@@ -19,7 +19,7 @@
   object-fit: cover;
   border-radius: 50%;
   animation: rotateImage 4s linear infinite;
-  border: 5px solid #4caf50;
+  border: 5px solid #116c3e;
 }
 
 @keyframes rotateImage {
@@ -34,7 +34,7 @@
 /* Animated Heading */
 .nutrient-harvest-heading {
   font-size: 32px;
-  color: #4caf50;
+  color: #116c3e;
   margin-bottom: 30px;
   animation: fadeIn 2s ease-in-out;
 }
@@ -66,7 +66,7 @@
 
 /* Icon Styles */
 .nutrient-harvest-icon {
-  color: #4caf50;
+  color: #116c3e;
   margin-right: 8px;
   vertical-align: middle;
   font-size: 20px;

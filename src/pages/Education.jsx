@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-
 import "../css/Education.css";
 
 const Education = () => {
@@ -18,7 +17,7 @@ const Education = () => {
               challenges.
             </p>
             <p>
-              Centre for Nutritional Health provides knowledge and organises
+              Centre for Nutritional Health provides knowledge and organizes
               public sensitization and education forums to empower communities
               in making informed lifestyle and dietary choices. It is expected
               that such interventions will build momentum towards the required
@@ -32,103 +31,60 @@ const Education = () => {
       {/* Topics Section */}
       <div className="topics-section">
         <div className="topics">
-          <div className="topic-item">
-            <img
-              src="/st1.png"
-              alt="Strategies for Alternative Healthcare"
-              className="topic-image"
-            />
-            <div className="topic-info">
-              <Link to="/strategies">
-                <h3>Strategies for Alternative Healthcare</h3>
-              </Link>
-              <p>
-                Explore alternative healthcare methods that support a holistic
-                approach to well-being.
-              </p>
+          {[
+            {
+              src: "/st1.png",
+              alt: "Strategies for Alternative Healthcare",
+              link: "/strategies",
+              title: "Strategies for Alternative Healthcare",
+              desc: "Explore alternative healthcare methods that support a holistic approach to well-being.",
+            },
+            {
+              src: "/nu2.jpeg",
+              alt: "Organic Diet",
+              link: "/organic",
+              title: "Organic Diet",
+              desc: "Understand how organic diets contribute to a healthier and more productive lifestyle.",
+            },
+            {
+              src: "/hnu2.jpeg",
+              alt: "High Nutrients for Healthier Communities",
+              link: "/high-nutrients",
+              title: "High Nutrients for Healthier Communities",
+              desc: "Learn how nutrient-dense foods can lead to healthier and more productive communities.",
+            },
+            {
+              src: "/pe1.jpg",
+              alt: "Physically Active",
+              link: "/physical",
+              title: "Physically Active Life to Keep Diseases at Bay",
+              desc: "Understand the role of physical activity in preventing yourself from diseases.",
+            },
+            {
+              src: "/hf.jpg",
+              alt: "Health Freedom",
+              link: "/health-freedom",
+              title: "Health Freedom",
+              desc: "Understand the role of Health Freedom in empowering individuals with health choices.",
+            },
+            {
+              src: "/fj.png",
+              alt: "Food Justice",
+              link: "/food-justice",
+              title: "Food Justice",
+              desc: "Ensuring equitable access to nutritious food.",
+            },
+          ].map((topic, index) => (
+            <div className="topic-item" key={index}>
+              <img src={topic.src} alt={topic.alt} className="campaign-card-image" />
+              <div className="topic-info">
+                <Link to={topic.link}>
+                  <h3>{topic.title}</h3>
+                </Link>
+                <p>{topic.desc}</p>
+              </div>
             </div>
-          </div>
-
-          <div className="topic-item">
-            <img src="/nu2.png" alt="Organic Diet" className="topic-image" />
-            <div className="topic-info">
-              <Link to="/organic">
-                <h3>Organic Diet</h3>
-              </Link>
-              <p>
-                Understand how organic diets contribute to a healthier and more
-                productive lifestyle.
-              </p>
-            </div>
-          </div>
-
-          <div className="topic-item">
-            <img
-              src="/h5.png"
-              alt="High Nutrients for Healthier Communities"
-              className="topic-image"
-            />
-            <div className="topic-info">
-              <Link to="/high-nutrients">
-                <h3>High Nutrients for Healthier Communities</h3>
-              </Link>
-              <p>
-                Learn how nutrient-dense foods can lead to healthier and more
-                productive communities.
-              </p>
-            </div>
-          </div>
-
-          <div className="topic-item">
-            <img
-              src="/pe1.jpg"
-              alt="Physically Active"
-              className="topic-image"
-            />
-            <div className="topic-info">
-              <Link to="/physical">
-                <h3>Physically Active Life to Keep Diseases at Bay</h3>
-              </Link>
-              <p>
-                Understand the role of physical activity in preventing yourself
-                from diseases
-              </p>
-            </div>
-          </div>
-
-          <div className="topic-item">
-            <img
-              src="/hf.jpg"
-              alt="Physically Active"
-              className="topic-image"
-            />
-            <div className="topic-info">
-              <Link to="/health-freedom">
-                <h3>Health Freedom</h3>
-              </Link>
-              <p>
-                Understand the role of Health Freedom in Empowering individuals
-                with health choices.
-              </p>
-            </div>
-          </div>
-
-          <div className="topic-item">
-            <img
-              src="/fd2.jpg"
-              alt="Physically Active"
-              className="topic-image"
-            />
-            <div className="topic-info">
-              <Link to="/food-justice">
-                <h3>Food Justice</h3>
-              </Link>
-              <p>
-              Ensuring equitable access to nutritious food.
-              </p>
-            </div>
-          </div>
-
+          ))}
         </div>
       </div>
     </div>

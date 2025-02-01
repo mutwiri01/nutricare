@@ -17,7 +17,7 @@
 .food-justice-image {
   width: 150px;
   height: 150px;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 50%;
   border: 5px solid #116c3e;
   animation: bounce 2s infinite;
@@ -54,16 +54,12 @@
   border-radius: 50%;
 }
 
-.food-justice-icon {
-  color: #116c3e;
-  margin-right: 10px;
-  vertical-align: middle;
-}
+
 
 .food-justice-subtitle {
   font-size: 24px;
-  margin: 20px 0;
-  color: #4caf50;
+  margin: 20px ;
+  color: #116c3e;
   text-align: center;
 }
 

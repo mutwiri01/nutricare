@@ -47,7 +47,7 @@ const OrganicDiet = () => {
               ecosystem and the rise of disease incidence.
             </p>
           </div>
-          <img src="/la2.jpg" alt="Education" className="header-image1" />
+          <img src="/nu2.jpeg" alt="Education" className="header-image2" />
         </div>
       </div>
 
@@ -60,7 +60,7 @@ const OrganicDiet = () => {
             <img
               src="/pe1.jpg"
               alt="Physically Active"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/physical">
@@ -77,7 +77,7 @@ const OrganicDiet = () => {
             <img
               src="/hf.jpg"
               alt="Physically Active"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/health-freedom">
@@ -92,9 +92,9 @@ const OrganicDiet = () => {
 
           <div className="topic-item">
             <img
-              src="/fd2.jpg"
+              src="/fj.png"
               alt="Physically Active"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/food-justice">

@@ -9,7 +9,7 @@ const StrategiesForAlternativeHealthcare = () => {
       <div className="header">
         <div className="header-content">
           <div className="header-text">
-            <h1>Campaign for Healthy Communities</h1>
+            <h1>Strategies For Alternative Healthcare</h1>
             <p>
               Conventional healthcare relies on pharmaceutical medicine to
               manage diseases. However, new scientific research findings have
@@ -41,7 +41,7 @@ const StrategiesForAlternativeHealthcare = () => {
       <div className="topics-section">
         <div className="topics">
           <div className="topic-item">
-            <img src="/n3.jpg" alt="Organic Diet" className="topic-image" />
+            <img src="/nu2.jpeg" alt="Organic Diet" className="campaign-card-image" />
             <div className="topic-info">
               <Link to="/organic">
                 <h3>Organic Diet</h3>
@@ -55,9 +55,9 @@ const StrategiesForAlternativeHealthcare = () => {
 
           <div className="topic-item">
             <img
-              src="/h5.png"
+              src="/hnu2.jpeg"
               alt="High Nutrients for Healthier Communities"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/high-nutrients">
@@ -74,7 +74,7 @@ const StrategiesForAlternativeHealthcare = () => {
             <img
               src="/pe1.jpg"
               alt="Physically Active"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/physical">

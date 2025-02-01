@@ -14,8 +14,9 @@ const NutrientHarvest = () => {
               AILMENTS
             </h1>
             <p>
-              “Let us build a culture of nutrient-rich diets as a vital pillar
-              for preventive health.&quot; According to dictionary.com, to
+              <h1>“Let us build a culture of nutrient-rich diets as a vital pillar
+              for preventive health.&quot; </h1>
+              According to dictionary.com, to
               nourish is to supply with what is necessary for life, health, and
               growth; to cherish, foster, keep alive; and to strengthen, build
               up, or promote. Nourishment is the basic value of food to the body
@@ -59,7 +60,7 @@ const NutrientHarvest = () => {
             <img
               src="/st1.png"
               alt="Strategies for Alternative Healthcare"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/strategies">
@@ -73,7 +74,7 @@ const NutrientHarvest = () => {
           </div>
 
           <div className="topic-item">
-            <img src="/nu2.png" alt="Organic Diet" className="topic-image" />
+            <img src="/nu2.jpeg" alt="Organic Diet" className="campaign-card-image" />
             <div className="topic-info">
               <Link to="/organic">
                 <h3>Organic Diet</h3>
@@ -87,9 +88,9 @@ const NutrientHarvest = () => {
 
           <div className="topic-item">
             <img
-              src="/h5.png"
+              src="/hnu2.jpeg"
               alt="High Nutrients for Healthier Communities"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/high-nutrients">

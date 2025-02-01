@@ -44,7 +44,7 @@ const HighNutrients = () => {
               area.
             </p>
           </div>
-          <img src="/h5.png" alt="Education" className="header-image2" />
+          <img src="/hnu2.jpeg" alt="Education" className="header-image2" />
         </div>
       </div>
 
@@ -55,7 +55,7 @@ const HighNutrients = () => {
             <img
               src="/st1.png"
               alt="Strategies for Alternative Healthcare"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/strategies">
@@ -69,7 +69,7 @@ const HighNutrients = () => {
           </div>
 
           <div className="topic-item">
-            <img src="/nu2.png" alt="Organic Diet" className="topic-image" />
+            <img src="/nu2.jpeg" alt="Organic Diet" className="campaign-card-image" />
             <div className="topic-info">
               <Link to="/organic">
                 <h3>Organic Diet</h3>
@@ -85,7 +85,7 @@ const HighNutrients = () => {
             <img
               src="/pe1.jpg"
               alt="Physically Active"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/physical">

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import "../css/Education.css";
+import "../css/HealthFreedom.css";
 
 const HealthFreedom = () => {
   return (
@@ -60,7 +60,7 @@ const HealthFreedom = () => {
             <img
               src="/st1.png"
               alt="Strategies for Alternative Healthcare"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/strategies">
@@ -74,7 +74,7 @@ const HealthFreedom = () => {
           </div>
 
           <div className="topic-item">
-            <img src="/nu2.png" alt="Organic Diet" className="topic-image" />
+            <img src="/nu2.jpeg" alt="Organic Diet" className="campaign-card-image" />
             <div className="topic-info">
               <Link to="/organic">
                 <h3>Organic Diet</h3>
@@ -88,9 +88,9 @@ const HealthFreedom = () => {
 
           <div className="topic-item">
             <img
-              src="/h5.png"
+              src="/hnu2.jpeg"
               alt="High Nutrients for Healthier Communities"
-              className="topic-image"
+              className="campaign-card-image"
             />
             <div className="topic-info">
               <Link to="/high-nutrients">

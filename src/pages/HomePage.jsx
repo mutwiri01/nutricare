@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const heroImages = ["/f3.jpg", "/p1.jpg", "/f2.jpg", "strat.jpg"];
+  const heroImages = ["/lp1.jpg", "/f3a.jpg", "/f3.jpg", "/strat.jpg", "/lp2.jpg"," /fd2.jpg"];
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
   const [statsRef, statsInView] = useInView({ triggerOnce: true });
   const [counts, setCounts] = useState({ deaths: 0, admissions: 0, ncds: 0 });
@@ -122,7 +122,7 @@ const HomePage = () => {
         <div className="cards-container">
           {[
             {
-              image: "/fd2.jpg",
+              image: "/fj.png",
               title: "Food Justice",
               description: "Ensuring equitable access to nutritious food.",
               link: "/food-justice",
@@ -134,7 +134,7 @@ const HomePage = () => {
               link: "/strategies",
             },
             {
-              image: "/or1.jpg",
+              image: "/nu2.jpeg",
               title: "Organic Diet",
               description:
                 "Organic diets contribute to a healthier and more productive lifestyle.",

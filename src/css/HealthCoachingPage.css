@@ -36,7 +36,7 @@ body {
 }
 
 .content h2 {
-  color: #4caf50;
+  color: #116c3e;
   margin-bottom: 10px;
 }
 
@@ -56,7 +56,7 @@ body {
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
-  background-color: #4caf50;
+  background-color: #116c3e;
   color: white;
   cursor: pointer;
   font-size: 14px;
@@ -64,11 +64,11 @@ body {
 }
 
 .toggle-buttons button.active {
-  background-color: #357a38;
+  background-color: #116c3e;
 }
 
 .toggle-buttons button:hover {
-  background-color: #45a049;
+  background-color: #116c3e;
   transform: translateY(-2px);
 }
 

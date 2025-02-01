@@ -9,35 +9,35 @@ const ResourceCenter = () => {
       description:
         "Discover how nutrient deficiencies are at the core of many modern health issues and why a nutrient-rich diet is essential.",
       link: "/nutrient-harvest",
-      image: "/or1.jpg",
+      image: "/n1.jpg",
     },
     {
       title: "High Nutrient Diets Lead To Healthier Productive Communities",
       description:
         "Learn the importance of shifting to high-nutrient diets and their role in combating lifestyle diseases.",
       link: "/high-nutrients",
-      image: "/n1.jpg",
+      image: "/nu2.jpeg",
     },
     {
       title: "Strategies For Alternative Healthcare",
       description:
         "Explore alternative healthcare approaches that prioritize natural health and minimize pharmaceutical dependence.",
       link: "/strategies",
-      image: "/li1.jpg",
+      image: "/or1.jpg",
     },
     {
       title: "Food Justice",
       description:
         "Understand the need for food justice and its role in ensuring universal access to nutritious, affordable, and sustainable food.",
       link: "/food-justice", // Correct the route path
-      image: "/v1.png",
+      image: "/fj.png",
     },
     {
       title: "Organic Diet Is Key To Restorative Health",
       description:
         "Delve into the benefits of organic diets for health and ecosystem restoration.",
       link: "/organic", // Correct the route path
-      image: "/la2.jpg",
+      image: "/n3.jpg",
     },
   ];
 
