@@ -30,6 +30,7 @@ const Education = () => {
 
       {/* Topics Section */}
       <div className="topics-section">
+        <h1 style={{ color: "#8fc744" }}>Other Topics</h1>
         <div className="topics">
           {[
             {
@@ -76,7 +77,11 @@ const Education = () => {
             },
           ].map((topic, index) => (
             <div className="topic-item" key={index}>
-              <img src={topic.src} alt={topic.alt} className="campaign-card-image" />
+              <img
+                src={topic.src}
+                alt={topic.alt}
+                className="campaign-card-image"
+              />
               <div className="topic-info">
                 <Link to={topic.link}>
                   <h3>{topic.title}</h3>

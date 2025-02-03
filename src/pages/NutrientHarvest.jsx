@@ -57,7 +57,7 @@ const NutrientHarvest = () => {
 
       {/* Topics Section */}
       <div className="topics-section">
-        <h1 style={{ color: "#8fc744" }}>Other Topics</h1>
+        <h1 style={{ color: "#8fc744" }}>OTHER TOPICS</h1>
         <div className="topics">
           <div className="topic-item">
             <img

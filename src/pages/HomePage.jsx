@@ -125,7 +125,9 @@ const HomePage = () => {
       </div>
 
       {/* Topics Section */}
+
       <section className="topics-section">
+        <h1 style={{ color: "#8fc744" }}>OTHER TOPICS</h1>
         <div className="cards-container">
           {[
             {
@@ -169,8 +171,7 @@ const HomePage = () => {
             {
               image: "/li1.jpg",
               title: "Advocacy For Preventive Health",
-              description:
-                "Adopt suitable proactive and health strategies",
+              description: "Adopt suitable proactive and health strategies",
               link: "/advocacy",
             },
           ].map((topic, index) => (

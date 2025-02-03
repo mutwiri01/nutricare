@@ -17,14 +17,15 @@ const FoodJustice = () => {
                 &quot;We cannot eliminate the prevailing global threats to human
                 health without addressing the critical component of Food
                 Justice.&quot;{" "}
-              </h1>Proponents of food justice advocate for universal
-              access to nutritious, affordable, healthy, and sustainable food as
-              a human right. In the quest to meet demand, global food production
-              and processing systems have sidelined nutritional value to
-              prioritize food security. This has led to the emergence of a new
-              food culture around the world that consists of high-calorie but
-              low-nutrient diets. These foods cause nutrient deficiency in the
-              body and trigger disease.
+              </h1>
+              Proponents of food justice advocate for universal access to
+              nutritious, affordable, healthy, and sustainable food as a human
+              right. In the quest to meet demand, global food production and
+              processing systems have sidelined nutritional value to prioritize
+              food security. This has led to the emergence of a new food culture
+              around the world that consists of high-calorie but low-nutrient
+              diets. These foods cause nutrient deficiency in the body and
+              trigger disease.
             </p>
             <p>
               This approach involves safer non-invasive and protective
@@ -72,6 +73,7 @@ const FoodJustice = () => {
 
       {/* Topics Section */}
       <div className="topics-section">
+        <h1 style={{ color: "#8fc744" }}>OTHER TOPICS</h1>
         <div className="topics">
           <div className="topic-item">
             <img
