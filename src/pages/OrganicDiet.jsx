@@ -47,15 +47,14 @@ const OrganicDiet = () => {
               ecosystem and the rise of disease incidence.
             </p>
           </div>
-          <img src="/nu2.jpeg" alt="Education" className="header-image2" />
+          <img src="/n3.jpg" alt="Education" className="header-image2" />
         </div>
       </div>
 
       {/* Topics Section */}
       <div className="topics-section">
+        <h1 style={{ color: "#8fc744" }}>Other Topics</h1>
         <div className="topics">
-          
-
           <div className="topic-item">
             <img
               src="/pe1.jpg"

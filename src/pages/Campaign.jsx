@@ -39,9 +39,9 @@ const Campaign = () => {
       img: "/h4.png",
     },
     {
-      title: "Water Campaign",
-      link: "",
-      img: "/w1.jpg",
+      title: "Advocacy For Preventive Health",
+      link: "/advocacy",
+      img: "/li1.jpg",
     },
     {
       title: "Health Freedom",

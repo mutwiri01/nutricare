@@ -6,11 +6,11 @@ const AboutUs = () => {
     <div className="about-us">
       <header className="header">
         <h1 className="title">About Us</h1>
+        
       </header>
       <section className="content">
         {/* Vision Section */}
         <div className="section">
-          <img src="/l2.png" alt="Vision Icon" className="header-image1" />
           <h2 className="section-title">Vision</h2>
           <p className="section-text">
             A global community living healthier for longer

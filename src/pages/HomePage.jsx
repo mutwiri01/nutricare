@@ -5,7 +5,14 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const heroImages = ["/lp1.jpg", "/f3a.jpg", "/f3.jpg", "/strat.jpg", "/lp2.jpg"," /fd2.jpg"];
+  const heroImages = [
+    "/lp1.jpg",
+    "/f3a.jpg",
+    "/f3.jpg",
+    "/strat.jpg",
+    "/lp2.jpg",
+    "/fd2.jpg",
+  ];
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
   const [statsRef, statsInView] = useInView({ triggerOnce: true });
   const [counts, setCounts] = useState({ deaths: 0, admissions: 0, ncds: 0 });
@@ -134,7 +141,7 @@ const HomePage = () => {
               link: "/strategies",
             },
             {
-              image: "/nu2.jpeg",
+              image: "/n3.jpg",
               title: "Organic Diet",
               description:
                 "Organic diets contribute to a healthier and more productive lifestyle.",
@@ -158,6 +165,13 @@ const HomePage = () => {
               description:
                 " Understand the role of physical activity in preventing yourself from diseases ",
               link: "/physical",
+            },
+            {
+              image: "/li1.jpg",
+              title: "Advocacy For Preventive Health",
+              description:
+                "Adopt suitable proactive and health strategies",
+              link: "/advocacy",
             },
           ].map((topic, index) => (
             <Link to={topic.link} key={index} className="card">

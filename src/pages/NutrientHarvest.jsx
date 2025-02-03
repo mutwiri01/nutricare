@@ -14,19 +14,21 @@ const NutrientHarvest = () => {
               AILMENTS
             </h1>
             <p>
-              <h1>“Let us build a culture of nutrient-rich diets as a vital pillar
-              for preventive health.&quot; </h1>
-              According to dictionary.com, to
-              nourish is to supply with what is necessary for life, health, and
-              growth; to cherish, foster, keep alive; and to strengthen, build
-              up, or promote. Nourishment is the basic value of food to the body
-              and this value is measured in nutrients. Nutrients enable the body
-              to perform all its biological functions so as to maintain
-              homeostasis. In summary, the body needs nutrients to run metabolic
-              processes so as to generate and circulate energy to sustain life
-              and growth and maintain health through a complex bio-system.
-              Without nutrients, these vital processes are compromised and lead
-              to systemic breakdowns resulting in disease.
+              <h1>
+                “Let us build a culture of nutrient-rich diets as a vital pillar
+                for preventive health.&quot;{" "}
+              </h1>
+              According to dictionary.com, to nourish is to supply with what is
+              necessary for life, health, and growth; to cherish, foster, keep
+              alive; and to strengthen, build up, or promote. Nourishment is the
+              basic value of food to the body and this value is measured in
+              nutrients. Nutrients enable the body to perform all its biological
+              functions so as to maintain homeostasis. In summary, the body
+              needs nutrients to run metabolic processes so as to generate and
+              circulate energy to sustain life and growth and maintain health
+              through a complex bio-system. Without nutrients, these vital
+              processes are compromised and lead to systemic breakdowns
+              resulting in disease.
             </p>
             <p>
               With the shift in dietary lifestyles inspired by commercial food
@@ -55,6 +57,7 @@ const NutrientHarvest = () => {
 
       {/* Topics Section */}
       <div className="topics-section">
+        <h1 style={{ color: "#8fc744" }}>Other Topics</h1>
         <div className="topics">
           <div className="topic-item">
             <img
@@ -74,7 +77,11 @@ const NutrientHarvest = () => {
           </div>
 
           <div className="topic-item">
-            <img src="/nu2.jpeg" alt="Organic Diet" className="campaign-card-image" />
+            <img
+              src="/nu2.jpeg"
+              alt="Organic Diet"
+              className="campaign-card-image"
+            />
             <div className="topic-info">
               <Link to="/organic">
                 <h3>Organic Diet</h3>

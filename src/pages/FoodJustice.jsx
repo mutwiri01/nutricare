@@ -45,7 +45,7 @@ const FoodJustice = () => {
               and you have a recipe for disaster.
             </p>
           </div>
-          <img src="/fj.png" alt="Food Justice" className="hero-image" />
+          <img src="/fj.png" alt="Food Justice" className="header-image1" />
         </div>
         <h2 className="food-justice-subtitle">
           Why is food justice important?

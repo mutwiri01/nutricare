@@ -16,6 +16,12 @@ import HealthCoachingPage from './pages/HealthCoachingPage';
 import PlantProtein from './pages/PlantProtein';
 import PhysicalEducation from './pages/PhysicalEducation';
 import AboutUs from './pages/AboutUs';
+import Advocacy from './pages/Advocacy';
+
+
+
+import PDFUploader from './pages/PDFUploader';
+import PdfList from './PdfList';
 
 function App() {
   return (
@@ -38,7 +44,11 @@ function App() {
           <Route path="/plant" element ={<PlantProtein />}/>
           <Route path="/physical" element ={<PhysicalEducation/>}/>
           <Route path="/about" element ={<AboutUs/>}/>
+          <Route path="/advocacy" element ={<Advocacy/>}/>
           {/* Add more routes as needed */}
+
+          <Route path="/listpdf" element ={<PdfList/>}/>
+          <Route path="/uploadpdf" element ={<PDFUploader/>}/>
         </Routes>
       </div>
     </Router>

@@ -39,6 +39,13 @@ const ResourceCenter = () => {
       link: "/organic", // Correct the route path
       image: "/n3.jpg",
     },
+    {
+      title: "Advocacy For Preventive Health",
+      description:
+        "Adopt suitable proactive and health strategies",
+      link: "/advocacy", // Correct the route path
+      image: "/li1.jpg",
+    },
   ];
 
   return (

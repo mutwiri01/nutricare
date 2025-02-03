@@ -9,7 +9,9 @@ const HighNutrients = () => {
       <div className="header">
         <div className="header-content">
           <div className="header-text">
-            <h1>High Nutrient Diets Lead To Healthier Productive Communities</h1>
+            <h1>
+              High Nutrient Diets Lead To Healthier Productive Communities
+            </h1>
             <p>
               The growing demand for low nutrient, highly addictive processed
               foods, preferred for its taste, poses one of the biggest health
@@ -50,6 +52,7 @@ const HighNutrients = () => {
 
       {/* Topics Section */}
       <div className="topics-section">
+        <h1 style={{ color: "#8fc744" }}>Other Topics</h1>
         <div className="topics">
           <div className="topic-item">
             <img
@@ -69,7 +72,11 @@ const HighNutrients = () => {
           </div>
 
           <div className="topic-item">
-            <img src="/nu2.jpeg" alt="Organic Diet" className="campaign-card-image" />
+            <img
+              src="/nu2.jpeg"
+              alt="Organic Diet"
+              className="campaign-card-image"
+            />
             <div className="topic-info">
               <Link to="/organic">
                 <h3>Organic Diet</h3>
