@@ -32,21 +32,8 @@ const HighNutrients = () => {
               consumers, enable them to make the right choices, and give them
               the much-needed independence to pure health.
             </p>
-            <p>
-              All medical procedures should be preceded by exposing the root
-              cause of disease. This paints the whole picture on the status of
-              things and defines the course of action, leaving nothing to
-              chance. Self-medication is fully based on quelling symptoms in the
-              short term and postponing the problem in the long term. Majority
-              of patients who turn up with late stages of deadly diseases such
-              as cancer are victims of self-medication. In many other cases,
-              patients who self-medicate enable simple disease symptoms to
-              progress to chronic status. There is a pressing need for public
-              sensitization and education to foster behavior change in this
-              area.
-            </p>
           </div>
-          <img src="/hnu2.jpeg" alt="Education" className="header-image2" />
+          <img src="/hnu2.jpeg" alt="Education" className="header-image1" />
         </div>
       </div>
 

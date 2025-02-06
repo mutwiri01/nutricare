@@ -1,4 +1,3 @@
-
 import "../css/AboutUs.css";
 
 const AboutUs = () => {
@@ -6,14 +5,13 @@ const AboutUs = () => {
     <div className="about-us">
       <header className="header">
         <h1 className="title">About Us</h1>
-        
       </header>
       <section className="content">
         {/* Vision Section */}
         <div className="section">
           <h2 className="section-title">Vision</h2>
           <p className="section-text">
-            A global community living healthier for longer
+            A global community living healthier and happier, longer
           </p>
         </div>
 
@@ -30,18 +28,10 @@ const AboutUs = () => {
         <div className="section">
           <h2 className="section-title">Values</h2>
           <ul className="values-list">
-            <p className="section-text">
-              Restorative
-            </p>
-            <p className="section-text">
-              Transformational
-            </p>
-            <p className="section-text">
-              Sustainable
-            </p>
-            <p className="section-text">
-              Empowering
-            </p>
+            <p className="section-text">Restorative</p>
+            <p className="section-text">Transformational</p>
+            <p className="section-text">Sustainable</p>
+            <p className="section-text">Empowering</p>
           </ul>
         </div>
       </section>

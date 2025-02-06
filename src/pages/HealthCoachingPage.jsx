@@ -20,9 +20,10 @@ const HealthCoachingPage = () => {
         inflammatory and metabolic conditions.
       </p>
       <p>
-        At the end of the coaching season, clients benefit from knowledge, skills,
-        and confidence on how to manage their conditions. Health coaching motivates
-        patients to self-manage and adopt healthier behaviors with confidence.
+        At the end of the coaching season, clients benefit from knowledge,
+        skills, and confidence on how to manage their conditions. Health
+        coaching motivates patients to self-manage and adopt healthier behaviors
+        with confidence.
       </p>
     </div>
   );
@@ -31,18 +32,21 @@ const HealthCoachingPage = () => {
     <div>
       <h2>Corporate Health Coaching</h2>
       <p>
-        A healthy workforce guarantees higher productivity. Today&apos;s busy and
-        hectic occupational space exposes workers to various health risks, undermining
-        productivity and profits.
+        A healthy workforce guarantees higher productivity. Today&apos;s busy
+        and hectic occupational space exposes workers to various health risks,
+        undermining productivity and profits.
       </p>
       <p>
         CNH offers intervention programs that restore energy and confidence in
         the workplace, helping staff redefine their lifestyles for healthier,
-        more productive living. The interventions address risk factors leading to
-        absenteeism and low performance.
+        more productive living. The interventions address risk factors leading
+        to absenteeism and low performance.
       </p>
     </div>
   );
+
+  const personalImage = "/per.png";
+  const corporateImage = "/co.jpg";
 
   return (
     <div className="health-coaching-page">
@@ -63,7 +67,11 @@ const HealthCoachingPage = () => {
           </button>
         </div>
       </div>
-      <img src="/co.jpg" alt="Health Coaching" className="header-image23" />
+      <img
+        src={selectedOption === "personal" ? personalImage : corporateImage}
+        alt="Health Coaching"
+        className="header-image23"
+      />
     </div>
   );
 };

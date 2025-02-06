@@ -24,7 +24,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" onClick={closeMenu}>
-          <img src="/l2.png" alt="Brand Logo" className="navbar-logo" />
+          <img src="/cnhl.svg" alt="Brand Logo" className="navbar-logo" />
         </Link>
         <button className="hamburger-menu" onClick={toggleMenu}>
           ☰
@@ -85,18 +85,6 @@ const Navbar = () => {
                     Projects
                   </Link>
                 </li>
-              </ul>
-            )}
-          </li>
-          <li className="navbar-item">
-            <button
-              className="navbar-link"
-              onClick={() => toggleDropdown("resourceCenter")}
-            >
-              Resource Center <span className="dropdown-icon">▼</span>
-            </button>
-            {activeDropdown === "resourceCenter" && (
-              <ul className="dropdown-menu">
                 <li className="dropdown-item">
                   <Link
                     to="/resources"
