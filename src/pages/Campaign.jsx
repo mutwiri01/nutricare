@@ -7,10 +7,8 @@ const Campaign = () => {
   // Auto-scroll functionality
   useEffect(() => {
     const scroll = () => {
-          // Scroll smoothly
-          scrollRef.current.scrollBy({ left: 1, behavior: "smooth" });
-        
-      
+      // Scroll smoothly
+      scrollRef.current.scrollBy({ left: 1, behavior: "smooth" });
     };
 
     const interval = setInterval(scroll, 20); // Continuous scrolling
@@ -67,10 +65,10 @@ const Campaign = () => {
             sensitizing communities of problems affecting them.
           </p>
           <p>
-            At the Centre for Nutritional Healthcare, we effectively deploy this
-            medium to reach bigger fractions of the populace in shorter
-            time-frames, thereby bringing the desired change in lifestyles and
-            health.
+            At the Centre for Lifechange and Nutritional Healthcare, we
+            effectively deploy this medium to reach bigger fractions of the
+            populace in shorter time-frames, thereby bringing the desired change
+            in lifestyles and health.
           </p>
           <p>
             By building public interest through media messaging and events, we
@@ -82,17 +80,10 @@ const Campaign = () => {
 
       {/* Second Section */}
       <div className="campaign-topics">
-        <div className="campaign-topics-header">    
-        </div>
+        <div className="campaign-topics-header"></div>
         <div className="campaign-cards" ref={scrollRef}>
           {scrollingTopics.map((topic, index) => (
-            <a
-              key={index}
-              href={topic.link}
-              className="campaign-card"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a key={index} href={topic.link} className="campaign-card">
               <img
                 src={topic.img}
                 alt={topic.title}

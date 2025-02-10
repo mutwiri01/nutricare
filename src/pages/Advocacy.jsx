@@ -9,7 +9,7 @@ const Advocacy = () => {
       <div className="header">
         <div className="header-content">
           <div className="header-text">
-            <h1>ADVOCACY FOR PREVENTIVE HEALTH</h1>
+            <h1>Advocacy for preventive health</h1>
             <h1>
               &quot;The global community must adopt suitable proactive and
               preventive health strategies to stem the burgeoning economic and

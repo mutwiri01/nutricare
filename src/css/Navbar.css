@@ -51,16 +51,16 @@
 
 .navbar-link {
   background: none;
-  color: #8fc744;
+  color: #116c3e;
   border: none;
-  font-size: 1rem;
+  font-size: 1.5rem;
   cursor: pointer;
   display: flex;
   align-items: center;
 }
 
 .navbar-link:hover {
-  color: #8fc744;
+  color: #116c3e;
 }
 
 .dropdown-icon {
@@ -69,7 +69,7 @@
 
 .dropdown-menu {
   position: static;
-  background-color: #444444;
+  background-color: #dddcdc;
   list-style: none;
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
@@ -82,22 +82,22 @@
 }
 
 .dropdown-item {
-  color: #8fc744;
+  color: #116c3e;
   padding: 0.5rem 0;
   cursor: pointer;
 }
 
 .dropdown-item:hover {
-  color: #8fc744;
+  color: #116c3e;
 }
 
 .dropdown-link {
-  color: #8fc744;
+  color: #116c3e;
   text-decoration: none;
 }
 
 .dropdown-link:hover {
-  color: #8fc744;
+  color: #116c3e;
 }
 
 /* Responsive styles */

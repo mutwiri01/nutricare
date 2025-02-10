@@ -28,9 +28,9 @@ const StrategiesForAlternativeHealthcare = () => {
               empowers the body and provides relief from exposure to undesirable
               side effects of medicine. This program confers conservative,
               comprehensive, and sustainable health benefits and eliminates the
-              strain caused by frequent health downtimes. Centre for Nutritional
-              Healthcare (CNH) has developed a revolutionary approach that will
-              deliver natural health-inspiring lifestyles.
+              strain caused by frequent health downtimes. Centre for Lifechange
+              and Nutritional Healthcare has developed a revolutionary approach
+              that will deliver natural health-inspiring lifestyles.
             </p>
           </div>
           <img src="/or1.jpg" alt="Education" className="header-image1" />

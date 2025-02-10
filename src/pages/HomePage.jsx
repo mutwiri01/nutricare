@@ -117,8 +117,8 @@ const HomePage = () => {
         </p>
         <p>
           It is imperative that sustainable interventions are explored and
-          employed to checkmate this unfortunate scenario. Centre for
-          Nutritional Healthcare is championing a shift in healthcare, by
+          employed to checkmate this unfortunate scenario. Centre for Lifechange
+          and Nutritional Healthcare is championing a shift in healthcare, by
           promoting and managing overall well-being of individuals through
           lifestyle change, and their empowerment towards healthier choices.
         </p>
@@ -131,48 +131,29 @@ const HomePage = () => {
         <div className="cards-container">
           {[
             {
-              image: "/fj.png",
-              title: "Food Justice",
-              description: "Ensuring equitable access to nutritious food.",
-              link: "/food-justice",
-            },
-            {
-              image: "/pe.jpg",
-              title: "Lifestyle and Health",
-              description: "Promoting healthier lifestyle practices.",
-              link: "/strategies",
-            },
-            {
-              image: "/n3.jpg",
-              title: "Organic Diet",
-              description:
-                "Organic diets contribute to a healthier and more productive lifestyle.",
-              link: "/organic",
-            },
-            {
-              image: "/hf.jpg",
-              title: "Health Freedom",
-              description: "Empowering individuals with health choices.",
-              link: "/health-freedom",
+              image: "/co.jpg",
+              title: "Coaching",
+              link: "/coaching",
             },
             {
               image: "/strat.jpg",
-              title: "Publications",
-              description: "Access our resources and research.",
+              title: "Education",
+              link: "/education",
+            },
+            {
+              image: "/p1.png",
+              title: "Campaign for Healthy Communities",
+              link: "/campaign",
+            },
+            {
+              image: "/c1.jpg",
+              title: "Projects and Programs",
+              link: "/projects",
+            },
+            {
+              image: "/res.png",
+              title: "Resource Center",
               link: "/resources",
-            },
-            {
-              image: "/pe1.jpg",
-              title: "Physically Active Life to Keep Diseases at Bay",
-              description:
-                " Understand the role of physical activity in preventing yourself from diseases ",
-              link: "/physical",
-            },
-            {
-              image: "/li1.jpg",
-              title: "Advocacy For Preventive Health",
-              description: "Adopt suitable proactive and health strategies",
-              link: "/advocacy",
             },
           ].map((topic, index) => (
             <Link to={topic.link} key={index} className="card">

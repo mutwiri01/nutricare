@@ -19,8 +19,8 @@
 
 /* Title Styles */
 .resource-center-title {
-  font-size: 2.5rem;
-  color: #2c3e50;
+  font-size: 3.0rem;
+  color: #116c3e;
   text-align: center;
   margin-bottom: 2rem;
 }
@@ -50,14 +50,14 @@
 
 /* Card Title Styles */
 .resource-center-card-title {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #116c3e;
   margin-bottom: 0.5rem;
 }
 
 /* Card Description Styles */
 .resource-center-card-description {
-  font-size: 1rem;
+  font-size: 1.4rem;
   color: #7f8c8d;
   line-height: 1.5;
 }

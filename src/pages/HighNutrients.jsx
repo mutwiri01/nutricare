@@ -28,9 +28,9 @@ const HighNutrients = () => {
               never been so dire. Majority of consumers are hurtling blindly to
               the cliff as they do not understand the cause and effect of the
               disease cycle associated with this phenomenon. Centre for
-              Nutritional Healthcare has put together tools to empower
-              consumers, enable them to make the right choices, and give them
-              the much-needed independence to pure health.
+              Lifechange and Nutritional Healthcare has put together tools to
+              empower consumers, enable them to make the right choices, and give
+              them the much-needed independence to pure health.
             </p>
           </div>
           <img src="/hnu2.jpeg" alt="Education" className="header-image1" />

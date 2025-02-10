@@ -85,17 +85,22 @@ const Navbar = () => {
                     Projects
                   </Link>
                 </li>
-                <li className="dropdown-item">
-                  <Link
-                    to="/resources"
-                    className="dropdown-link"
-                    onClick={closeMenu}
-                  >
-                    Resources
-                  </Link>
-                </li>
               </ul>
             )}
+          </li>
+          <li className="navbar-item">
+            <button
+              className="navbar-link"
+              onClick={() => toggleDropdown("aboutUs")}
+            >
+              <Link
+                to="/resources"
+                className="dropdown-link"
+                onClick={closeMenu}
+              >
+                Resource Center
+              </Link>
+            </button>
           </li>
         </ul>
       </div>

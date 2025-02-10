@@ -17,11 +17,12 @@ const Education = () => {
               challenges.
             </p>
             <p>
-              Centre for Nutritional Health provides knowledge and organizes
-              public sensitization and education forums to empower communities
-              in making informed lifestyle and dietary choices. It is expected
-              that such interventions will build momentum towards the required
-              change and transformation of healthcare and livelihoods.
+              Centre for Lifechange and Nutritional Healthcare provides
+              knowledge and organizes public sensitization and education forums
+              to empower communities in making informed lifestyle and dietary
+              choices. It is expected that such interventions will build
+              momentum towards the required change and transformation of
+              healthcare and livelihoods.
             </p>
           </div>
           <img src="/strat.jpg" alt="Education" className="header-image1" />
