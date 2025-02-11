@@ -42,8 +42,11 @@ body {
 }
 
 .content p {
+  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
   line-height: 1.8;
-  color: #666;
+  color: #665e5e;
 }
 
 .toggle-buttons {

@@ -1,51 +1,39 @@
 import { useEffect, useRef } from "react";
-import "../css/Campaign.css";
+import "../css/Campaign.css"; // Ensure CSS is properly imported
 
 const Campaign = () => {
   const scrollRef = useRef(null);
+  let intervalId = useRef(null);
 
-  // Auto-scroll functionality
+  // Auto-scroll functionality with pause on hover
   useEffect(() => {
-    const scroll = () => {
-      // Scroll smoothly
-      scrollRef.current.scrollBy({ left: 1, behavior: "smooth" });
+    const startScrolling = () => {
+      intervalId.current = setInterval(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollBy({ left: 1, behavior: "smooth" });
+        }
+      }, 20);
     };
 
-    const interval = setInterval(scroll, 20); // Continuous scrolling
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    const stopScrolling = () => clearInterval(intervalId.current);
+
+    startScrolling(); // Start scrolling when component mounts
+
+    // Cleanup function
+    return () => stopScrolling();
   }, []);
 
   const topics = [
-    {
-      title: "Food Justice",
-      link: "/food-justice",
-      img: "/fd.jpg",
-    },
-    {
-      title: "Nutrient Harvest",
-      link: "/nutrient-harvest",
-      img: "/n2.jpg",
-    },
-    {
-      title: "Plant Protein Initiative",
-      link: "/plant",
-      img: "/p1.jpg",
-    },
-    {
-      title: "Physical Education",
-      link: "/physical",
-      img: "/h4.png",
-    },
+    { title: "Food Justice", link: "/food-justice", img: "/fd.jpg" },
+    { title: "Nutrient Harvest", link: "/nutrient-harvest", img: "/n2.jpg" },
+    { title: "Plant Protein Initiative", link: "/plant", img: "/p1.jpg" },
+    { title: "Physical Education", link: "/physical", img: "/h4.png" },
     {
       title: "Advocacy For Preventive Health",
       link: "/advocacy",
       img: "/li1.jpg",
     },
-    {
-      title: "Health Freedom",
-      link: "/health-freedom",
-      img: "/fa2.png",
-    },
+    { title: "Health Freedom", link: "/health-freedom", img: "/fa2.png" },
   ];
 
   // Duplicate topics for seamless scrolling
@@ -61,27 +49,37 @@ const Campaign = () => {
         <div className="campaign-text">
           <h1>Campaign for Healthy Communities</h1>
           <p>
-            Public awareness campaign is a key communication component for
-            sensitizing communities of problems affecting them.
+            Public awareness campaigns are key in sensitizing communities about
+            pressing issues.
           </p>
           <p>
-            At the Centre for Lifechange and Nutritional Healthcare, we
-            effectively deploy this medium to reach bigger fractions of the
-            populace in shorter time-frames, thereby bringing the desired change
-            in lifestyles and health.
+            At the Centre for Lifechange and Nutritional Healthcare, we leverage
+            media and events to reach wider audiences effectively.
           </p>
           <p>
-            By building public interest through media messaging and events, we
-            will generate specific outcomes that are goal-oriented and institute
-            policy and systemic changes.
+            Through public engagement and policy-driven advocacy, we aim to
+            bring lasting lifestyle and health changes.
           </p>
         </div>
       </div>
 
-      {/* Second Section */}
+      {/* Second Section - Scrolling Campaign Topics */}
       <div className="campaign-topics">
-        <div className="campaign-topics-header"></div>
-        <div className="campaign-cards" ref={scrollRef}>
+        <div className="campaign-topics-header">
+          <h2>Our Initiatives</h2>
+        </div>
+        <div
+          className="campaign-cards"
+          ref={scrollRef}
+          onMouseEnter={() => clearInterval(intervalId.current)} // Pause scrolling on hover
+          onMouseLeave={() => {
+            intervalId.current = setInterval(() => {
+              if (scrollRef.current) {
+                scrollRef.current.scrollBy({ left: 1, behavior: "smooth" });
+              }
+            }, 20);
+          }} // Resume scrolling on mouse leave
+        >
           {scrollingTopics.map((topic, index) => (
             <a key={index} href={topic.link} className="campaign-card">
               <img
