@@ -3,12 +3,14 @@
   background-color: #f6f7f6;
   padding: 1rem;
   position: relative;
+  
 }
 
 .navbar-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  
 }
 
 .navbar-logo {
@@ -50,6 +52,7 @@
 }
 
 .navbar-link {
+  font-family: "Roboto Slab","Roboto Flex", sans-serif;
   background: none;
   color: #116c3e;
   border: none;
