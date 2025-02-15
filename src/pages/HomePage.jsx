@@ -142,12 +142,12 @@ const HomePage = () => {
             },
             {
               image: "/p1.png",
-              title: "Campaign for Healthy Communities",
+              title: "Campaign",
               link: "/campaign",
             },
             {
               image: "/c1.jpg",
-              title: "Projects and Programs",
+              title: "Projects",
               link: "/projects",
             },
             {
