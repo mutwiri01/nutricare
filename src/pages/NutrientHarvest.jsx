@@ -10,8 +10,8 @@ const NutrientHarvest = () => {
         <div className="header-content">
           <div className="header-text">
             <h1>
-              Nutrient Deficiency - The common denominator for degenerative
-              ailmentss
+              Nutrient Deficiency : The common denominator for degenerative
+              ailments
             </h1>
             <p>
               <h1>
