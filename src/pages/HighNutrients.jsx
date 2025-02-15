@@ -32,7 +32,7 @@ const HighNutrients = () => {
 
       {/* Topics Section */}
       <div className="topics-section">
-        <h1 style={{ color: "#116c3e" }}>OTHER TOPICS</h1>
+        <h1 style={{ color: "#116c3e" }}>Other Topics</h1>
         <div className="topics">
           <div className="topic-item">
             <img
