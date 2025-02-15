@@ -66,6 +66,8 @@ body {
 
 .header-text h1 {
   color: #116c3e;
+  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
+  font-weight: 200; /* check here for font update*/
 }
 
 /* Image styling */

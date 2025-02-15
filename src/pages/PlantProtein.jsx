@@ -10,7 +10,7 @@ const PlantProtein = () => {
         <div className="header-content">
           <div className="header-text">
             <h1>
-              High Nutrient Diets Lead To Healthier Productive Communities
+              Accelerating Uptake Of Plant Protein To Bridge The Nutrient Gap
             </h1>
             <p>
               Proteins are essential macronutrients needed for growth,

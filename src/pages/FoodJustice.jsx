@@ -11,7 +11,7 @@ const FoodJustice = () => {
       <div className="header">
         <div className="header-content">
           <div className="header-text">
-            <h1>Food Justice</h1>
+            <h1>Food Justice is a Vital Component For Healthy Diets</h1>
             <p>
               <h1>
                 &quot;We cannot eliminate the prevailing global threats to human
