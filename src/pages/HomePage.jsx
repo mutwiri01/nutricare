@@ -127,7 +127,7 @@ const HomePage = () => {
       {/* Topics Section */}
 
       <section className="topics-section">
-        <h1 style={{ color: "#116c3e" }}>OTHER TOPICS</h1>
+        <h1 style={{ color: "#116c3e" }}>What We Do</h1>
         <div className="cards-container">
           {[
             {
