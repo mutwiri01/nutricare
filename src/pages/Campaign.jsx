@@ -49,17 +49,30 @@ const Campaign = () => {
         <div className="campaign-text">
           <h1>Campaign for Healthy Communities</h1>
           <p>
-            Public awareness campaigns are key in sensitizing communities about
-            pressing issues.
+            Public awareness campaign is a key communication component for sensitizing communities
+            for problems affecting them.
           </p>
           <p>
-            At the Centre for Lifechange and Nutritional Healthcare, we leverage
-            media and events to reach wider audiences effectively.
+            At the Centre for Lifechange and Nutritional Healthcare we effectively
+            deploy this medium to reach bigger fractions of the populace in shorter
+            time-frames thereby bringing the desired change in lifestyles and health.
           </p>
           <p>
-            Through public engagement and policy-driven advocacy, we aim to
-            bring lasting lifestyle and health changes.
+            By building public interest through media messaging and events, we will
+            generate specific outcomes that are goal oriented and institute policy
+            and systematic changes.
           </p>
+
+          <p>
+            Our approach is strategically clustered to align with our vision for
+            healthier communities into :
+
+            1) Food for health
+            2) Food justice
+            3) Health freedom
+          </p>
+
+
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 /* Food Justice Container */
 .food-justice-container {
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto Slab";
   padding: 20px;
   background-color: #f9f9f9;
   color: #333;
@@ -12,7 +12,17 @@
   text-align: center;
   margin-bottom: 30px;
   position: relative;
+  
 }
+
+.food-justice-h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  font-family: "Roboto Slab";
+  color: #116c3e;
+}
+
 
 .food-justice-image {
   width: 150px;
@@ -41,7 +51,10 @@
   margin-bottom: 20px;
   padding-left: 30px;
   position: relative;
+  
 }
+
+
 
 .food-justice-paragraph::before {
   content: "";
@@ -61,6 +74,16 @@
   margin: 20px ;
   color: #116c3e;
   text-align: center;
+}
+
+.food-justice-p {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  font-family: "Roboto Slab";
+  text-align: justify;
+  line-height: 1.6;
+  color: #4d4c4c; /* Ensures padding inside the container */
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
 }
 
 /* Animations */

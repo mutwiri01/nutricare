@@ -11,7 +11,7 @@ const AboutUs = () => {
         <div className="section">
           <h2 className="section-title">Vision</h2>
           <p className="section-text">
-            A global community living healthier and happier, longer
+            A global community living healthier and happier for longer
           </p>
         </div>
 

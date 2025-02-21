@@ -24,7 +24,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" onClick={closeMenu}>
-          <img src="/l1.jpg" alt="Brand Logo" className="navbar-logo" />
+          <img src="/l2.png" alt="Brand Logo" className="navbar-logo" />
         </Link>
         <button className="hamburger-menu" onClick={toggleMenu}>
           ☰

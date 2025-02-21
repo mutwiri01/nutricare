@@ -7,9 +7,13 @@ const OrganicDiet = () => {
     <div className="education-container">
       {/* Header Section with Image and Text */}
       <div className="header">
+        <h1 className="food-justice-h1" >Organic Diet Is Key To Restorative Health</h1>
+        <h1 className="food-justice-h1">
+          &quot;We must make deliberate efforts to restore the ecosystem as a
+          primary measure to reverse the disease pandemic.&quot;{" "}
+        </h1>
         <div className="header-content">
           <div className="header-text">
-            <h1>Organic Diet Is Key To Restorative Health</h1>
             <p>
               We must make deliberate efforts to restore the ecosystem as a
               primary measure to reverse the disease pandemic.The importance of
@@ -48,6 +52,7 @@ const OrganicDiet = () => {
             </p>
           </div>
           <img src="/n3.jpg" alt="Education" className="header-image2" />
+          
         </div>
       </div>
 

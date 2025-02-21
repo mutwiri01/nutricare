@@ -6,23 +6,26 @@ const Education = () => {
     <div className="education-container">
       {/* Header Section with Image and Text */}
       <div className="header">
+      <h1 className="food-justice-h1" >Enlightening the society to overcome disease</h1> 
         <div className="header-content">
           <div className="header-text">
-            <h1>Public Education</h1>
             <p>
-              Public education is a vital tool for social economic change and
-              growth. Going by the threat to life and heavy economic burden
-              posed by lifestyle diseases in society today, no effort should be
-              spared to enlighten and empower the people to overcome these
-              challenges.
+             Public eduction is a vital tool for social economic change and growth. It is an
+             effective channel to fill the existing knowledge gap that is fuelling lifestyle disease
+             prevalence in our societies today leading to early deaths, chronic morbidity and heavy
+             economic burden. Therefore, no effort should be spared to enlighten and empower people to
+             overcome this challenges
             </p>
             <p>
-              Centre for Lifechange and Nutritional Healthcare provides
-              knowledge and organizes public sensitization and education forums
-              to empower communities in making informed lifestyle and dietary
-              choices. It is expected that such interventions will build
-              momentum towards the required change and transformation of
-              healthcare and livelihoods.
+              Centre for Lifechange and Nutritional Healthcare provides knowledge through public
+              sensitization and education forums to enable people make informed lifestyle choices.
+              It is expected that such interventions will build momentum towards that required change and
+              transformation of healthcare and livelihoods.
+            </p>
+
+            <p>
+              To be informed is to be empowered. Learn more about your health and make a  choice to 
+              transform your lifestyle and prevent yourself from disease or better still, restore your health.
             </p>
           </div>
           <img src="/strat.jpg" alt="Education" className="header-image1" />

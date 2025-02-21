@@ -92,21 +92,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Interactive Statistics Card */}
-      <div className="stats-card">
-        <div className="stat">
-          <h2>{counts.deaths.toLocaleString()}</h2>
-          <p>Global deaths from NCDs yearly</p>
-        </div>
-        <div className="stat">
-          <h2>{counts.admissions}%</h2>
-          <p>Hospital admissions in Kenya yearly</p>
-        </div>
-        <div className="stat">
-          <h2>{counts.ncds}%</h2>
-          <p>Deaths in developing countries from NCDs</p>
-        </div>
-      </div>
+      
 
       <div className="stats-text">
         <p>
@@ -122,6 +108,22 @@ const HomePage = () => {
           promoting and managing overall well-being of individuals through
           lifestyle change, and their empowerment towards healthier choices.
         </p>
+      </div>
+
+      {/* Interactive Statistics Card */}
+      <div className="stats-card">
+        <div className="stat">
+          <h2>{counts.deaths.toLocaleString()}</h2>
+          <p>Global deaths from NCDs yearly</p>
+        </div>
+        <div className="stat">
+          <h2>{counts.admissions}%</h2>
+          <p>Hospital admissions in Kenya yearly</p>
+        </div>
+        <div className="stat">
+          <h2>{counts.ncds}%</h2>
+          <p>Deaths in developing countries from NCDs</p>
+        </div>
       </div>
 
       {/* Topics Section */}
