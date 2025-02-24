@@ -8,9 +8,9 @@ const PhysicalEducation = () => {
     <div className="education-container">
       {/* Header Section with Image and Text */}
       <div className="header">
+      <h1  style={{ color: "#116c3e" }} >Physical activity is key to preventive health</h1>
         <div className="header-content">
           <div className="header-text">
-            <h1>Physical activity is key to preventive health</h1>
             <p>
               God created you &quot;fearfully and wonderfully&quot; and made
               your body self-sufficient and valuably functional. This means each

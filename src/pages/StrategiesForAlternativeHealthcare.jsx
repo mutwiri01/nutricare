@@ -7,9 +7,9 @@ const StrategiesForAlternativeHealthcare = () => {
     <div className="education-container">
       {/* Header Section with Image and Text */}
       <div className="header">
+        <h1  style={{ color: "#116c3e" }} >Strategies For Alternative Healthcare</h1>
         <div className="header-content">
           <div className="header-text">
-            <h1>Strategies For Alternative Healthcare</h1>
             <p>
               Conventional healthcare relies on pharmaceutical medicine to
               manage diseases. However, new scientific research findings have

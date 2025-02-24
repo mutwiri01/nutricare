@@ -7,14 +7,14 @@ const Advocacy = () => {
     <div className="education-container">
       {/* Header Section with Image and Text */}
       <div className="header">
+      <h1 className="food-justice-h1" >Advocacy for preventive health</h1>
+        <h1 className="food-justice-h1">
+          &quot;The global community must adopt suitable proactive and
+              preventive health strategies to stem the burgeoning economic and
+              social cost of disease burden&quot;{" "}
+        </h1>
         <div className="header-content">
           <div className="header-text">
-            <h1>Advocacy for preventive health</h1>
-            <h1>
-              &quot;The global community must adopt suitable proactive and
-              preventive health strategies to stem the burgeoning economic and
-              social cost of disease burden&quot;
-            </h1>
             <p>
               Every person should instinctively be responsible for their own
               sense of safety. Just like we are wired to react to external

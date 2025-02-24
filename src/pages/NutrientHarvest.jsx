@@ -7,17 +7,16 @@ const NutrientHarvest = () => {
     <div className="education-container">
       {/* Header Section with Image and Text */}
       <div className="header">
+        <h1 className="food-justice-h1">
+          Nutrient Deficiency : The common denominator for degenerative ailments
+        </h1>
+        <h1 className="food-justice-h1">
+          “Let us build a culture of nutrient-rich diets as a vital pillar for
+          preventive health.&quot;{" "}
+        </h1>
         <div className="header-content">
           <div className="header-text">
-            <h1>
-              Nutrient Deficiency : The common denominator for degenerative
-              ailments
-            </h1>
             <p>
-              <h1>
-                “Let us build a culture of nutrient-rich diets as a vital pillar
-                for preventive health.&quot;{" "}
-              </h1>
               According to dictionary.com, to nourish is to supply with what is
               necessary for life, health, and growth; to cherish, foster, keep
               alive; and to strengthen, build up, or promote. Nourishment is the

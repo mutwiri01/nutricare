@@ -7,11 +7,9 @@ const HighNutrients = () => {
     <div className="education-container">
       {/* Header Section with Image and Text */}
       <div className="header">
+      <h1  style={{ color: "#116c3e" }} >High Nutrient Diets Lead To Healthier Productive Communities</h1>
         <div className="header-content">
           <div className="header-text">
-            <h1>
-              High Nutrient Diets Lead To Healthier Productive Communities
-            </h1>
             <p>
               The growing demand for low nutrient, highly addictive processed
               foods, preferred for it&apos;s taste poses one of the biggest
