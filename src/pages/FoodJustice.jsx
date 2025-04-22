@@ -6,15 +6,17 @@ const FoodJustice = () => {
     <div className="food-justice-container">
       {/* Header Section with Image and Text */}
       <div className="header">
-        <h1 className="food-justice-h1" >Food Justice is a Vital Component For Healthy Diets</h1>
-        <h1 className="food-justice-h1" >
+        <h1 className="food-justice-h1">
+          Food Justice is a Vital Component For Healthy Diets
+        </h1>
+        <h1 className="food-justice-h1">
           &quot;We cannot eliminate the prevailing global threats to human
           health without addressing the critical component of Food
           Justice.&quot;{" "}
         </h1>
         <div className="header-content">
           <div className="header-text">
-            <p>
+            <p className="food-justice-p">
               Proponents of food justice advocate for universal access to
               nutritious, affordable, healthy, and sustainable food as a human
               right. In the quest to meet demand, global food production and
@@ -24,14 +26,14 @@ const FoodJustice = () => {
               diets. These foods cause nutrient deficiency in the body and
               trigger disease.
             </p>
-            <p>
+            <p className="food-justice-p">
               This approach involves safer non-invasive and protective
               safeguards that provide alternative resolutions and disrupt
               disease progression. It eliminates threats caused by food and
               environment (primary and secondary) and onboards health-promoting
               and restorative solutions.
             </p>
-            <p>
+            <p className="food-justice-p">
               In its wake, unprecedented environmental degradation has occurred,
               especially in food ecosystems, leading to food insecurity. Today,
               every household is exposed to food that contains copious amounts
@@ -45,32 +47,52 @@ const FoodJustice = () => {
           </div>
           <img src="/fj.png" alt="Food Justice" className="header-image1" />
         </div>
-        <h2 className="food-justice-subtitle">
-          Why is food justice important?
-        </h2>
-        <p className="food-justice-p">
-          Food is the primary source of life support and health maintenance. Its
-          quality and safety, therefore, define its capability to perform these
-          functions. When food doesn&apos;t measure up to these standards, it
-          becomes toxic and sets off the body on the path to disease.
-        </p>
-        <p className="food-justice-p">
-          Consumers hardly comprehend this delicate but crucial balance and have
-          become victims of the food environment that they find themselves in to
-          sustain their lives.
-        </p>
-        <p className="food-justice-p">
-          Food justice is a response to the serious issues that face food
-          production and public health. Every government should protect its
-          citizens from food and food production systems that endanger their
-          lives and ensure they consume nutritious diets that sustain their
-          health.
-        </p>
+
+        {/* Highlight Box for "Why food justice is important" */}
+        <div className="highlight-box">
+          <h2 className="food-justice-subtitle">
+            Why Food Justice Matters for Public Health
+          </h2>
+          <p className="food-justice-p">
+            <strong>Nutritional Foundation:</strong> Food serves as the
+            fundamental building block for human health and development. When
+            our food systems prioritize quantity over quality, they fail to
+            provide the essential nutrients needed to sustain healthy
+            populations.
+          </p>
+          <p className="food-justice-p">
+            <strong>Health Equity:</strong> Marginalized communities often face
+            the worst consequences of our broken food system - with limited
+            access to fresh produce while being targeted by marketing of
+            processed foods. Food justice seeks to correct these systemic
+            imbalances.
+          </p>
+          <p className="food-justice-p">
+            <strong>Economic Impact:</strong> Diet-related diseases cost global
+            economies trillions annually in healthcare costs and lost
+            productivity. Investing in food justice creates healthier workforces
+            and reduces this economic burden.
+          </p>
+          <p className="food-justice-p">
+            <strong>Environmental Sustainability:</strong> Industrial food
+            production degrades ecosystems while contributing to climate change.
+            Just food systems must work in harmony with nature rather than
+            exploiting it.
+          </p>
+          <p className="food-justice-p">
+            <strong>Policy Imperative:</strong> Governments have both the
+            responsibility and capability to implement policies that ensure all
+            citizens have access to safe, nutritious food as a basic human
+            right.
+          </p>
+        </div>
       </div>
 
       {/* Topics Section */}
       <div className="topics-section">
-        <h1 style={{ color: "#116c3e" }}>OTHER TOPICS</h1>
+        <h2 style={{ color: "#116c3e", fontFamily: "Roboto Slab" }}>
+          OTHER TOPICS
+        </h2>
         <div className="topics">
           <div className="topic-item">
             <img
@@ -79,10 +101,13 @@ const FoodJustice = () => {
               className="campaign-card-image"
             />
             <div className="topic-info">
-              <Link to="/organic">
+              <Link
+                to="/organic"
+                style={{ textDecoration: "none", fontFamily: "Roboto Slab" }}
+              >
                 <h3>Organic Diet</h3>
               </Link>
-              <p>
+              <p className="food-justice-p">
                 Understand how organic diets contribute to a healthier and more
                 productive lifestyle.
               </p>
@@ -96,10 +121,13 @@ const FoodJustice = () => {
               className="campaign-card-image"
             />
             <div className="topic-info">
-              <Link to="/high-nutrients">
+              <Link
+                to="/high-nutrients"
+                style={{ textDecoration: "none", fontFamily: "Roboto Slab" }}
+              >
                 <h3>High Nutrients for Healthier Communities</h3>
               </Link>
-              <p>
+              <p className="food-justice-p">
                 Learn how nutrient-dense foods can lead to healthier and more
                 productive communities.
               </p>
@@ -113,10 +141,13 @@ const FoodJustice = () => {
               className="campaign-card-image"
             />
             <div className="topic-info">
-              <Link to="/physical">
+              <Link
+                to="/physical"
+                style={{ textDecoration: "none", fontFamily: "Roboto Slab" }}
+              >
                 <h3>Physically Active Life to Keep Diseases at Bay</h3>
               </Link>
-              <p>
+              <p className="food-justice-p">
                 Understand the role of physical activity in preventing yourself
                 from diseases.
               </p>

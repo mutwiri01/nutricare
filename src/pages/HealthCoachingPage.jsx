@@ -5,7 +5,7 @@ const HealthCoachingPage = () => {
   const [selectedOption, setSelectedOption] = useState("personal");
 
   const personalContent = (
-    <div>
+    <div >
       <h2>Personal Health Coaching</h2>
       <p>
         Many cases of lifestyle diseases proceed to severe stages or death when

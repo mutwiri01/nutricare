@@ -79,7 +79,7 @@ const Campaign = () => {
       {/* Second Section - Scrolling Campaign Topics */}
       <div className="campaign-topics">
         <div className="campaign-topics-header">
-        <h1 style={{ color: "#116c3e" }}>Other Topics</h1>
+        <h2 style={{ color: "#116c3e" }}>Other Topics</h2>
         </div>
         <div
           className="campaign-cards"

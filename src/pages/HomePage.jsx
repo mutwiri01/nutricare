@@ -92,8 +92,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      
-
       <div className="stats-text">
         <p>
           Families face imminent poverty due to high costs of treatment and
@@ -158,7 +156,12 @@ const HomePage = () => {
               link: "/resources",
             },
           ].map((topic, index) => (
-            <Link to={topic.link} key={index} className="card">
+            <Link
+              to={topic.link}
+              key={index}
+              className="card"
+              style={{ textDecoration: "none" }}
+            >
               <div className="card-image">
                 <img src={topic.image} alt={topic.title} />
               </div>

@@ -34,7 +34,7 @@ const Education = () => {
 
       {/* Topics Section */}
       <div className="topics-section">
-        <h1 style={{ color: "#116c3e" }}>Other Topics</h1>
+        <h2 style={{ color: "#116c3e" }}>Other Topics</h2>
         <div className="topics">
           {[
             {
