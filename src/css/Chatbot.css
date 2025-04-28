@@ -1,3 +1,4 @@
+/* Chatbot.css */
 /* General Styles */
 .chatbot-page {
   max-width: 800px;
@@ -182,6 +183,7 @@
   padding: 16px;
   overflow-y: auto;
   background-color: #f9f9f9;
+  position: relative;
 }
 
 .message {
@@ -347,25 +349,7 @@
   margin-bottom: 8px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .chatbot-page {
-    padding: 10px;
-  }
-
-  .preference-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .preference-icon {
-    margin-right: 0;
-    margin-bottom: 8px;
-  }
-}
-
-/* Add these to your existing CSS */
-
+/* Scroll to bottom button */
 .scroll-to-bottom {
   position: fixed;
   bottom: 100px;
@@ -395,13 +379,26 @@
   font-size: 18px;
 }
 
-/* Adjust messages container to allow proper scrolling */
-.messages-container {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  background-color: #f9f9f9;
-  position: relative;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chatbot-page {
+    padding: 10px;
+  }
+
+  .preference-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .preference-icon {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+
+  .scroll-to-bottom {
+    bottom: 80px;
+    right: 20px;
+  }
 }
 
 @media (max-width: 480px) {

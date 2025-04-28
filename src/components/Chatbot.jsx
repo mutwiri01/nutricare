@@ -51,7 +51,11 @@ const Chatbot = () => {
     setShowScrollButton(false);
   };
 
-  const handleApiRequest = async (prompt, isMealPlan = false) => {
+  const handleApiRequest = async (
+    prompt,
+    isMealPlan = false,
+    callback = null
+  ) => {
     setIsLoading(true);
     setError(null);
 
@@ -82,6 +86,13 @@ const Chatbot = () => {
 
       const aiMessage = response.data.message;
       setMessages([...updatedMessages, aiMessage]);
+
+      // Execute callback after state update
+      if (callback) {
+        setTimeout(() => {
+          callback();
+        }, 100);
+      }
     } catch (error) {
       console.error("API Error:", error);
 
@@ -120,7 +131,7 @@ Please include:
 
 Format your response with clear headings for each section.`;
 
-    await handleApiRequest(prompt, true);
+    await handleApiRequest(prompt, true, scrollToBottom);
   };
 
   const handleSubmit = async (e) => {
