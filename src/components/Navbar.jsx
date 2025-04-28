@@ -12,43 +12,53 @@ const Navbar = () => {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+    if (menuOpen) {
+      setActiveDropdown(null); // Close all dropdowns when closing menu
+    }
   };
 
-  // Close menu on link click
   const closeMenu = () => {
     setMenuOpen(false);
-    setActiveDropdown(null); // Close dropdowns as well if needed
+    setActiveDropdown(null);
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" onClick={closeMenu}>
-          <img src="/l2.png" alt="Brand Logo" className="navbar-logo" />
+          <img src="/l2.png" alt="Brand Logo" className="logo-image" />
         </Link>
-        <button className="hamburger-menu" onClick={toggleMenu}>
-          ☰
-        </button>
-        <ul className={`navbar-menu ${menuOpen ? "open" : ""}`}>
-          <li className="navbar-item">
-            <button
-              className="navbar-link"
-              onClick={() => toggleDropdown("aboutUs")}
-            >
-              <Link to="/about" className="dropdown-link" onClick={closeMenu}>
+        <div className="hamburger-container">
+          <button
+            className={`hamburger-menu ${menuOpen ? "open" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </button>
+        </div>
+        <div className={`navbar-menu-container ${menuOpen ? "open" : ""}`}>
+          <ul className="navbar-menu">
+            <li className="navbar-item">
+              <Link to="/about" className="navbar-link" onClick={closeMenu}>
                 About Us
               </Link>
-            </button>
-          </li>
-          <li className="navbar-item">
-            <button
-              className="navbar-link"
-              onClick={() => toggleDropdown("whatWeDo")}
-            >
-              What We Do <span className="dropdown-icon">▼</span>
-            </button>
-            {activeDropdown === "whatWeDo" && (
-              <ul className="dropdown-menu">
+            </li>
+            <li className="navbar-item dropdown-container">
+              <button
+                className="navbar-link dropdown-toggle"
+                onClick={() => toggleDropdown("whatWeDo")}
+                aria-expanded={activeDropdown === "whatWeDo"}
+              >
+                What We Do <span className="dropdown-icon">▼</span>
+              </button>
+              <ul
+                className={`dropdown-menu ${
+                  activeDropdown === "whatWeDo" ? "open" : ""
+                }`}
+              >
                 <li className="dropdown-item">
                   <Link
                     to="/coaching"
@@ -86,23 +96,14 @@ const Navbar = () => {
                   </Link>
                 </li>
               </ul>
-            )}
-          </li>
-          <li className="navbar-item">
-            <button
-              className="navbar-link"
-              onClick={() => toggleDropdown("aboutUs")}
-            >
-              <Link
-                to="/resources"
-                className="dropdown-link"
-                onClick={closeMenu}
-              >
+            </li>
+            <li className="navbar-item">
+              <Link to="/resources" className="navbar-link" onClick={closeMenu}>
                 Resource Center
               </Link>
-            </button>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
   );

@@ -5,7 +5,7 @@ const HealthCoachingPage = () => {
   const [selectedOption, setSelectedOption] = useState("personal");
 
   const personalContent = (
-    <div >
+    <div className="coaching-content">
       <h2>Personal Health Coaching</h2>
       <p>
         Many cases of lifestyle diseases proceed to severe stages or death when
@@ -29,11 +29,11 @@ const HealthCoachingPage = () => {
   );
 
   const corporateContent = (
-    <div>
+    <div className="coaching-content">
       <h2>Corporate Health Coaching</h2>
       <p>
-        A healthy workforce guarantees higher productivity. Today&apos;s busy
-        and hectic occupational space exposes workers to various health risks,
+        A healthy workforce guarantees higher productivity. Today&apos;s busy and
+        hectic occupational space exposes workers to various health risks,
         undermining productivity and profits.
       </p>
       <p>
@@ -49,29 +49,44 @@ const HealthCoachingPage = () => {
   const corporateImage = "/co.jpg";
 
   return (
-    <div className="health-coaching-page">
-      <div className="content">
-        {selectedOption === "personal" ? personalContent : corporateContent}
-        <div className="toggle-buttons">
-          <button
-            className={selectedOption === "personal" ? "active" : ""}
-            onClick={() => setSelectedOption("personal")}
-          >
-            Personal Coaching
-          </button>
-          <button
-            className={selectedOption === "corporate" ? "active" : ""}
-            onClick={() => setSelectedOption("corporate")}
-          >
-            Corporate Coaching
-          </button>
+    <div className="health-coaching-container">
+      <div className="health-coaching-page">
+        <div className="content-section">
+          <div className="content-wrapper">
+            {selectedOption === "personal" ? personalContent : corporateContent}
+            <div className="toggle-buttons">
+              <button
+                className={`toggle-btn ${
+                  selectedOption === "personal" ? "active" : ""
+                }`}
+                onClick={() => setSelectedOption("personal")}
+              >
+                Personal Coaching
+              </button>
+              <button
+                className={`toggle-btn ${
+                  selectedOption === "corporate" ? "active" : ""
+                }`}
+                onClick={() => setSelectedOption("corporate")}
+              >
+                Corporate Coaching
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="image-section">
+          <img
+            src={selectedOption === "personal" ? personalImage : corporateImage}
+            alt={
+              selectedOption === "personal"
+                ? "Personal Health Coaching"
+                : "Corporate Health Coaching"
+            }
+            className="coaching-image"
+          />
         </div>
       </div>
-      <img
-        src={selectedOption === "personal" ? personalImage : corporateImage}
-        alt="Health Coaching"
-        className="header-image23"
-      />
     </div>
   );
 };

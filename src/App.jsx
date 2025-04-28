@@ -24,6 +24,7 @@ import AboutUs from "./pages/AboutUs";
 import Advocacy from "./pages/Advocacy";
 import PDFUploader from "./pages/PDFUploader";
 import PdfList from "./PdfList";
+import Chatbot from "./components/Chatbot";
 
 // Wrapper component to scroll to the top on route change
 const ScrollToTop = () => {
@@ -64,6 +65,8 @@ function App() {
           <Route path="/advocacy" element={<Advocacy />} />
           <Route path="/listpdf" element={<PdfList />} />
           <Route path="/uploadpdf" element={<PDFUploader />} />
+          <Route path="/Chatbot" element={<Chatbot />} />
+          
         </Routes>
       </div>
     </Router>

@@ -1,62 +1,97 @@
-import express from 'express';
-import cors from 'cors';
-import multer from 'multer';
-import 'dotenv/config';
-import { createClient } from '@supabase/supabase-js';
+/* eslint-disable no-undef */
+import express from "express";
+import axios from "axios";
+import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Supabase
-// eslint-disable-next-line no-undef
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-
-// Configure Multer for file uploads
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-// Upload endpoint
-app.post('/upload', upload.single('pdf'), async (req, res) => {
-    try {
-        const file = req.file;
-        if (!file) return res.status(400).json({ error: 'No file uploaded' });
-
-        const { data, error } = await supabase.storage.from('pdf-uploads').upload(
-            `pdfs/${file.originalname}`,
-            file.buffer,
-            { contentType: 'application/pdf' }
-        );
-
-        if (error) return res.status(500).json({ error: error.message });
-
-        const publicUrl = supabase.storage.from('pdf-uploads').getPublicUrl(data.path).data.publicUrl;
-
-        res.status(200).json({ url: publicUrl });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+// Health check endpoint
+app.get("/", (req, res) => {
+  res.send("Nutrition Backend Server is Running 🚀");
 });
 
-// Fetch all PDFs
-app.get('/pdfs', async (req, res) => {
-    try {
-        const { data, error } = await supabase.storage.from('pdf-uploads').list('pdfs');
+// Groq API Proxy Endpoint
+app.post("/api/groq", async (req, res) => {
+  try {
+    const { messages } = req.body;
 
-        if (error) return res.status(500).json({ error: error.message });
-
-        const pdfs = data.map(file => ({
-            name: file.name,
-            url: supabase.storage.from('pdf-uploads').getPublicUrl(`pdfs/${file.name}`).data.publicUrl
-        }));
-
-        res.json(pdfs);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    // Validate input
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(500).json({
+        error: "Server misconfiguration",
+        message: "GROQ_API_KEY is missing in environment variables",
+      });
     }
+
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({
+        error: "Invalid request",
+        message: "Messages array is required",
+      });
+    }
+
+    // Ensure messages have the correct structure
+    const validatedMessages = messages.map((msg) => ({
+      role: msg.role || "user",
+      content: msg.content || "",
+    }));
+
+    const response = await axios.post(
+      "https://api.groq.com/openai/v1/chat/completions",
+      {
+        model: "llama3-70b-8192", // Updated to current recommended model
+        messages: validatedMessages,
+        temperature: 0.7,
+        max_tokens: 1024,
+        stream: false,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        timeout: 30000,
+      }
+    );
+
+    // Handle Groq API response
+    if (!response.data.choices || !response.data.choices[0]) {
+      throw new Error("Invalid response format from Groq API");
+    }
+
+    res.json({
+      success: true,
+      message: {
+        role: "assistant",
+        content: response.data.choices[0].message.content,
+      },
+    });
+  } catch (error) {
+    console.error("Groq API Error:", error.message);
+
+    let status = 500;
+    let errorMessage = "Failed to process your request";
+
+    if (error.response) {
+      status = error.response.status;
+      errorMessage =
+        error.response.data?.error?.message || `Groq API error: ${status}`;
+    }
+
+    res.status(status).json({
+      success: false,
+      error: errorMessage,
+      details: error.message,
+    });
+  }
 });
 
-// Start server
-// eslint-disable-next-line no-undef
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
