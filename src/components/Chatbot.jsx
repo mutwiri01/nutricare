@@ -62,7 +62,7 @@ const Chatbot = () => {
       setMessages(updatedMessages);
 
       const response = await axios.post(
-        "http://localhost:3001/api/groq",
+        "https://nutricare-2y9k.onrender.com/api/groq",
         {
           messages: updatedMessages.map((msg) => ({
             role: msg.role,
