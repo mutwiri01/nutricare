@@ -47,8 +47,8 @@ app.post("/api/groq", async (req, res) => {
       {
         model: "llama3-70b-8192", // Updated to current recommended model
         messages: validatedMessages,
-        temperature: 0.7,
-        max_tokens: 1024,
+        temperature: 1.0,
+        max_tokens: 1500,
         stream: false,
       },
       {
