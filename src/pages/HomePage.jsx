@@ -136,6 +136,11 @@ const HomePage = () => {
               link: "/coaching",
             },
             {
+              image: "/bot.jpg",
+              title: " AI Health Bot",
+              link: "/chatbot",
+            },
+            {
               image: "/strat.jpg",
               title: "Education",
               link: "/education",
