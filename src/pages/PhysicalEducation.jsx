@@ -1,110 +1,141 @@
+/* eslint-disable react/no-unescaped-entities */
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Link } from "react-router-dom";
-
 import "../css/PhysicalEducation.css";
 
 const PhysicalEducation = () => {
   return (
-    <div className="education-container">
-      {/* Header Section with Image and Text */}
-      <div className="header">
-      <h1  style={{ color: "#116c3e" }} >Physical activity is key to preventive health</h1>
-        <div className="header-content">
-          <div className="header-text">
-            <p>
-              God created you &quot;fearfully and wonderfully&quot; and made
-              your body self-sufficient and valuably functional. This means each
-              function has a value or adds value to your life. But, God also
-              gave you freedom to decide how to make the best use of this body
-              to fulfill his purpose for your life.
-            </p>
-            <p>
-              Body, mind, and soul are three intrinsic units that make our
-              being. In making choices in life, you will note the difficulties
-              you might encounter as you try to strike some balance among these
-              three. One of those important values the body gives you is health.
-              But you have to make certain decisions to gain these values. You
-              have to consciously make the body make you healthy. That&apos;s
-              the basic operational procedure (manual) of physical activity.
-            </p>
-            <p>
-              Today, the world is shifting more to alternative methods of
-              healthcare. Preventive health is one of those areas that have been
-              used over time to protect people from disease. Physical activity
-              is a preventive way of living healthy. Have undertaken any form of
-              physical activity in the last week or month? If not, do you
-              realize you&apos;re overlooking as critical a decision as when to
-              cross the road? Lack of physical activity leads to ill health. The
-              energy that you get from food is supposed to all be expended in
-              activity. Excess energy can cause disease. Physical activity
-              requires resilience, perseverance, and discipline which take time
-              to acquire. If you&apos;re young start now and you&apos;ll not
-              struggle later.
-            </p>
-            <p>
-              For the old, it&apos;s not too late, you can still protect
-              yourself from sickness by changing your habits, building a
-              routine, to shape your character and transform your lifestyle.
-              Start small, skip rope, walk around the neighborhood, take the
-              stairs, start jogging, play games. Physical activity is your key
-              to healthier longer lives.
-            </p>
-          </div>
-          <img src="/pe2.jpeg" alt="Education" className="header-image1" />
+    <div className="pe-container">
+      {/* Hero Section with Fixed Image */}
+      <div className="pe-hero">
+        <div className="pe-hero-image-container">
+          <img
+            src="/pe2.jpeg"
+            alt="People exercising outdoors"
+            className="pe-hero-image"
+          />
+        </div>
+        <div className="pe-hero-content">
+          <h1>Physical Activity: Your Foundation for Preventive Health</h1>
         </div>
       </div>
 
-      {/* Topics Section */}
-      <div className="topics-section">
-        <h2 style={{ color: "#116c3e" }}>Other Topics</h2>
-        <div className="topics">
-          <div className="topic-item">
-            <img
-              src="/st1.png"
-              alt="Strategies for Alternative Healthcare"
-              className="campaign-card-image"
-            />
-            <div className="topic-info">
-              <Link to="/strategies">
-                <h3>Strategies for Alternative Healthcare</h3>
-              </Link>
+      {/* Motivational Quote */}
+      <div className="pe-motivation">
+        <blockquote>
+          "God created you "fearfully and wonderfully" and made your body
+          self-sufficient and valuably functional. Each physical capability adds
+          value to your life. You have the freedom to maximize this incredible
+          gift through movement and activity."
+        </blockquote>
+      </div>
+
+      {/* Main Content */}
+      <div className="pe-content">
+        <div className="pe-content-block pe-highlight">
+          <div className="pe-icon">
+            <i className="fas fa-heartbeat"></i>
+          </div>
+          <p>
+            Your body, mind, and soul work in harmony. Physical activity is the
+            bridge that connects all three. By moving regularly, you're not just
+            building muscle - you're cultivating discipline, resilience, and
+            mental clarity that spills over into every area of life.
+          </p>
+        </div>
+
+        <div className="pe-content-block">
+          <div className="pe-icon">
+            <i className="fas fa-dumbbell"></i>
+          </div>
+          <p>
+            The world is waking up to preventive healthcare, and movement is at
+            its core. When was the last time you challenged your body? That
+            unused energy wants to flow - through a brisk walk, a yoga session,
+            or a game of basketball. Your future self will thank you for
+            starting today.
+          </p>
+        </div>
+
+        <div className="pe-callout">
+          <h3>Movement is Medicine</h3>
+          <p>
+            Whether you're 18 or 80, your body craves activity. Start where you
+            are - take the stairs, walk after meals, try a fitness class.
+            Consistency beats intensity every time. Your first workout is just
+            one decision away.
+          </p>
+          <div className="pe-activity-suggestions">
+            <span>
+              <i className="fas fa-walking"></i> Walking
+            </span>
+            <span>
+              <i className="fas fa-swimming-pool"></i> Swimming
+            </span>
+            <span>
+              <i className="fas fa-bicycle"></i> Cycling
+            </span>
+            <span>
+              <i className="fas fa-basketball-ball"></i> Sports
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Related Topics */}
+      <div className="pe-topics">
+        <h2>Expand Your Wellness Knowledge</h2>
+        <div className="pe-topic-grid">
+          <div className="pe-topic-card">
+            <div className="pe-topic-image">
+              <img src="/st1.png" alt="Alternative Healthcare" />
+              <div className="pe-topic-overlay">
+                <Link to="/strategies">
+                  <i className="fas fa-chevron-right"></i>
+                </Link>
+              </div>
+            </div>
+            <div className="pe-topic-content">
+              <h3>Strategies For Alternative Healthcare</h3>
               <p>
-                Explore alternative healthcare methods that support a holistic
-                approach to well-being.
+                Complementary approaches that work with physical activity for
+                complete well-being.
               </p>
             </div>
           </div>
 
-          <div className="topic-item">
-            <img
-              src="/nu2.jpeg"
-              alt="Organic Diet"
-              className="campaign-card-image"
-            />
-            <div className="topic-info">
-              <Link to="/organic">
-                <h3>Organic Diet</h3>
-              </Link>
+          <div className="pe-topic-card">
+            <div className="pe-topic-image">
+              <img src="/nu2.jpeg" alt="Organic Nutrition" />
+              <div className="pe-topic-overlay">
+                <Link to="/organic">
+                  <i className="fas fa-chevron-right"></i>
+                </Link>
+              </div>
+            </div>
+            <div className="pe-topic-content">
+              <h3>Organic Diet</h3>
               <p>
-                Understand how organic diets contribute to a healthier and more
-                productive lifestyle.
+                How organic nutrition powers your physical performance and
+                recovery.
               </p>
             </div>
           </div>
 
-          <div className="topic-item">
-            <img
-              src="/hnu2.jpeg"
-              alt="High Nutrients for Healthier Communities"
-              className="campaign-card-image"
-            />
-            <div className="topic-info">
-              <Link to="/high-nutrients">
-                <h3>High Nutrients for Healthier Communities</h3>
-              </Link>
+          <div className="pe-topic-card">
+            <div className="pe-topic-image">
+              <img src="/hnu2.jpeg" alt="Nutrient-Rich Foods" />
+              <div className="pe-topic-overlay">
+                <Link to="/high-nutrients">
+                  <i className="fas fa-chevron-right"></i>
+                </Link>
+              </div>
+            </div>
+            <div className="pe-topic-content">
+              <h3>High Nutrients for Healthier Communities</h3>
               <p>
-                Learn how nutrient-dense foods can lead to healthier and more
-                productive communities.
+                Nutrient-dense foods that support active lifestyles and
+                community health.
               </p>
             </div>
           </div>

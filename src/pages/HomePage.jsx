@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useRef } from "react";
 import "../css/HomePage.css";
 import { useInView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
@@ -15,33 +16,45 @@ const HomePage = () => {
   ];
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
   const [statsRef, statsInView] = useInView({ triggerOnce: true });
-  const [counts, setCounts] = useState({ deaths: 0, admissions: 0, ncds: 0 });
+  const [counts, setCounts] = useState({
+    deaths: 14000000,
+    admissions: 50,
+    ncds: 85,
+  });
+
+  // Create a ref for the services section
+  const servicesRef = useRef(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length);
-    }, 3000); // Change image every 3 seconds
+    }, 3000);
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
   useEffect(() => {
     if (statsInView) {
-      const incrementCounts = (key, max) => {
-        let value = 0;
-        const step = Math.ceil(max / 100);
-        const interval = setInterval(() => {
-          value += step;
-          setCounts((prev) => ({
-            ...prev,
-            [key]: Math.min(value, max),
-          }));
-          if (value >= max) clearInterval(interval);
-        }, 30);
-      };
+      // Animation already complete, no need to re-animate
+      return;
+    }
+  }, [statsInView]);
 
-      incrementCounts("deaths", 14000000);
-      incrementCounts("admissions", 50);
-      incrementCounts("ncds", 85);
+  // Function to scroll to services section
+  const scrollToServices = () => {
+    servicesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % heroImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
+  useEffect(() => {
+    if (statsInView) {
+      // Animation already complete, no need to re-animate
+      return;
     }
   }, [statsInView]);
 
@@ -52,107 +65,124 @@ const HomePage = () => {
         className={`hero-section ${heroInView ? "animate" : ""}`}
         ref={heroRef}
       >
-        <div className="hero-text">
-          <h1>Developing innovative approaches to combat lifestyle diseases</h1>
-          <p>
-            Lifestyle diseases have taken the place of infectious diseases and
-            are indiscriminately afflicting people across the demographic
-            divide. Healthcare systems are overwhelmed and there is an urgent
-            need to deploy new approaches to deal with this scourge.
-          </p>
-        </div>
-        <div className="hero-image">
-          <img
-            src={heroImages[currentImage]}
-            alt={`Healthcare Image ${currentImage + 1}`}
-          />
-        </div>
-      </section>
-
-      {/* Statistics Section */}
-      <section
-        className={`stats-section ${statsInView ? "animate" : ""}`}
-        ref={statsRef}
-      >
-        <div className="stats-text">
-          <p>
-            Diabetes, cancers, cardiovascular diseases, chronic respiratory
-            infections, mental health disorders, stroke, and other
-            non-communicable diseases are now the leading cause of death and
-            disability in developing countries. Due to their chronic nature,
-            patients suffer from these diseases for prolonged periods, requiring
-            more medical care, resulting in higher costs.
-          </p>
-          <p>
-            Globally, over 14 million people between the ages of 30 and 70 years
-            die every year, and 85% of these deaths are in developing countries.
-            In Kenya, 50% of total hospital admissions and over 55% of hospital
-            deaths are due to non-communicable diseases (NCDs).
-          </p>
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1>
+              <span className="highlight">Developing Innovative Approaches</span> to Combat
+              Lifestyle Diseases
+            </h1>
+            <p className="lead">
+              Lifestyle diseases have taken the place of infectious diseases and
+              are indiscriminately afflicting people across the demographic
+              divide. Healthcare systems are overwhelmed and there is an urgent
+              need to deploy new approaches to deal with this scourge.
+            </p>
+            <button className="cta-button" onClick={scrollToServices}>
+              Explore Our Solutions
+            </button>
+          </div>
+          <div className="hero-image-container">
+            <div className="image-slider">
+              <img
+                src={heroImages[currentImage]}
+                alt={`Healthcare Image ${currentImage + 1}`}
+                className="hero-image"
+              />
+              <div className="slider-dots">
+                {heroImages.map((_, index) => (
+                  <span
+                    key={index}
+                    className={`dot ${index === currentImage ? "active" : ""}`}
+                    onClick={() => setCurrentImage(index)}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="stats-text">
-        <p>
-          Families face imminent poverty due to high costs of treatment and
-          deaths of breadwinners. On a national scale, economic productivity is
-          scaled down by an ailing workforce and early deaths as well as high
-          budgetary allocations for health.
-        </p>
-        <p>
-          It is imperative that sustainable interventions are explored and
-          employed to checkmate this unfortunate scenario. Centre for Lifechange
-          and Nutritional Healthcare is championing a shift in healthcare, by
-          promoting and managing overall well-being of individuals through
-          lifestyle change, and their empowerment towards healthier choices.
-        </p>
-      </div>
-
-      {/* Interactive Statistics Card */}
-      <div className="stats-card">
-        <div className="stat">
-          <h2>{counts.deaths.toLocaleString()}</h2>
-          <p>Global deaths from NCDs yearly</p>
+      {/* Stats Section */}
+      <section className="stats-section">
+        <div className="stats-grid">
+          <div className="stat-card">
+            <h2>{counts.deaths.toLocaleString()}+</h2>
+            <p>Global deaths from NCDs yearly</p>
+            <div className="stat-bar"></div>
+          </div>
+          <div className="stat-card">
+            <h2>{counts.admissions}%</h2>
+            <p>Hospital admissions in Kenya</p>
+            <div className="stat-bar"></div>
+          </div>
+          <div className="stat-card">
+            <h2>{counts.ncds}%</h2>
+            <p>Deaths in developing countries</p>
+            <div className="stat-bar"></div>
+          </div>
         </div>
-        <div className="stat">
-          <h2>{counts.admissions}%</h2>
-          <p>Hospital admissions in Kenya yearly</p>
-        </div>
-        <div className="stat">
-          <h2>{counts.ncds}%</h2>
-          <p>Deaths in developing countries from NCDs</p>
-        </div>
-      </div>
+      </section>
 
-      {/* Topics Section */}
+      {/* Problem Section */}
+      <section className="problem-section">
+        <div className="problem-content">
+          <div className="problem-text full-width-text">
+            <h2>The Growing Crisis of NCDs</h2>
+            <p>
+              Diabetes, cancers, cardiovascular diseases, and other
+              non-communicable diseases are now the leading cause of death in
+              developing nations. Their chronic nature demands prolonged care,
+              resulting in catastrophic costs for families and nations alike.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <section className="topics-section">
-        <h1 style={{ color: "#116c3e" }}>What We Do</h1>
-        <div className="cards-container">
+      {/* Impact Section */}
+      <section className="impact-section">
+        <div className="impact-content">
+          <div className="impact-card">
+            <h3>Family Impact</h3>
+            <p>Poverty due to treatment costs and loss of breadwinners</p>
+          </div>
+          <div className="impact-card">
+            <h3>National Impact</h3>
+            <p>Reduced productivity and unsustainable health budgets</p>
+          </div>
+          <div className="impact-card">
+            <h3>Our Solution</h3>
+            <p>Promoting wellness through lifestyle change and empowerment</p>
+          </div>
+        </div>
+      </section>
+
+      {/* What We Do Section */}
+      <section className="services-section" ref={servicesRef}>
+        <div className="section-header">
+          <h2>Our Comprehensive Approach</h2>
+          <p>We address NCDs through multiple innovative channels</p>
+        </div>
+        <div className="services-grid">
           {[
             {
               image: "/co.jpg",
-              title: "Coaching",
+              title: "Personalized Coaching",
               link: "/coaching",
             },
-            {
-              image: "/bot.jpg",
-              title: " AI Health Bot",
-              link: "/chatbot",
-            },
+
             {
               image: "/strat.jpg",
-              title: "Education",
+              title: "Community Education",
               link: "/education",
             },
             {
               image: "/p1.png",
-              title: "Campaign",
+              title: "Awareness Campaigns",
               link: "/campaign",
             },
             {
               image: "/c1.jpg",
-              title: "Projects",
+              title: "Research Projects",
               link: "/projects",
             },
             {
@@ -160,20 +190,35 @@ const HomePage = () => {
               title: "Resource Center",
               link: "/resources",
             },
-          ].map((topic, index) => (
+          ].map((service, index) => (
             <Link
-              to={topic.link}
+              to={service.link}
               key={index}
-              className="card"
+              className="service-card"
               style={{ textDecoration: "none" }}
             >
               <div className="card-image">
-                <img src={topic.image} alt={topic.title} />
+                <img src={service.image} alt={service.title} />
+                <div className="card-overlay"></div>
               </div>
-              <h3>{topic.title}</h3>
-              <p>{topic.description}</p>
+              <h3>{service.title}</h3>
+              <button className="card-button">Learn More →</button>
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-content">
+          <h2>Join the Movement for Healthier Lives</h2>
+          <p>
+            Together we can combat lifestyle diseases through innovation and
+            education
+          </p>
+          <div className="cta-buttons">
+            <button className="primary-button">Get Involved</button>
+          </div>
         </div>
       </section>
     </div>

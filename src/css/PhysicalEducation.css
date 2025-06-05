@@ -1,140 +1,404 @@
-/* Import Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;700&family=Roboto+Slab:wght@400;700&display=swap");
+/* PhysicalEducation.css - Fitness-Focused 2025 Design */
 
-/* General Styles */
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600;700&display=swap");
+
 :root {
-  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
+  /* Fitness Color Palette */
+  --pe-primary: #1a7d4e;
+  --pe-primary-dark: #116c3e;
+  --pe-secondary: #4caf50;
+  --pe-accent: #8bc34a;
+  --pe-light: #f8f9fa;
+  --pe-dark: #212529;
+  --pe-text: #2d3436;
+  --pe-text-light: #636e72;
+
+  /* Spacing */
+  --pe-space-xs: 0.5rem;
+  --pe-space-sm: 1rem;
+  --pe-space-md: 1.5rem;
+  --pe-space-lg: 3rem;
+  --pe-space-xl: 4rem;
+
+  /* Shadows */
+  --pe-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --pe-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --pe-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+  /* Border Radius */
+  --pe-radius-sm: 6px;
+  --pe-radius-md: 10px;
+  --pe-radius-lg: 16px;
+  --pe-radius-xl: 24px;
+
+  /* Transitions */
+  --pe-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Roboto Slab", "Roboto Flex", sans-serif;
-  color: #757575;
-}
-
-/* General container for the page */
-.education-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-/* Header Section */
-.header {
-  margin-bottom: 20px;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-}
-
-/* Ensure the text and image are exactly the same size */
-.header-text,
-.header-image1 {
-  flex: 1;
-  width: 50%;
-  max-width: 50%;
-  height: 100%; /* Ensures equal height */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* Style text */
-.header-text {
-  text-align: justify;
+/* Base Styles */
+.pe-container {
+  font-family: "Open Sans", sans-serif;
+  color: var(--pe-text);
   line-height: 1.6;
-  color: #757575;
-  padding: 20px; /* Ensures padding inside the container */
-  box-sizing: border-box; /* Ensures padding doesn't affect width */
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow-x: hidden;
 }
 
-.header-text h1 {
-  color: #116c3e;
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 var(--pe-space-sm) 0;
+  color: var(--pe-primary-dark);
 }
 
-/* Image styling */
-.header-image1 {
-  height: 100%;
-  object-fit: contain;
-  border-radius: 10px;
-  max-height: 400px; /* Ensures it's not too large */
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Topics Section */
-.topics-section {
-  margin-top: 40px;
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  text-align: center;
+  margin-bottom: var(--pe-space-lg);
+  position: relative;
 }
 
-.topics {
+h2::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--pe-accent);
+  margin: var(--pe-space-sm) auto 0;
+  border-radius: 2px;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+}
+
+/* Hero Section - Fixed Image */
+.pe-hero {
+  position: relative;
+  height: 80vh;
+  min-height: 600px;
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: var(--pe-space-xl);
+  overflow: hidden;
 }
 
-.topic-item {
+.pe-hero-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.pe-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.7);
+  transform: none !important; /* Prevent any zoom */
+  will-change: transform;
+}
+
+.pe-hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: var(--pe-space-xl);
+  color: white;
+  text-align: center;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+}
+
+.pe-hero-cta {
+  margin-top: var(--pe-space-lg);
+}
+
+.pe-cta-button {
+  display: inline-block;
+  padding: var(--pe-space-sm) var(--pe-space-md);
+  background-color: var(--pe-accent);
+  color: var(--pe-dark);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--pe-radius-lg);
+  transition: var(--pe-transition);
+  border: 2px solid transparent;
+  font-size: 1.1rem;
+}
+
+.pe-cta-button:hover {
+  background-color: transparent;
+  border-color: var(--pe-accent);
+  color: white;
+  transform: translateY(-3px);
+}
+
+/* Motivational Quote */
+.pe-motivation {
+  max-width: 800px;
+  margin: 0 auto var(--pe-space-xl);
+  padding: 0 var(--pe-space-md);
+  text-align: center;
+}
+
+.pe-motivation blockquote {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--pe-primary-dark);
+  position: relative;
+  padding: var(--pe-space-md) 0;
+}
+
+.pe-motivation blockquote::before,
+.pe-motivation blockquote::after {
+  content: '"';
+  font-size: 2rem;
+  color: var(--pe-accent);
+}
+
+.pe-motivation cite {
+  display: block;
+  font-size: 1rem;
+  font-weight: normal;
+  font-style: normal;
+  margin-top: var(--pe-space-sm);
+  color: var(--pe-text-light);
+}
+
+/* Content Blocks */
+.pe-content {
+  max-width: 1200px;
+  margin: 0 auto var(--pe-space-xl);
+  padding: 0 var(--pe-space-md);
+}
+
+.pe-content-block {
+  background: white;
+  padding: var(--pe-space-md);
+  margin-bottom: var(--pe-space-md);
+  border-radius: var(--pe-radius-md);
+  box-shadow: var(--pe-shadow-sm);
+  transition: var(--pe-transition);
+  display: flex;
+  align-items: flex-start;
+}
+
+.pe-content-block:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--pe-shadow-md);
+}
+
+.pe-highlight {
+  background: linear-gradient(135deg, var(--pe-primary), var(--pe-secondary));
+  color: white;
+}
+
+.pe-highlight p {
+  color: white;
+}
+
+.pe-icon {
+  margin-right: var(--pe-space-md);
+  font-size: 1.5rem;
+  color: var(--pe-accent);
+  min-width: 40px;
+  text-align: center;
+  padding-top: var(--pe-space-xs);
+}
+
+.pe-highlight .pe-icon {
+  color: white;
+}
+
+/* Activity Callout */
+.pe-callout {
+  background: var(--pe-light);
+  padding: var(--pe-space-md);
+  border-radius: var(--pe-radius-md);
+  border-left: 5px solid var(--pe-accent);
+  margin-top: var(--pe-space-lg);
+}
+
+.pe-activity-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pe-space-md);
+  margin-top: var(--pe-space-md);
+}
+
+.pe-activity-suggestions span {
+  display: inline-flex;
+  align-items: center;
+  background: white;
+  padding: var(--pe-space-xs) var(--pe-space-sm);
+  border-radius: var(--pe-radius-sm);
+  box-shadow: var(--pe-shadow-sm);
+}
+
+.pe-activity-suggestions i {
+  margin-right: var(--pe-space-xs);
+  color: var(--pe-accent);
+}
+
+/* Topics Grid */
+.pe-topics {
+  background: linear-gradient(to bottom, #f8f9fa, #e8f5e9);
+  padding: var(--pe-space-xl) var(--pe-space-md);
+}
+
+.pe-topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--pe-space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pe-topic-card {
+  background: white;
+  border-radius: var(--pe-radius-md);
+  overflow: hidden;
+  box-shadow: var(--pe-shadow-sm);
+  transition: var(--pe-transition);
+}
+
+.pe-topic-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--pe-shadow-lg);
+}
+
+.pe-topic-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.pe-topic-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--pe-transition);
+}
+
+.pe-topic-card:hover .pe-topic-image img {
+  transform: scale(1.05);
+}
+
+.pe-topic-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
-  width: 30%;
-  background-color: #f4f4f4;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  opacity: 0;
+  transition: var(--pe-transition);
 }
 
-.topic-item img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 5px;
-  margin-right: 15px;
+.pe-topic-card:hover .pe-topic-overlay {
+  opacity: 1;
 }
 
-.topic-info h3 {
-  font-size: 18px;
-  color: #116c3e;
-  margin-bottom: 10px;
+.pe-topic-overlay a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background: var(--pe-accent);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.25rem;
+  text-decoration: none;
+  transition: var(--pe-transition);
 }
 
-.topic-info p {
-  font-size: 14px;
-  color: #555;
-  line-height: 1.4;
+.pe-topic-overlay a:hover {
+  background: var(--pe-primary);
+  transform: rotate(90deg);
 }
 
-/* Responsive Design */
+.pe-topic-content {
+  padding: var(--pe-space-md);
+}
+
+.pe-topic-content h3 {
+  color: var(--pe-primary-dark);
+  margin-bottom: var(--pe-space-sm);
+}
+
+.pe-topic-content p {
+  color: var(--pe-text-light);
+  font-size: 0.95rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .pe-hero {
+    height: 70vh;
+    min-height: 500px;
+  }
+
+  .pe-hero-content {
+    padding: var(--pe-space-lg);
+  }
+}
+
 @media (max-width: 768px) {
-  .header-content {
+  .pe-hero {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .pe-content-block {
     flex-direction: column;
+    align-items: center;
     text-align: center;
   }
 
-  .header-text,
-  .header-image1 {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
+  .pe-icon {
+    margin-right: 0;
+    margin-bottom: var(--pe-space-sm);
   }
 
-  .topics {
-    flex-direction: column;
-    align-items: center;
+  .pe-topic-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .pe-hero {
+    height: 50vh;
+    min-height: 300px;
   }
 
-  .topic-item {
-    width: 100%;
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
+  .pe-hero-content {
+    padding: var(--pe-space-md);
   }
 
-  .topic-item img {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 10px;
+  .pe-motivation blockquote {
+    font-size: 1.25rem;
+  }
+
+  .pe-activity-suggestions {
+    justify-content: center;
   }
 }

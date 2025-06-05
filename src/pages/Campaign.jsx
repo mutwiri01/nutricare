@@ -49,37 +49,37 @@ const Campaign = () => {
         <div className="campaign-text">
           <h1>Campaign for Healthy Communities</h1>
           <p>
-            Public awareness campaign is a key communication component for sensitizing communities
-            for problems affecting them.
+            Public awareness campaign is a key communication component for
+            sensitizing communities for problems affecting them.
           </p>
           <p>
-            At the Centre for Lifechange and Nutritional Healthcare we effectively
-            deploy this medium to reach bigger fractions of the populace in shorter
-            time-frames thereby bringing the desired change in lifestyles and health.
+            At the Centre for Lifechange and Nutritional Healthcare we
+            effectively deploy this medium to reach bigger fractions of the
+            populace in shorter time-frames thereby bringing the desired change
+            in lifestyles and health.
           </p>
           <p>
-            By building public interest through media messaging and events, we will
-            generate specific outcomes that are goal oriented and institute policy
-            and systematic changes.
+            By building public interest through media messaging and events, we
+            will generate specific outcomes that are goal oriented and institute
+            policy and systematic changes.
           </p>
 
           <p>
             Our approach is strategically clustered to align with our vision for
-            healthier communities into :
-
-            1) Food for health
-            2) Food justice
-            3) Health freedom
+            healthier communities into:
           </p>
-
-
+          <ul>
+            <li>Food for health</li>
+            <li>Food justice</li>
+            <li>Health freedom</li>
+          </ul>
         </div>
       </div>
 
       {/* Second Section - Scrolling Campaign Topics */}
       <div className="campaign-topics">
         <div className="campaign-topics-header">
-        <h2 style={{ color: "#116c3e" }}>Other Topics</h2>
+          <h2 style={{ color: "#116c3e" }}>Advocacy Area</h2>
         </div>
         <div
           className="campaign-cards"
