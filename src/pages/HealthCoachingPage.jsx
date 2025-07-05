@@ -85,10 +85,10 @@ const HealthCoachingPage = () => {
     setAdCampaigns([
       {
         id: 1,
-        name: "Summer Wellness",
+        name: "Wellness",
         platform: "Facebook",
         status: "active",
-        budget: "$2,000",
+        budget: "kes 2,000",
         startDate: "2025-06-01",
         endDate: "2025-08-31",
       },
@@ -97,7 +97,7 @@ const HealthCoachingPage = () => {
         name: "Corporate Solutions",
         platform: "LinkedIn",
         status: "paused",
-        budget: "$1,500",
+        budget: "kes 1,500",
         startDate: "2025-05-15",
         endDate: "2025-07-15",
       },
@@ -439,7 +439,7 @@ const HealthCoachingPage = () => {
             <i className="bi bi-telephone"></i>
           </div>
           <h3>Phone Support</h3>
-          <p>+1 (800) 555-0192</p>
+          <p>0712345679</p>
           <p>Mon-Fri, 9am-5pm EST</p>
         </div>
       </div>
@@ -547,7 +547,7 @@ const HealthCoachingPage = () => {
             onClick={() => setActiveWebinar(webinar)}
           >
             <div className="healthcoaching-webinarthumb">
-              <img src={webinar.thumbnail} alt={webinar.title} />
+              <img src= "../../public/fa1.jpg" />
               <div className="healthcoaching-webinarbadge">
                 {webinar.status}
               </div>
