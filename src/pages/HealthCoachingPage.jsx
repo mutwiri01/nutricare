@@ -547,7 +547,7 @@ const HealthCoachingPage = () => {
             onClick={() => setActiveWebinar(webinar)}
           >
             <div className="healthcoaching-webinarthumb">
-              <img src= "../../public/fa1.jpg" />
+              <img src="/fa1.jpg" alt="Food Justice" />
               <div className="healthcoaching-webinarbadge">
                 {webinar.status}
               </div>
