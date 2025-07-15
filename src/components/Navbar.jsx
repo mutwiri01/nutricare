@@ -65,7 +65,7 @@ const Navbar = () => {
                     className="dropdown-link"
                     onClick={closeMenu}
                   >
-                    Coaching
+                    Health Coaching
                   </Link>
                 </li>
                 <li className="dropdown-item">

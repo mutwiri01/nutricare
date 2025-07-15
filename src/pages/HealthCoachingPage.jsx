@@ -412,7 +412,7 @@ const HealthCoachingPage = () => {
   // Customer Care Content
   const customerCareContent = (
     <div className="healthcoaching-content">
-      <h2>Customer Care Center</h2>
+      <h2>Online Support Center</h2>
       <p className="healthcoaching-subtitle">
         We're here to support your health coaching journey
       </p>
@@ -978,7 +978,7 @@ const HealthCoachingPage = () => {
           }`}
           onClick={() => setActiveTab("care")}
         >
-          <i className="bi bi-headset"></i> Customer Care
+          <i className="bi bi-headset"></i>Online Support
         </button>
         <button
           className={`healthcoaching-navitem ${
