@@ -1,97 +1,101 @@
+// File: server.js (updated routes)
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import express from "express";
-import axios from "axios";
+import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
+import hpp from "hpp";
+import cookieParser from "cookie-parser";
 
-dotenv.config();
+// Configure __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Load environment variables
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+// Debug: Check if environment variables are loaded
+console.log("MONGO_URI:", process.env.MONGO_URI);
+console.log("PORT:", process.env.PORT);
+console.log("NODE_ENV:", process.env.NODE_ENV);
+
+// Create Express app
 const app = express();
-const PORT = process.env.PORT || 3001;
-app.use(cors());
-app.use(express.json());
+
+// Database Connection
+import connectDB from "./config/db.js";
+connectDB();
+
+// Security Middleware
+app.use(helmet());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.use(mongoSanitize());
+app.use(hpp());
+app.use(cookieParser());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+});
+app.use(limiter);
+
+// Body parsing
+app.use(express.json({ limit: "10kb" }));
+
+// Routes
+import authRoutes from "./routes/authRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
+import webinarRoutes from "./routes/webinarRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import supportRoutes from "./routes/supportRoutes.js";
+
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/bookings", bookingRoutes);
+app.use("/api/v1/webinars", webinarRoutes);
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/support", supportRoutes);
 
 // Health check endpoint
-app.get("/", (req, res) => {
-  res.send("Nutrition Backend Server is Running 🚀");
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// Groq API Proxy Endpoint
-app.post("/api/groq", async (req, res) => {
-  try {
-    const { messages } = req.body;
+// Serve static assets in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
 
-    // Validate input
-    if (!process.env.GROQ_API_KEY) {
-      return res.status(500).json({
-        error: "Server misconfiguration",
-        message: "GROQ_API_KEY is missing in environment variables",
-      });
-    }
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/dist", "index.html"));
+  });
+}
 
-    if (!messages || !Array.isArray(messages)) {
-      return res.status(400).json({
-        error: "Invalid request",
-        message: "Messages array is required",
-      });
-    }
+// Error handling middleware
+import errorHandler from "./middlewares/error.js";
+app.use(errorHandler);
 
-    // Ensure messages have the correct structure
-    const validatedMessages = messages.map((msg) => ({
-      role: msg.role || "user",
-      content: msg.content || "",
-    }));
-
-    const response = await axios.post(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
-        model: "llama3-70b-8192", // Updated to current recommended model
-        messages: validatedMessages,
-        temperature: 2.0,
-        max_tokens: 1800,
-        stream: true,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        timeout: 30000,
-      }
-    );
-
-    // Handle Groq API response
-    if (!response.data.choices || !response.data.choices[0]) {
-      throw new Error("Invalid response format from Groq API");
-    }
-
-    res.json({
-      success: true,
-      message: {
-        role: "assistant",
-        content: response.data.choices[0].message.content,
-      },
-    });
-  } catch (error) {
-    console.error("Groq API Error:", error.message);
-
-    let status = 500;
-    let errorMessage = "Failed to process your request";
-
-    if (error.response) {
-      status = error.response.status;
-      errorMessage =
-        error.response.data?.error?.message || `Groq API error: ${status}`;
-    }
-
-    res.status(status).json({
-      success: false,
-      error: errorMessage,
-      details: error.message,
-    });
-  }
+const PORT = process.env.PORT || 5000;
+const server = app.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`Error: ${err.message}`);
+  server.close(() => process.exit(1));
 });

@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "../css/HealthCoachingPage.css";
 
 const HealthCoachingPage = () => {
@@ -27,82 +30,106 @@ const HealthCoachingPage = () => {
     message: "",
     priority: "medium",
   });
-  const [adCampaigns, setAdCampaigns] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    fetchWebinars();
+    fetchSupportTickets();
+
     // Generate available times
     const times = [];
     for (let i = 9; i <= 17; i++) {
       times.push(`${i}:00`, `${i}:30`);
     }
     setAvailableTimes(times);
-
-    // Mock webinar data
-    setWebinars([
-      {
-        id: 1,
-        title: "Managing Diabetes Through Lifestyle Changes",
-        date: "2025-08-15",
-        time: "14:00",
-        duration: "60 mins",
-        speaker: "Dr. user 1",
-        thumbnail: "/webinar1.jpg",
-        attendees: 124,
-        status: "upcoming",
-      },
-      {
-        id: 2,
-        title: "Workplace Wellness Strategies",
-        date: "2025-08-22",
-        time: "16:00",
-        duration: "45 mins",
-        speaker: "Health Coach ",
-        thumbnail: "/webinar2.jpg",
-        attendees: 87,
-        status: "upcoming",
-      },
-    ]);
-
-    // Mock support tickets
-    setSupportTickets([
-      {
-        id: 1,
-        subject: "Login issues",
-        status: "resolved",
-        priority: "high",
-        date: "2025-07-01",
-      },
-      {
-        id: 2,
-        subject: "Payment question",
-        status: "in-progress",
-        priority: "medium",
-        date: "2025-07-03",
-      },
-    ]);
-
-    // Mock ad campaigns
-    setAdCampaigns([
-      {
-        id: 1,
-        name: "Wellness",
-        platform: "Facebook",
-        status: "active",
-        budget: "kes 2,000",
-        startDate: "2025-06-01",
-        endDate: "2025-08-31",
-      },
-      {
-        id: 2,
-        name: "Corporate Solutions",
-        platform: "LinkedIn",
-        status: "paused",
-        budget: "kes 1,500",
-        startDate: "2025-05-15",
-        endDate: "2025-07-15",
-      },
-    ]);
   }, []);
+
+  const fetchWebinars = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("/api/webinars", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setWebinars(data);
+      } else {
+        // Fallback to mock data if API fails
+        setWebinars([
+          {
+            id: 1,
+            title: "Managing Diabetes Through Lifestyle Changes",
+            date: "2025-08-15",
+            time: "14:00",
+            duration: "60 mins",
+            speaker: "Dr. user 1",
+            thumbnail: "/webinar1.jpg",
+            attendees: 124,
+            status: "upcoming",
+          },
+          {
+            id: 2,
+            title: "Workplace Wellness Strategies",
+            date: "2025-08-22",
+            time: "16:00",
+            duration: "45 mins",
+            speaker: "Health Coach ",
+            thumbnail: "/webinar2.jpg",
+            attendees: 87,
+            status: "upcoming",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching webinars:", error);
+      setError("Failed to load webinars");
+    }
+  };
+
+  const fetchSupportTickets = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("/api/support-tickets", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSupportTickets(data);
+      } else {
+        // Fallback to mock data
+        setSupportTickets([
+          {
+            id: 1,
+            subject: "Login issues",
+            status: "resolved",
+            priority: "high",
+            date: "2025-07-01",
+          },
+          {
+            id: 2,
+            subject: "Payment question",
+            status: "in-progress",
+            priority: "medium",
+            date: "2025-07-03",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching support tickets:", error);
+      setError("Failed to load support tickets");
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -117,29 +144,113 @@ const HealthCoachingPage = () => {
   const handleNextStep = () => setBookingStep((prev) => prev + 1);
   const handlePrevStep = () => setBookingStep((prev) => prev - 1);
 
-  const handleSubmitBooking = (e) => {
+  const handleSubmitBooking = async (e) => {
     e.preventDefault();
-    console.log("Booking submitted:", bookingData);
-    setBookingStep(5); // Success step
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (response.ok) {
+        setBookingStep(5); // Success step
+        setSuccess("Booking created successfully!");
+      } else {
+        throw new Error("Booking failed");
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      setError("Failed to create booking. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleSubmitSupportTicket = (e) => {
+  const handleSubmitSupportTicket = async (e) => {
     e.preventDefault();
-    const ticket = {
-      id: supportTickets.length + 1,
-      subject: newTicket.subject,
-      status: "new",
-      priority: newTicket.priority,
-      date: new Date().toISOString().split("T")[0],
-    };
-    setSupportTickets((prev) => [...prev, ticket]);
-    setNewTicket({ subject: "", message: "", priority: "medium" });
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await fetch("/api/support-tickets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newTicket),
+      });
+
+      if (response.ok) {
+        const ticket = await response.json();
+        setSupportTickets((prev) => [...prev, ticket]);
+        setNewTicket({ subject: "", message: "", priority: "medium" });
+        setSuccess("Support ticket submitted successfully!");
+      } else {
+        throw new Error("Ticket creation failed");
+      }
+    } catch (error) {
+      console.error("Ticket error:", error);
+      setError("Failed to create support ticket. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleWebinarRegistration = (e) => {
+  const handleWebinarRegistration = async (e) => {
     e.preventDefault();
-    alert("Registration successful! Details will be emailed to you.");
-    setActiveWebinar(null);
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("authToken");
+      const formData = new FormData(e.target);
+      const registrationData = {
+        webinarId: activeWebinar.id,
+        name: formData.get("name"),
+        email: formData.get("email"),
+      };
+
+      const response = await fetch("/api/webinar-registrations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(registrationData),
+      });
+
+      if (response.ok) {
+        alert("Registration successful! Details will be emailed to you.");
+        setActiveWebinar(null);
+        setSuccess("Webinar registration successful!");
+      } else {
+        throw new Error("Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setError("Failed to register for webinar. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   // Personal Coaching Content
@@ -481,53 +592,10 @@ const HealthCoachingPage = () => {
           </div>
           <button type="submit" className="healthcoaching-cta">
             Submit Ticket
+            {isLoading && <span className="healthcoaching-spinner"></span>}
           </button>
         </form>
       </div>
-    </div>
-  );
-
-  // Advertising Content
-  const advertisingContent = (
-    <div className="healthcoaching-content">
-      <h2>Advertising Coordination</h2>
-      <p className="healthcoaching-subtitle">
-        Manage your health coaching marketing campaigns
-      </p>
-
-      <div className="healthcoaching-campaigntable">
-        <div className="healthcoaching-campaignheader">
-          <div className="healthcoaching-campaigncell">Campaign Name</div>
-          <div className="healthcoaching-campaigncell">Platform</div>
-          <div className="healthcoaching-campaigncell">Status</div>
-          <div className="healthcoaching-campaigncell">Budget</div>
-          <div className="healthcoaching-campaigncell">Dates</div>
-        </div>
-
-        {adCampaigns.map((campaign) => (
-          <div key={campaign.id} className="healthcoaching-campaignrow">
-            <div className="healthcoaching-campaigncell">{campaign.name}</div>
-            <div className="healthcoaching-campaigncell">
-              {campaign.platform}
-            </div>
-            <div className="healthcoaching-campaigncell">
-              <span
-                className={`healthcoaching-campaignstatus ${campaign.status}`}
-              >
-                {campaign.status}
-              </span>
-            </div>
-            <div className="healthcoaching-campaigncell">{campaign.budget}</div>
-            <div className="healthcoaching-campaigncell">
-              {campaign.startDate} to {campaign.endDate}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <button className="healthcoaching-cta">
-        <i className="bi bi-plus"></i> Create New Campaign
-      </button>
     </div>
   );
 
@@ -857,7 +925,15 @@ const HealthCoachingPage = () => {
           <i className="bi bi-arrow-left"></i> Back
         </button>
         <button className="healthcoaching-navbtn submit" type="submit">
-          Confirm Booking <i className="bi bi-check-circle"></i>
+          {isLoading ? (
+            <>
+              Processing... <span className="healthcoaching-spinner"></span>
+            </>
+          ) : (
+            <>
+              Confirm Booking <i className="bi bi-check-circle"></i>
+            </>
+          )}
         </button>
       </div>
     </form>,
@@ -928,363 +1004,230 @@ const HealthCoachingPage = () => {
           <h1>Health Coaching Portal</h1>
           <p>Transforming lives through personalized health coaching</p>
         </div>
+        <div className="healthcoaching-userpanel">
+          {user ? (
+            <>
+              <span>Welcome, {user.name || user.email}</span>
+              {user.role === "admin" && (
+                <button
+                  onClick={() => navigate("/admin")}
+                  className="healthcoaching-adminbtn"
+                >
+                  Admin Dashboard
+                </button>
+              )}
+              <button
+                onClick={handleLogout}
+                className="healthcoaching-logoutbtn"
+              >
+                Logout <i className="bi bi-box-arrow-right"></i>
+              </button>
+            </>
+          ) : (
+            <button onClick={handleLogin} className="healthcoaching-loginbtn">
+              Login <i className="bi bi-box-arrow-in-right"></i>
+            </button>
+          )}
+        </div>
       </header>
 
-      {/* Main Navigation */}
-      <nav className="healthcoaching-mainnav">
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "personal" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("personal")}
-        >
-          <i className="bi bi-person"></i> Personal
-        </button>
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "corporate" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("corporate")}
-        >
-          <i className="bi bi-building"></i> Corporate
-        </button>
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "online" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("online")}
-        >
-          <i className="bi bi-laptop"></i> Online
-        </button>
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "cluster" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("cluster")}
-        >
-          <i className="bi bi-people"></i> Clusters
-        </button>
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "virtual" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("virtual")}
-        >
-          <i className="bi bi-camera-video"></i> Virtual Rooms
-        </button>
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "care" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("care")}
-        >
-          <i className="bi bi-headset"></i>Online Support
-        </button>
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "advertising" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("advertising")}
-        >
-          <i className="bi bi-megaphone"></i> Advertising
-        </button>
-        <button
-          className={`healthcoaching-navitem ${
-            activeTab === "webinars" ? "active" : ""
-          }`}
-          onClick={() => setActiveTab("webinars")}
-        >
-          <i className="bi bi-camera-video"></i> Webinars
-        </button>
-      </nav>
-
-      {/* Main Content */}
-      <main className="healthcoaching-maincontent">
-        <AnimatePresence mode="wait">
-          {activeTab === "personal" && (
-            <motion.div
-              key="personal"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {personalCoachingContent}
-            </motion.div>
-          )}
-
-          {activeTab === "corporate" && (
-            <motion.div
-              key="corporate"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {corporateCoachingContent}
-            </motion.div>
-          )}
-
-          {activeTab === "online" && (
-            <motion.div
-              key="online"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {onlineCoachingContent}
-            </motion.div>
-          )}
-
-          {activeTab === "cluster" && (
-            <motion.div
-              key="cluster"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {clusteredNeedsContent}
-            </motion.div>
-          )}
-
-          {activeTab === "virtual" && (
-            <motion.div
-              key="virtual"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {virtualRoomsContent}
-            </motion.div>
-          )}
-
-          {activeTab === "care" && (
-            <motion.div
-              key="care"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {customerCareContent}
-            </motion.div>
-          )}
-
-          {activeTab === "advertising" && (
-            <motion.div
-              key="advertising"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {advertisingContent}
-            </motion.div>
-          )}
-
-          {activeTab === "webinars" && (
-            <motion.div
-              key="webinars"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {webinarContent}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
-
-      {/* Booking Modal */}
-      {bookingStep > 0 && (
-        <div className="healthcoaching-modal">
-          <div className="healthcoaching-modalcontent">
-            <button
-              className="healthcoaching-modalclose"
-              onClick={() => setBookingStep(0)}
-            >
-              <i className="bi bi-x"></i>
-            </button>
-
-            <div className="healthcoaching-modalheader">
-              <h2>
-                {bookingData.serviceType === "personal"
-                  ? "Personal Health Coaching"
-                  : bookingData.serviceType === "corporate"
-                  ? "Corporate Wellness Program"
-                  : bookingData.serviceType === "online"
-                  ? "Online Coaching"
-                  : "Cluster Program"}
-              </h2>
-              <div className="healthcoaching-progress">
-                <div
-                  className={`healthcoaching-progressstep ${
-                    bookingStep >= 1 ? "active" : ""
-                  }`}
-                  onClick={() => bookingStep > 1 && setBookingStep(1)}
-                >
-                  1
-                </div>
-                <div
-                  className={`healthcoaching-progressstep ${
-                    bookingStep >= 2 ? "active" : ""
-                  }`}
-                  onClick={() => bookingStep > 2 && setBookingStep(2)}
-                >
-                  2
-                </div>
-                <div
-                  className={`healthcoaching-progressstep ${
-                    bookingStep >= 3 ? "active" : ""
-                  }`}
-                  onClick={() => bookingStep > 3 && setBookingStep(3)}
-                >
-                  3
-                </div>
-                <div
-                  className={`healthcoaching-progressstep ${
-                    bookingStep >= 4 ? "active" : ""
-                  }`}
-                  onClick={() => bookingStep > 4 && setBookingStep(4)}
-                >
-                  4
-                </div>
-                <div
-                  className={`healthcoaching-progressstep ${
-                    bookingStep >= 5 ? "active" : ""
-                  }`}
-                  onClick={() => bookingStep > 5 && setBookingStep(5)}
-                >
-                  5
-                </div>
-              </div>
-            </div>
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`step-${bookingStep}`}
-                initial={{ opacity: 0, x: bookingStep > 5 ? 0 : 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: bookingStep > 5 ? 0 : -50 }}
-                transition={{ duration: 0.3 }}
-              >
-                {bookingSteps[bookingStep - 1]}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+      {/* Error and Success Messages */}
+      {error && (
+        <div className="healthcoaching-message error">
+          <i className="bi bi-exclamation-circle"></i> {error}
+          <button onClick={() => setError("")}>&times;</button>
+        </div>
+      )}
+      {success && (
+        <div className="healthcoaching-message success">
+          <i className="bi bi-check-circle"></i> {success}
+          <button onClick={() => setSuccess("")}>&times;</button>
         </div>
       )}
 
-      {/* Webinar Modal */}
-      {activeWebinar && (
-        <div className="healthcoaching-webinarmodal">
-          <div className="healthcoaching-webinarmodalcontent">
-            <button
-              className="healthcoaching-modalclose"
-              onClick={() => setActiveWebinar(null)}
-            >
-              <i className="bi bi-x"></i>
-            </button>
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="healthcoaching-loading">
+          <div className="healthcoaching-spinner"></div>
+          <p>Processing...</p>
+        </div>
+      )}
 
-            <div className="healthcoaching-webinarmodalbody">
-              <div className="healthcoaching-webinarmodalmedia">
-                <img src={activeWebinar.thumbnail} alt={activeWebinar.title} />
-                <div className="healthcoaching-webinarmodalstats">
-                  <span>
-                    <i className="bi bi-people"></i> {activeWebinar.attendees}{" "}
-                    registered
+      {/* Main Content */}
+      <main className="healthcoaching-main">
+        {/* Navigation Tabs */}
+        <nav className="healthcoaching-nav">
+          <ul>
+            <li>
+              <button
+                className={activeTab === "personal" ? "active" : ""}
+                onClick={() => setActiveTab("personal")}
+              >
+                <i className="bi bi-person"></i> Personal Coaching
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "corporate" ? "active" : ""}
+                onClick={() => setActiveTab("corporate")}
+              >
+                <i className="bi bi-building"></i> Corporate Coaching
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "online" ? "active" : ""}
+                onClick={() => setActiveTab("online")}
+              >
+                <i className="bi bi-laptop"></i> Online Services
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "cluster" ? "active" : ""}
+                onClick={() => setActiveTab("cluster")}
+              >
+                <i className="bi bi-people"></i> Cluster Programs
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "virtual" ? "active" : ""}
+                onClick={() => setActiveTab("virtual")}
+              >
+                <i className="bi bi-camera-video"></i> Virtual Rooms
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "webinar" ? "active" : ""}
+                onClick={() => setActiveTab("webinar")}
+              >
+                <i className="bi bi-cast"></i> Webinars
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "support" ? "active" : ""}
+                onClick={() => setActiveTab("support")}
+              >
+                <i className="bi bi-headset"></i> Customer Care
+              </button>
+            </li>
+          </ul>
+        </nav>
+
+        {/* Tab Content */}
+        <div className="healthcoaching-contentarea">
+          {bookingStep > 0 ? (
+            <div className="healthcoaching-bookingmodal">
+              <div className="healthcoaching-bookingheader">
+                <h2>Book Health Coaching</h2>
+                <button
+                  className="healthcoaching-closebtn"
+                  onClick={() => setBookingStep(0)}
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="healthcoaching-stepper">
+                <div className="healthcoaching-stepprogress">
+                  <div
+                    className="healthcoaching-progressbar"
+                    style={{
+                      width: `${(bookingStep / 5) * 100}%`,
+                    }}
+                  ></div>
+                </div>
+                <div className="healthcoaching-steplabels">
+                  <span className={bookingStep >= 1 ? "active" : ""}>
+                    Service
+                  </span>
+                  <span className={bookingStep >= 2 ? "active" : ""}>
+                    Format
+                  </span>
+                  <span className={bookingStep >= 3 ? "active" : ""}>
+                    Focus
+                  </span>
+                  <span className={bookingStep >= 4 ? "active" : ""}>Time</span>
+                  <span className={bookingStep >= 5 ? "active" : ""}>
+                    Details
                   </span>
                 </div>
               </div>
-              <div className="healthcoaching-webinarmodalinfo">
+              <div className="healthcoaching-bookingcontent">
+                {bookingSteps[bookingStep]}
+              </div>
+            </div>
+          ) : activeWebinar ? (
+            <div className="healthcoaching-webinarmodal">
+              <div className="healthcoaching-webinarmodalheader">
                 <h2>{activeWebinar.title}</h2>
-                <p className="healthcoaching-webinarmodaltime">
-                  <i className="bi bi-calendar"></i> {activeWebinar.date} |{" "}
-                  {activeWebinar.time} ({activeWebinar.duration})
-                </p>
-                <p className="healthcoaching-webinarmodalspeaker">
-                  <i className="bi bi-person"></i> {activeWebinar.speaker}
-                </p>
-
-                <div className="healthcoaching-webinarmodaldesc">
-                  <h3>Webinar Description</h3>
-                  <p>
-                    This interactive session will provide valuable insights into
-                    managing health conditions through lifestyle changes. You'll
-                    learn practical strategies and have the opportunity to ask
-                    questions directly to our expert.
+                <button
+                  className="healthcoaching-closebtn"
+                  onClick={() => setActiveWebinar(null)}
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="healthcoaching-webinarmodalcontent">
+                <div className="healthcoaching-webinardetails">
+                  <img src="/fa1.jpg" alt="Webinar" />
+                  <div className="healthcoaching-webinarmeta">
+                    <p>
+                      <i className="bi bi-calendar"></i> {activeWebinar.date} |{" "}
+                      {activeWebinar.time}
+                    </p>
+                    <p>
+                      <i className="bi bi-clock"></i> {activeWebinar.duration}
+                    </p>
+                    <p>
+                      <i className="bi bi-person"></i> {activeWebinar.speaker}
+                    </p>
+                    <p>
+                      <i className="bi bi-people"></i> {activeWebinar.attendees}{" "}
+                      registered
+                    </p>
+                  </div>
+                  <p className="healthcoaching-webinardescription">
+                    Join this informative session to learn practical strategies
+                    for managing your health through lifestyle changes. Our
+                    expert coach will guide you through evidence-based
+                    approaches that you can implement immediately.
                   </p>
                 </div>
-
                 <form
                   className="healthcoaching-webinarform"
                   onSubmit={handleWebinarRegistration}
                 >
-                  <h3>Register for This Webinar</h3>
+                  <h3>Register for this Webinar</h3>
                   <div className="healthcoaching-formgroup">
-                    <input type="text" placeholder="Full Name" required />
+                    <label>Full Name</label>
+                    <input type="text" name="name" required />
                   </div>
                   <div className="healthcoaching-formgroup">
-                    <input type="email" placeholder="Email Address" required />
+                    <label>Email</label>
+                    <input type="email" name="email" required />
                   </div>
-                  <button type="submit" className="healthcoaching-webinarbtn">
-                    Register Now <i className="bi bi-arrow-right"></i>
+                  <button type="submit" className="healthcoaching-cta">
+                    Register Now
                   </button>
                 </form>
               </div>
             </div>
-          </div>
+          ) : (
+            <>
+              {activeTab === "personal" && personalCoachingContent}
+              {activeTab === "corporate" && corporateCoachingContent}
+              {activeTab === "online" && onlineCoachingContent}
+              {activeTab === "cluster" && clusteredNeedsContent}
+              {activeTab === "virtual" && virtualRoomsContent}
+              {activeTab === "webinar" && webinarContent}
+              {activeTab === "support" && customerCareContent}
+            </>
+          )}
         </div>
-      )}
-
-      {/* Footer */}
-      <footer className="healthcoaching-footer">
-        <div className="healthcoaching-footercontent">
-          <div className="healthcoaching-footersection">
-            <h3>Health Coaching Portal</h3>
-            <p>
-              Helping individuals and organizations achieve optimal health
-              through evidence-based coaching.
-            </p>
-          </div>
-          <div className="healthcoaching-footersection">
-            <h4>Quick Links</h4>
-            <ul>
-              <li>
-                <a href="#">About Us</a>
-              </li>
-              <li>
-                <a href="#">Our Coaches</a>
-              </li>
-              <li>
-                <a href="#">Success Stories</a>
-              </li>
-              <li>
-                <a href="#">Contact</a>
-              </li>
-            </ul>
-          </div>
-          <div className="healthcoaching-footersection">
-            <h4>Contact Info</h4>
-            <p>
-              <i className="bi bi-envelope"></i> info@clinh.org
-            </p>
-            <p>
-              <i className="bi bi-telephone"></i> 0712345789
-            </p>
-            <p>
-              <i className="bi bi-geo-alt"></i> Kenya
-            </p>
-          </div>
-        </div>
-        <div className="healthcoaching-footercopyright">
-          <p>© 2025 Health Coaching Portal. All rights reserved.</p>
-        </div>
-      </footer>
+      </main>
     </div>
   );
 };
