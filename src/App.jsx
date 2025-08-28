@@ -1,6 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-// Add these imports at the top of App.jsx
+
 import "./css/GlobalStyles.css";
 import "./css/AdminDashboard.css";
 import "./css/AuthPages.css";
@@ -13,7 +11,7 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import Education from "./pages/Education";
@@ -37,7 +35,6 @@ import Chatbot from "./components/Chatbot";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 // Wrapper component to scroll to the top on route change
 const ScrollToTop = () => {
@@ -48,23 +45,6 @@ const ScrollToTop = () => {
   }, [location.pathname]);
 
   return null;
-};
-
-// Protected Route Component
-const ProtectedRoute = ({ children, adminOnly = false }) => {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return <div className="loading-spinner">Loading...</div>;
-  }
-
- 
-
-  if (adminOnly && user.role !== "admin") {
-    return <Navigate to="/" />;
-  }
-
-  return children;
 };
 
 function AppContent() {
@@ -97,14 +77,7 @@ function AppContent() {
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute adminOnly={true}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
@@ -113,11 +86,9 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 

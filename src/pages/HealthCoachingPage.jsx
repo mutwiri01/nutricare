@@ -2,7 +2,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../css/HealthCoachingPage.css";
 
@@ -34,7 +33,6 @@ const HealthCoachingPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,43 +49,42 @@ const HealthCoachingPage = () => {
 
   const fetchWebinars = async () => {
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await fetch("/api/webinars", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      // Mock webinar data
+      setWebinars([
+        {
+          id: 1,
+          title: "Managing Diabetes Through Lifestyle Changes",
+          date: "2025-08-15",
+          time: "14:00",
+          duration: "60 mins",
+          speaker: "Dr. Sarah Johnson",
+          thumbnail: "/webinar1.jpg",
+          attendees: 124,
+          status: "upcoming",
         },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setWebinars(data);
-      } else {
-        // Fallback to mock data if API fails
-        setWebinars([
-          {
-            id: 1,
-            title: "Managing Diabetes Through Lifestyle Changes",
-            date: "2025-08-15",
-            time: "14:00",
-            duration: "60 mins",
-            speaker: "Dr. user 1",
-            thumbnail: "/webinar1.jpg",
-            attendees: 124,
-            status: "upcoming",
-          },
-          {
-            id: 2,
-            title: "Workplace Wellness Strategies",
-            date: "2025-08-22",
-            time: "16:00",
-            duration: "45 mins",
-            speaker: "Health Coach ",
-            thumbnail: "/webinar2.jpg",
-            attendees: 87,
-            status: "upcoming",
-          },
-        ]);
-      }
+        {
+          id: 2,
+          title: "Workplace Wellness Strategies",
+          date: "2025-08-22",
+          time: "16:00",
+          duration: "45 mins",
+          speaker: "Health Coach Michael Chen",
+          thumbnail: "/webinar2.jpg",
+          attendees: 87,
+          status: "upcoming",
+        },
+        {
+          id: 3,
+          title: "Stress Management Techniques",
+          date: "2025-09-05",
+          time: "11:00",
+          duration: "50 mins",
+          speaker: "Dr. Emily Rodriguez",
+          thumbnail: "/webinar3.jpg",
+          attendees: 156,
+          status: "upcoming",
+        },
+      ]);
     } catch (error) {
       console.error("Error fetching webinars:", error);
       setError("Failed to load webinars");
@@ -96,35 +93,30 @@ const HealthCoachingPage = () => {
 
   const fetchSupportTickets = async () => {
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await fetch("/api/support-tickets", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      // Mock support ticket data
+      setSupportTickets([
+        {
+          id: 1,
+          subject: "Login issues",
+          status: "resolved",
+          priority: "high",
+          date: "2025-07-01",
         },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSupportTickets(data);
-      } else {
-        // Fallback to mock data
-        setSupportTickets([
-          {
-            id: 1,
-            subject: "Login issues",
-            status: "resolved",
-            priority: "high",
-            date: "2025-07-01",
-          },
-          {
-            id: 2,
-            subject: "Payment question",
-            status: "in-progress",
-            priority: "medium",
-            date: "2025-07-03",
-          },
-        ]);
-      }
+        {
+          id: 2,
+          subject: "Payment question",
+          status: "in-progress",
+          priority: "medium",
+          date: "2025-07-03",
+        },
+        {
+          id: 3,
+          subject: "Session rescheduling",
+          status: "new",
+          priority: "low",
+          date: "2025-07-10",
+        },
+      ]);
     } catch (error) {
       console.error("Error fetching support tickets:", error);
       setError("Failed to load support tickets");
@@ -141,8 +133,15 @@ const HealthCoachingPage = () => {
     setNewTicket((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleNextStep = () => setBookingStep((prev) => prev + 1);
-  const handlePrevStep = () => setBookingStep((prev) => prev - 1);
+  const handleNextStep = () => {
+    setBookingStep((prev) => prev + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePrevStep = () => {
+    setBookingStep((prev) => prev - 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleSubmitBooking = async (e) => {
     e.preventDefault();
@@ -150,22 +149,10 @@ const HealthCoachingPage = () => {
     setError("");
 
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await fetch("/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(bookingData),
-      });
-
-      if (response.ok) {
-        setBookingStep(5); // Success step
-        setSuccess("Booking created successfully!");
-      } else {
-        throw new Error("Booking failed");
-      }
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setBookingStep(5);
+      setSuccess("Booking created successfully!");
     } catch (error) {
       console.error("Booking error:", error);
       setError("Failed to create booking. Please try again.");
@@ -180,24 +167,20 @@ const HealthCoachingPage = () => {
     setError("");
 
     try {
-      const token = localStorage.getItem("authToken");
-      const response = await fetch("/api/support-tickets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newTicket),
-      });
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const newTicketData = {
+        id: Date.now(),
+        subject: newTicket.subject,
+        message: newTicket.message,
+        status: "new",
+        priority: newTicket.priority,
+        date: new Date().toISOString().split("T")[0],
+      };
 
-      if (response.ok) {
-        const ticket = await response.json();
-        setSupportTickets((prev) => [...prev, ticket]);
-        setNewTicket({ subject: "", message: "", priority: "medium" });
-        setSuccess("Support ticket submitted successfully!");
-      } else {
-        throw new Error("Ticket creation failed");
-      }
+      setSupportTickets((prev) => [...prev, newTicketData]);
+      setNewTicket({ subject: "", message: "", priority: "medium" });
+      setSuccess("Support ticket submitted successfully!");
     } catch (error) {
       console.error("Ticket error:", error);
       setError("Failed to create support ticket. Please try again.");
@@ -206,36 +189,16 @@ const HealthCoachingPage = () => {
     }
   };
 
-  const handleWebinarRegistration = async (e) => {
-    e.preventDefault();
+  const handleWebinarRegistration = async (webinarId) => {
     setIsLoading(true);
     setError("");
 
     try {
-      const token = localStorage.getItem("authToken");
-      const formData = new FormData(e.target);
-      const registrationData = {
-        webinarId: activeWebinar.id,
-        name: formData.get("name"),
-        email: formData.get("email"),
-      };
-
-      const response = await fetch("/api/webinar-registrations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(registrationData),
-      });
-
-      if (response.ok) {
-        alert("Registration successful! Details will be emailed to you.");
-        setActiveWebinar(null);
-        setSuccess("Webinar registration successful!");
-      } else {
-        throw new Error("Registration failed");
-      }
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      alert("Registration successful! Details will be emailed to you.");
+      setActiveWebinar(null);
+      setSuccess("Webinar registration successful!");
     } catch (error) {
       console.error("Registration error:", error);
       setError("Failed to register for webinar. Please try again.");
@@ -248,135 +211,183 @@ const HealthCoachingPage = () => {
     navigate("/login");
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  const tabVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
   };
 
-  // Personal Coaching Content
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
+    exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
+  };
+
+  // Content components
   const personalCoachingContent = (
-    <div className="healthcoaching-content">
+    <motion.div
+      variants={tabVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className="healthcoaching-content"
+    >
       <h2>Personal Health Coaching</h2>
       <div className="healthcoaching-textblock">
         <p>
-          Many cases of lifestyle diseases proceed to severe stages or death
-          when they could have been terminated at early stages. Personal health
-          coaching is a sure approach to disrupt progression of disease by
-          addressing the underlying causes through individual lifestyle change.
+          Many cases of lifestyle diseases proceed to severe stages when they
+          could have been terminated early. Personal health coaching addresses
+          underlying causes through individual lifestyle change.
         </p>
         <p>
           This personalized approach offers guidance for behavior and lifestyle
-          change to people with or at risk of one or more chronic health
-          conditions such as diabetes, hypertension, obesity, as well as chronic
-          inflammatory and metabolic conditions.
+          change to people with chronic health conditions such as diabetes,
+          hypertension, obesity, and metabolic conditions.
         </p>
         <p>
-          At the end of the coaching season, clients benefit from knowledge,
-          skills, and confidence on how to manage their conditions. Health
-          coaching motivates patients to self-manage and adopt healthier
-          behaviors with confidence.
+          Clients benefit from knowledge, skills, and confidence to manage their
+          conditions effectively and achieve sustainable health improvements.
         </p>
       </div>
 
       <div className="healthcoaching-featuregrid">
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-heart-pulse"></i>
-          </div>
-          <h3>Chronic Condition Management</h3>
-          <p>
-            Personalized plans for diabetes, hypertension, and other conditions
-          </p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-activity"></i>
-          </div>
-          <h3>Lifestyle Modification</h3>
-          <p>Evidence-based strategies for sustainable behavior change</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-people"></i>
-          </div>
-          <h3>One-on-One Support</h3>
-          <p>Dedicated coach for your entire health journey</p>
-        </div>
+        {[
+          {
+            icon: "bi bi-heart-pulse",
+            title: "Chronic Condition Management",
+            desc: "Personalized plans for diabetes, hypertension, and other conditions",
+          },
+          {
+            icon: "bi bi-activity",
+            title: "Disease Symptoms Tracking and Cause Finding ",
+            desc: "Evidence-based strategies for sustainable behavior change",
+          },
+          {
+            icon: "bi bi-people",
+            title: "Preventive Health Coaching",
+            desc: "Dedicated coach for your entire health journey",
+          },
+          {
+            icon: "bi bi-graph-up",
+            title: "Progress Monitoring",
+            desc: "Regular assessments and measurable results",
+          },
+        ].map((feature, index) => (
+          <motion.div
+            key={index}
+            className="healthcoaching-featurecard"
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className={feature.icon}></i>
+            </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.desc}</p>
+          </motion.div>
+        ))}
       </div>
 
-      <button
+      <motion.button
         className="healthcoaching-cta"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => {
           setBookingData((prev) => ({ ...prev, serviceType: "personal" }));
           setBookingStep(1);
         }}
       >
         Start Personal Coaching
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 
-  // Corporate Coaching Content
   const corporateCoachingContent = (
-    <div className="healthcoaching-content">
+    <motion.div
+      variants={tabVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className="healthcoaching-content"
+    >
       <h2>Corporate Health Coaching</h2>
       <div className="healthcoaching-textblock">
         <p>
-          A healthy workforce guarantees higher productivity. Today's busy and
-          hectic occupational space exposes workers to various health risks,
+          A healthy workforce guarantees higher productivity. Today's busy
+          occupational space exposes workers to various health risks,
           undermining productivity and profits.
         </p>
         <p>
           We offer intervention programs that restore energy and confidence in
           the workplace, helping staff redefine their lifestyles for healthier,
-          more productive living. The interventions address risk factors leading
-          to absenteeism and low performance.
+          more productive living.
+        </p>
+        <p>
+          Our corporate programs are tailored to your organization's specific
+          needs and can be scaled for teams of any size.
         </p>
       </div>
 
       <div className="healthcoaching-featuregrid">
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-briefcase"></i>
-          </div>
-          <h3>Workplace Wellness</h3>
-          <p>Programs tailored to your organization's specific needs</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-graph-up"></i>
-          </div>
-          <h3>Productivity Enhancement</h3>
-          <p>Strategies to reduce absenteeism and improve performance</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-people"></i>
-          </div>
-          <h3>Team Interventions</h3>
-          <p>Group coaching for departments or entire organizations</p>
-        </div>
+        {[
+          {
+            icon: "bi bi-briefcase",
+            title: "Employee Wellness Management",
+            desc: "Programs tailored to your organization's workforce health needs",
+          },
+          {
+            icon: "bi bi-graph-up",
+            title: "Enhancing Workplace Environment",
+            desc: "Creating health friendly workspaces",
+          },
+          {
+            icon: "bi bi-people",
+            title: "Building Effective Teams",
+            desc: "Strategies to improve teamwork",
+          },
+          {
+            icon: "bi bi-bar-chart",
+            title: "ROI Tracking",
+            desc: "Measure the impact of wellness programs on your bottom line",
+          },
+        ].map((feature, index) => (
+          <motion.div
+            key={index}
+            className="healthcoaching-featurecard"
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className={feature.icon}></i>
+            </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.desc}</p>
+          </motion.div>
+        ))}
       </div>
 
-      <button
+      <motion.button
         className="healthcoaching-cta"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => {
           setBookingData((prev) => ({ ...prev, serviceType: "corporate" }));
           setBookingStep(1);
         }}
       >
         Request Corporate Proposal
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 
-  // Online Coaching Content
   const onlineCoachingContent = (
-    <div className="healthcoaching-content">
+    <motion.div
+      variants={tabVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className="healthcoaching-content"
+    >
       <h2>Online Coaching Services</h2>
       <p className="healthcoaching-subtitle">
         Access professional health coaching from anywhere through our digital
@@ -384,175 +395,252 @@ const HealthCoachingPage = () => {
       </p>
 
       <div className="healthcoaching-featuregrid">
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-camera-video"></i>
-          </div>
-          <h3>Video Sessions</h3>
-          <p>Secure video consultations with your health coach</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-chat-square-text"></i>
-          </div>
-          <h3>Messaging Support</h3>
-          <p>Continuous support between sessions</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-phone"></i>
-          </div>
-          <h3>Mobile Access</h3>
-          <p>Full platform access on your mobile device</p>
-        </div>
+        {[
+          {
+            icon: "bi bi-camera-video",
+            title: "Video Sessions",
+            desc: "Secure video consultations with your health coach",
+          },
+          {
+            icon: "bi bi-chat-square-text",
+            title: "Messaging Support",
+            desc: "Continuous support between sessions",
+          },
+          {
+            icon: "bi bi-phone",
+            title: "Mobile Access",
+            desc: "Full platform access on your mobile device",
+          },
+          {
+            icon: "bi bi-cloud",
+            title: "Digital Resources",
+            desc: "Access to health materials and tracking tools",
+          },
+        ].map((feature, index) => (
+          <motion.div
+            key={index}
+            className="healthcoaching-featurecard"
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className={feature.icon}></i>
+            </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.desc}</p>
+          </motion.div>
+        ))}
       </div>
 
-      <button
+      <motion.button
         className="healthcoaching-cta"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => {
           setBookingData((prev) => ({ ...prev, serviceType: "online" }));
           setBookingStep(1);
         }}
       >
         Start Online Coaching
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 
-  // Clustered Needs Content
   const clusteredNeedsContent = (
-    <div className="healthcoaching-content">
+    <motion.div
+      variants={tabVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className="healthcoaching-content"
+    >
       <h2>Cluster-Specific Programs</h2>
       <p className="healthcoaching-subtitle">
         Group coaching for people with similar health conditions and goals
       </p>
 
       <div className="healthcoaching-featuregrid">
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-droplet"></i>
-          </div>
-          <h3>Diabetes Management</h3>
-          <p>For individuals managing type 2 diabetes</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-heart"></i>
-          </div>
-          <h3>Heart Health</h3>
-          <p>For those with hypertension or cardiovascular risks</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-speedometer2"></i>
-          </div>
-          <h3>Weight Management</h3>
-          <p>For individuals working toward sustainable weight loss</p>
-        </div>
+        {[
+          {
+            icon: "bi bi-droplet",
+            title: "Diabetes Management",
+            desc: "For individuals managing type 2 diabetes",
+          },
+          {
+            icon: "bi bi-heart",
+            title: "Heart Health",
+            desc: "For those with hypertension or cardiovascular risks",
+          },
+          {
+            icon: "bi bi-speedometer2",
+            title: "Weight Management",
+            desc: "For individuals working toward sustainable weight loss",
+          },
+          {
+            icon: "bi bi-activity",
+            title: "Stress Management",
+            desc: "Group support for stress reduction techniques",
+          },
+        ].map((feature, index) => (
+          <motion.div
+            key={index}
+            className="healthcoaching-featurecard"
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className={feature.icon}></i>
+            </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.desc}</p>
+          </motion.div>
+        ))}
       </div>
 
-      <button
+      <motion.button
         className="healthcoaching-cta"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => {
           setBookingData((prev) => ({ ...prev, serviceType: "cluster" }));
           setBookingStep(1);
         }}
       >
         Join a Cluster Program
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 
-  // Virtual Rooms Content
   const virtualRoomsContent = (
-    <div className="healthcoaching-content">
+    <motion.div
+      variants={tabVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className="healthcoaching-content"
+    >
       <h2>Virtual Consultation Rooms</h2>
       <p className="healthcoaching-subtitle">
         Secure, private virtual spaces for your coaching sessions
       </p>
 
       <div className="healthcoaching-featuregrid">
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-lock"></i>
-          </div>
-          <h3>Secure Environment</h3>
-          <p>HIPAA-compliant video conferencing</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-file-earmark-medical"></i>
-          </div>
-          <h3>Document Sharing</h3>
-          <p>Securely share health records and plans</p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-calendar-check"></i>
-          </div>
-          <h3>Scheduling Integration</h3>
-          <p>Easy scheduling and reminders</p>
-        </div>
+        {[
+          {
+            icon: "bi bi-lock",
+            title: "Secure Environment",
+            desc: "HIPAA-compliant video conferencing",
+          },
+          {
+            icon: "bi bi-file-earmark-medical",
+            title: "Document Sharing",
+            desc: "Securely share health records and plans",
+          },
+          {
+            icon: "bi bi-calendar-check",
+            title: "Scheduling Integration",
+            desc: "Easy scheduling and reminders",
+          },
+          {
+            icon: "bi bi-record-circle",
+            title: "Session Recording",
+            desc: "Option to record sessions for review",
+          },
+        ].map((feature, index) => (
+          <motion.div
+            key={index}
+            className="healthcoaching-featurecard"
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className={feature.icon}></i>
+            </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.desc}</p>
+          </motion.div>
+        ))}
       </div>
 
       <div className="healthcoaching-roomgrid">
         <div className="healthcoaching-roomcard">
           <h3>General Consultation Room</h3>
-          <p>Available for one-on-one sessions</p>
+          <p>Available for one-on-one sessions with your dedicated coach</p>
           <button className="healthcoaching-roombtn">
             Enter Room <i className="bi bi-box-arrow-in-right"></i>
           </button>
         </div>
         <div className="healthcoaching-roomcard">
           <h3>Group Coaching Room</h3>
-          <p>For cluster program sessions</p>
+          <p>For cluster program sessions and group workshops</p>
           <button className="healthcoaching-roombtn">
             View Schedule <i className="bi bi-calendar"></i>
           </button>
         </div>
+        <div className="healthcoaching-roomcard">
+          <h3>Wellness Workshop Room</h3>
+          <p>Interactive sessions for skill-building and education</p>
+          <button className="healthcoaching-roombtn">
+            Join Workshop <i className="bi bi-people"></i>
+          </button>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 
-  // Customer Care Content
   const customerCareContent = (
-    <div className="healthcoaching-content">
+    <motion.div
+      variants={tabVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className="healthcoaching-content"
+    >
       <h2>Online Support Center</h2>
       <p className="healthcoaching-subtitle">
         We're here to support your health coaching journey
       </p>
 
       <div className="healthcoaching-supportgrid">
-        <div className="healthcoaching-supportcard">
-          <div className="healthcoaching-supporticon">
-            <i className="bi bi-chat-square-text"></i>
+        {[
+          {
+            icon: "bi bi-chat-square-text",
+            title: "Live Chat",
+            desc: "Get immediate assistance during business hours",
+            button: "Start Chat",
+          },
+          {
+            icon: "bi bi-envelope",
+            title: "Email Support",
+            desc: "Response within 24 hours",
+            button: "Email Us",
+          },
+          {
+            icon: "bi bi-telephone",
+            title: "Phone Support",
+            desc: "0712345679 | Mon-Fri, 9am-5pm EST",
+            button: null,
+          },
+          {
+            icon: "bi bi-question-circle",
+            title: "FAQ Center",
+            desc: "Answers to common questions",
+            button: "View FAQs",
+          },
+        ].map((support, index) => (
+          <div key={index} className="healthcoaching-supportcard">
+            <div className="healthcoaching-supporticon">
+              <i className={support.icon}></i>
+            </div>
+            <h3>{support.title}</h3>
+            <p>{support.desc}</p>
+            {support.button && (
+              <button className="healthcoaching-supportbtn">
+                {support.button}
+              </button>
+            )}
           </div>
-          <h3>Live Chat</h3>
-          <p>Get immediate assistance during business hours</p>
-          <button className="healthcoaching-supportbtn">Start Chat</button>
-        </div>
-        <div className="healthcoaching-supportcard">
-          <div className="healthcoaching-supporticon">
-            <i className="bi bi-envelope"></i>
-          </div>
-          <h3>Email Support</h3>
-          <p>Response within 24 hours</p>
-          <button className="healthcoaching-supportbtn">Email Us</button>
-        </div>
-        <div className="healthcoaching-supportcard">
-          <div className="healthcoaching-supporticon">
-            <i className="bi bi-telephone"></i>
-          </div>
-          <h3>Phone Support</h3>
-          <p>0712345679</p>
-          <p>Mon-Fri, 9am-5pm EST</p>
-        </div>
+        ))}
       </div>
 
       <div className="healthcoaching-ticketsection">
@@ -566,6 +654,7 @@ const HealthCoachingPage = () => {
               value={newTicket.subject}
               onChange={handleSupportInputChange}
               required
+              placeholder="What do you need help with?"
             />
           </div>
           <div className="healthcoaching-formgroup">
@@ -576,6 +665,7 @@ const HealthCoachingPage = () => {
               onChange={handleSupportInputChange}
               rows="4"
               required
+              placeholder="Please describe your issue in detail..."
             />
           </div>
           <div className="healthcoaching-formgroup">
@@ -590,32 +680,68 @@ const HealthCoachingPage = () => {
               <option value="high">High</option>
             </select>
           </div>
-          <button type="submit" className="healthcoaching-cta">
+          <motion.button
+            type="submit"
+            className="healthcoaching-cta"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Submit Ticket
             {isLoading && <span className="healthcoaching-spinner"></span>}
-          </button>
+          </motion.button>
         </form>
       </div>
-    </div>
+
+      {supportTickets.length > 0 && (
+        <div className="healthcoaching-ticketlist">
+          <h4>Your Support Tickets</h4>
+          <div className="healthcoaching-ticketgrid">
+            {supportTickets.map((ticket) => (
+              <div key={ticket.id} className="healthcoaching-ticketitem">
+                <div className="healthcoaching-ticketheader">
+                  <h5>{ticket.subject}</h5>
+                  <span
+                    className={`healthcoaching-ticketstatus ${ticket.status}`}
+                  >
+                    {ticket.status}
+                  </span>
+                </div>
+                <div className="healthcoaching-ticketdetails">
+                  <span>Priority: {ticket.priority}</span>
+                  <span>Date: {ticket.date}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </motion.div>
   );
 
-  // Webinar Content
   const webinarContent = (
-    <div className="healthcoaching-content">
+    <motion.div
+      variants={tabVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      className="healthcoaching-content"
+    >
       <h2>Health Coaching Webinars</h2>
       <p className="healthcoaching-subtitle">
-        Live and recorded educational sessions
+        Live and recorded educational sessions with health experts
       </p>
 
       <div className="healthcoaching-webinargrid">
         {webinars.map((webinar) => (
-          <div
+          <motion.div
             key={webinar.id}
             className="healthcoaching-webinarcard"
             onClick={() => setActiveWebinar(webinar)}
+            whileHover={{ y: -5 }}
+            transition={{ duration: 0.2 }}
           >
             <div className="healthcoaching-webinarthumb">
-              <img src="/fa1.jpg" alt="Food Justice" />
+              <img src={webinar.thumbnail || "/fa1.jpg"} alt={webinar.title} />
               <div className="healthcoaching-webinarbadge">
                 {webinar.status}
               </div>
@@ -626,143 +752,188 @@ const HealthCoachingPage = () => {
                 <i className="bi bi-calendar"></i> {webinar.date} |{" "}
                 {webinar.time}
               </p>
+              <p className="healthcoaching-webinarmeta">
+                <i className="bi bi-clock"></i> {webinar.duration}
+              </p>
               <p className="healthcoaching-webinarspeaker">
                 <i className="bi bi-person"></i> {webinar.speaker}
               </p>
-              <button className="healthcoaching-webinarbtn">
+              <p className="healthcoaching-webinarattendees">
+                <i className="bi bi-people"></i> {webinar.attendees} registered
+              </p>
+              <motion.button
+                className="healthcoaching-webinarbtn"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 {webinar.status === "upcoming"
                   ? "Register Now"
                   : "View Recording"}
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </div>
-  );
 
-  // Booking Steps
-  const bookingSteps = [
-    // Step 1 - Service Type
-    <div key="step1" className="healthcoaching-bookingstep">
-      <h3>Select Your Service Type</h3>
-      <div className="healthcoaching-optiongrid">
-        <div
-          className={`healthcoaching-optioncard ${
-            bookingData.serviceType === "personal" ? "active" : ""
-          }`}
-          onClick={() =>
-            setBookingData((prev) => ({ ...prev, serviceType: "personal" }))
-          }
-        >
-          <div className="healthcoaching-optionicon">
-            <i className="bi bi-person"></i>
-          </div>
-          <h4>Personal Coaching</h4>
-          <p>One-on-one health coaching</p>
-        </div>
-        <div
-          className={`healthcoaching-optioncard ${
-            bookingData.serviceType === "corporate" ? "active" : ""
-          }`}
-          onClick={() =>
-            setBookingData((prev) => ({ ...prev, serviceType: "corporate" }))
-          }
-        >
-          <div className="healthcoaching-optionicon">
-            <i className="bi bi-building"></i>
-          </div>
-          <h4>Corporate Coaching</h4>
-          <p>Workplace wellness programs</p>
-        </div>
-        <div
-          className={`healthcoaching-optioncard ${
-            bookingData.serviceType === "online" ? "active" : ""
-          }`}
-          onClick={() =>
-            setBookingData((prev) => ({ ...prev, serviceType: "online" }))
-          }
-        >
-          <div className="healthcoaching-optionicon">
-            <i className="bi bi-laptop"></i>
-          </div>
-          <h4>Online Coaching</h4>
-          <p>Remote coaching sessions</p>
-        </div>
-        <div
-          className={`healthcoaching-optioncard ${
-            bookingData.serviceType === "cluster" ? "active" : ""
-          }`}
-          onClick={() =>
-            setBookingData((prev) => ({ ...prev, serviceType: "cluster" }))
-          }
-        >
-          <div className="healthcoaching-optionicon">
-            <i className="bi bi-people"></i>
-          </div>
-          <h4>Cluster Program</h4>
-          <p>Group coaching for specific conditions</p>
+      <div className="healthcoaching-webinarinfo">
+        <h3>Why Join Our Webinars?</h3>
+        <div className="healthcoaching-textblock">
+          <p>
+            Our webinars provide valuable insights and practical strategies for
+            improving your health and wellbeing. Learn from experienced
+            professionals and connect with others on similar health journeys.
+          </p>
+          <ul>
+            <li>Evidence-based health information</li>
+            <li>Interactive Q&A sessions with experts</li>
+            <li>Practical tips you can implement immediately</li>
+            <li>Community support and networking</li>
+          </ul>
         </div>
       </div>
+    </motion.div>
+  );
+
+  const bookingSteps = [
+    // Step 1 - Service Type
+    <motion.div
+      key="step1"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="healthcoaching-bookingstep"
+    >
+      <h3>Select Your Service Type</h3>
+      <div className="healthcoaching-optiongrid">
+        {[
+          {
+            type: "personal",
+            icon: "bi bi-person",
+            title: "Personal Coaching",
+            desc: "One-on-one health coaching",
+          },
+          {
+            type: "corporate",
+            icon: "bi bi-building",
+            title: "Corporate Coaching",
+            desc: "Workplace wellness programs",
+          },
+          {
+            type: "online",
+            icon: "bi bi-laptop",
+            title: "Online Coaching",
+            desc: "Remote coaching sessions",
+          },
+          {
+            type: "cluster",
+            icon: "bi bi-people",
+            title: "Cluster Program",
+            desc: "Group coaching for specific conditions",
+          },
+        ].map((option) => (
+          <motion.div
+            key={option.type}
+            className={`healthcoaching-optioncard ${
+              bookingData.serviceType === option.type ? "active" : ""
+            }`}
+            onClick={() =>
+              setBookingData((prev) => ({ ...prev, serviceType: option.type }))
+            }
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="healthcoaching-optionicon">
+              <i className={option.icon}></i>
+            </div>
+            <h4>{option.title}</h4>
+            <p>{option.desc}</p>
+          </motion.div>
+        ))}
+      </div>
       <div className="healthcoaching-bookingnav">
-        <button
+        <motion.button
           className="healthcoaching-navbtn next"
           onClick={handleNextStep}
           disabled={!bookingData.serviceType}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           Next <i className="bi bi-arrow-right"></i>
-        </button>
+        </motion.button>
       </div>
-    </div>,
+    </motion.div>,
 
     // Step 2 - Consultation Type
-    <div key="step2" className="healthcoaching-bookingstep">
+    <motion.div
+      key="step2"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="healthcoaching-bookingstep"
+    >
       <h3>Select Consultation Format</h3>
       <div className="healthcoaching-optiongrid">
-        <div
-          className={`healthcoaching-optioncard ${
-            bookingData.consultationType === "virtual" ? "active" : ""
-          }`}
-          onClick={() =>
-            setBookingData((prev) => ({ ...prev, consultationType: "virtual" }))
-          }
-        >
-          <div className="healthcoaching-optionicon">
-            <i className="bi bi-camera-video"></i>
-          </div>
-          <h4>Virtual Session</h4>
-          <p>Video consultation with your coach</p>
-        </div>
-        <div
-          className={`healthcoaching-optioncard ${
-            bookingData.consultationType === "in-person" ? "active" : ""
-          }`}
-          onClick={() =>
-            setBookingData((prev) => ({
-              ...prev,
-              consultationType: "in-person",
-            }))
-          }
-        >
-          <div className="healthcoaching-optionicon">
-            <i className="bi bi-geo-alt"></i>
-          </div>
-          <h4>In-Person</h4>
-          <p>Face-to-face at our location</p>
-        </div>
+        {[
+          {
+            type: "virtual",
+            icon: "bi bi-camera-video",
+            title: "Virtual Session",
+            desc: "Video consultation with your coach",
+          },
+          {
+            type: "in-person",
+            icon: "bi bi-geo-alt",
+            title: "In-Person",
+            desc: "Face-to-face at our location",
+          },
+        ].map((option) => (
+          <motion.div
+            key={option.type}
+            className={`healthcoaching-optioncard ${
+              bookingData.consultationType === option.type ? "active" : ""
+            }`}
+            onClick={() =>
+              setBookingData((prev) => ({
+                ...prev,
+                consultationType: option.type,
+              }))
+            }
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <div className="healthcoaching-optionicon">
+              <i className={option.icon}></i>
+            </div>
+            <h4>{option.title}</h4>
+            <p>{option.desc}</p>
+          </motion.div>
+        ))}
       </div>
       <div className="healthcoaching-bookingnav">
-        <button className="healthcoaching-navbtn prev" onClick={handlePrevStep}>
+        <motion.button
+          className="healthcoaching-navbtn prev"
+          onClick={handlePrevStep}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           <i className="bi bi-arrow-left"></i> Back
-        </button>
-        <button className="healthcoaching-navbtn next" onClick={handleNextStep}>
+        </motion.button>
+        <motion.button
+          className="healthcoaching-navbtn next"
+          onClick={handleNextStep}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           Next <i className="bi bi-arrow-right"></i>
-        </button>
+        </motion.button>
       </div>
-    </div>,
+    </motion.div>,
 
     // Step 3 - Condition/Cluster Selection
-    <div key="step3" className="healthcoaching-bookingstep">
+    <motion.div
+      key="step3"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="healthcoaching-bookingstep"
+    >
       {bookingData.serviceType === "cluster" ? (
         <>
           <h3>Select Your Cluster Group</h3>
@@ -778,6 +949,7 @@ const HealthCoachingPage = () => {
               <option value="hypertension">Hypertension Control</option>
               <option value="weight">Weight Management</option>
               <option value="heart">Heart Health</option>
+              <option value="stress">Stress Management</option>
             </select>
           </div>
         </>
@@ -797,33 +969,48 @@ const HealthCoachingPage = () => {
               <option value="weight">Weight Management</option>
               <option value="heart">Cardiovascular Health</option>
               <option value="stress">Stress Management</option>
+              <option value="nutrition">Nutrition & Diet</option>
+              <option value="fitness">Physical Fitness</option>
               <option value="other">Other Lifestyle Change</option>
             </select>
           </div>
         </>
       )}
       <div className="healthcoaching-bookingnav">
-        <button className="healthcoaching-navbtn prev" onClick={handlePrevStep}>
+        <motion.button
+          className="healthcoaching-navbtn prev"
+          onClick={handlePrevStep}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           <i className="bi bi-arrow-left"></i> Back
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           className="healthcoaching-navbtn next"
           onClick={handleNextStep}
           disabled={
             (bookingData.serviceType === "cluster" && !bookingData.cluster) ||
             (bookingData.serviceType !== "cluster" && !bookingData.condition)
           }
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           Next <i className="bi bi-arrow-right"></i>
-        </button>
+        </motion.button>
       </div>
-    </div>,
+    </motion.div>,
 
     // Step 4 - Date & Time
-    <div key="step4" className="healthcoaching-bookingstep">
+    <motion.div
+      key="step4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="healthcoaching-bookingstep"
+    >
       <h3>Select Your Preferred Time</h3>
       <div className="healthcoaching-datetime">
         <div className="healthcoaching-calendar">
+          <label>Select Date</label>
           <input
             type="date"
             name="date"
@@ -837,70 +1024,93 @@ const HealthCoachingPage = () => {
             <h4>Available Time Slots</h4>
             <div className="healthcoaching-slotgrid">
               {availableTimes.map((time) => (
-                <div
+                <motion.div
                   key={time}
                   className={`healthcoaching-timeslot ${
                     bookingData.time === time ? "selected" : ""
                   }`}
                   onClick={() => setBookingData((prev) => ({ ...prev, time }))}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {time}
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
         )}
       </div>
       <div className="healthcoaching-bookingnav">
-        <button className="healthcoaching-navbtn prev" onClick={handlePrevStep}>
+        <motion.button
+          className="healthcoaching-navbtn prev"
+          onClick={handlePrevStep}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           <i className="bi bi-arrow-left"></i> Back
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           className="healthcoaching-navbtn next"
           onClick={handleNextStep}
           disabled={!bookingData.date || !bookingData.time}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           Next <i className="bi bi-arrow-right"></i>
-        </button>
+        </motion.button>
       </div>
-    </div>,
+    </motion.div>,
 
     // Step 5 - Personal Info
-    <form
+    <motion.form
       key="step5"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       className="healthcoaching-bookingstep"
       onSubmit={handleSubmitBooking}
     >
       <h3>Your Information</h3>
       <div className="healthcoaching-formgrid">
         <div className="healthcoaching-formgroup">
-          <label>Full Name</label>
+          <label>Full Name *</label>
           <input
             type="text"
             name="name"
             value={bookingData.name}
             onChange={handleInputChange}
             required
+            placeholder="Enter your full name"
           />
         </div>
         <div className="healthcoaching-formgroup">
-          <label>Email</label>
+          <label>Email Address *</label>
           <input
             type="email"
             name="email"
             value={bookingData.email}
             onChange={handleInputChange}
             required
+            placeholder="your.email@example.com"
           />
         </div>
         <div className="healthcoaching-formgroup">
-          <label>Phone</label>
+          <label>Phone Number *</label>
           <input
             type="tel"
             name="phone"
             value={bookingData.phone}
             onChange={handleInputChange}
             required
+            placeholder="+1 (555) 123-4567"
+          />
+        </div>
+        <div className="healthcoaching-formgroup">
+          <label>Emergency Contact</label>
+          <input
+            type="tel"
+            name="emergencyPhone"
+            onChange={handleInputChange}
+            placeholder="Optional emergency contact"
           />
         </div>
       </div>
@@ -912,19 +1122,26 @@ const HealthCoachingPage = () => {
           value={bookingData.notes}
           onChange={handleInputChange}
           rows="3"
-          placeholder="Any specific goals or concerns?"
+          placeholder="Any specific goals, concerns, or questions for your coach?"
         />
       </div>
 
       <div className="healthcoaching-bookingnav">
-        <button
+        <motion.button
           className="healthcoaching-navbtn prev"
           onClick={handlePrevStep}
           type="button"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           <i className="bi bi-arrow-left"></i> Back
-        </button>
-        <button className="healthcoaching-navbtn submit" type="submit">
+        </motion.button>
+        <motion.button
+          className="healthcoaching-navbtn submit"
+          type="submit"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           {isLoading ? (
             <>
               Processing... <span className="healthcoaching-spinner"></span>
@@ -934,20 +1151,24 @@ const HealthCoachingPage = () => {
               Confirm Booking <i className="bi bi-check-circle"></i>
             </>
           )}
-        </button>
+        </motion.button>
       </div>
-    </form>,
+    </motion.form>,
 
     // Step 6 - Confirmation
-    <div
+    <motion.div
       key="step6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       className="healthcoaching-bookingstep healthcoaching-confirmation"
     >
       <div className="healthcoaching-successicon">
         <i className="bi bi-check-circle"></i>
       </div>
       <h3>Booking Confirmed!</h3>
-      <p>Your health coaching journey begins now.</p>
+      <p>
+        Your health coaching journey begins now. We're excited to support you!
+      </p>
       <div className="healthcoaching-bookingdetails">
         <p>
           <strong>Service:</strong>{" "}
@@ -971,9 +1192,15 @@ const HealthCoachingPage = () => {
         <p>
           <strong>When:</strong> {bookingData.date} at {bookingData.time}
         </p>
-        <p>Confirmation and details sent to {bookingData.email}</p>
+        <p>
+          <strong>With:</strong> {bookingData.name}
+        </p>
+        <p>
+          Confirmation and detailed instructions have been sent to{" "}
+          {bookingData.email}
+        </p>
       </div>
-      <button
+      <motion.button
         className="healthcoaching-cta"
         onClick={() => {
           setBookingStep(0);
@@ -990,11 +1217,23 @@ const HealthCoachingPage = () => {
             notes: "",
           });
         }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         Book Another Session
-      </button>
-    </div>,
+      </motion.button>
+    </motion.div>,
   ];
+
+  const tabs = {
+    personal: personalCoachingContent,
+    corporate: corporateCoachingContent,
+    online: onlineCoachingContent,
+    cluster: clusteredNeedsContent,
+    virtual: virtualRoomsContent,
+    webinar: webinarContent,
+    support: customerCareContent,
+  };
 
   return (
     <div className="healthcoaching-portal">
@@ -1005,175 +1244,200 @@ const HealthCoachingPage = () => {
           <p>Transforming lives through personalized health coaching</p>
         </div>
         <div className="healthcoaching-userpanel">
-          {user ? (
-            <>
-              <span>Welcome, {user.name || user.email}</span>
-              {user.role === "admin" && (
-                <button
-                  onClick={() => navigate("/admin")}
-                  className="healthcoaching-adminbtn"
-                >
-                  Admin Dashboard
-                </button>
-              )}
-              <button
-                onClick={handleLogout}
-                className="healthcoaching-logoutbtn"
-              >
-                Logout <i className="bi bi-box-arrow-right"></i>
-              </button>
-            </>
-          ) : (
-            <button onClick={handleLogin} className="healthcoaching-loginbtn">
-              Login <i className="bi bi-box-arrow-in-right"></i>
-            </button>
-          )}
+          <motion.button
+            onClick={handleLogin}
+            className="healthcoaching-loginbtn"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Login <i className="bi bi-box-arrow-in-right"></i>
+          </motion.button>
         </div>
       </header>
 
-      {/* Error and Success Messages */}
-      {error && (
-        <div className="healthcoaching-message error">
-          <i className="bi bi-exclamation-circle"></i> {error}
-          <button onClick={() => setError("")}>&times;</button>
-        </div>
-      )}
-      {success && (
-        <div className="healthcoaching-message success">
-          <i className="bi bi-check-circle"></i> {success}
-          <button onClick={() => setSuccess("")}>&times;</button>
-        </div>
-      )}
+      {/* Messages */}
+      <AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="healthcoaching-message error"
+          >
+            <i className="bi bi-exclamation-circle"></i> {error}
+            <button onClick={() => setError("")}>&times;</button>
+          </motion.div>
+        )}
+        {success && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="healthcoaching-message success"
+          >
+            <i className="bi bi-check-circle"></i> {success}
+            <button onClick={() => setSuccess("")}>&times;</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Loading Overlay */}
-      {isLoading && (
-        <div className="healthcoaching-loading">
-          <div className="healthcoaching-spinner"></div>
-          <p>Processing...</p>
-        </div>
-      )}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="healthcoaching-loading"
+          >
+            <div className="healthcoaching-spinner"></div>
+            <p>Processing...</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
       <main className="healthcoaching-main">
         {/* Navigation Tabs */}
         <nav className="healthcoaching-nav">
           <ul>
-            <li>
-              <button
-                className={activeTab === "personal" ? "active" : ""}
-                onClick={() => setActiveTab("personal")}
-              >
-                <i className="bi bi-person"></i> Personal Coaching
-              </button>
-            </li>
-            <li>
-              <button
-                className={activeTab === "corporate" ? "active" : ""}
-                onClick={() => setActiveTab("corporate")}
-              >
-                <i className="bi bi-building"></i> Corporate Coaching
-              </button>
-            </li>
-            <li>
-              <button
-                className={activeTab === "online" ? "active" : ""}
-                onClick={() => setActiveTab("online")}
-              >
-                <i className="bi bi-laptop"></i> Online Services
-              </button>
-            </li>
-            <li>
-              <button
-                className={activeTab === "cluster" ? "active" : ""}
-                onClick={() => setActiveTab("cluster")}
-              >
-                <i className="bi bi-people"></i> Cluster Programs
-              </button>
-            </li>
-            <li>
-              <button
-                className={activeTab === "virtual" ? "active" : ""}
-                onClick={() => setActiveTab("virtual")}
-              >
-                <i className="bi bi-camera-video"></i> Virtual Rooms
-              </button>
-            </li>
-            <li>
-              <button
-                className={activeTab === "webinar" ? "active" : ""}
-                onClick={() => setActiveTab("webinar")}
-              >
-                <i className="bi bi-cast"></i> Webinars
-              </button>
-            </li>
-            <li>
-              <button
-                className={activeTab === "support" ? "active" : ""}
-                onClick={() => setActiveTab("support")}
-              >
-                <i className="bi bi-headset"></i> Customer Care
-              </button>
-            </li>
+            {[
+              {
+                id: "personal",
+                icon: "bi bi-person",
+                label: "Personal Coaching",
+              },
+              {
+                id: "corporate",
+                icon: "bi bi-building",
+                label: "Corporate Coaching",
+              },
+              { id: "online", icon: "bi bi-laptop", label: "Online Services" },
+              {
+                id: "cluster",
+                icon: "bi bi-people",
+                label: "Cluster Programs",
+              },
+              {
+                id: "virtual",
+                icon: "bi bi-camera-video",
+                label: "Virtual Rooms",
+              },
+              { id: "webinar", icon: "bi bi-cast", label: "Webinars" },
+              { id: "support", icon: "bi bi-headset", label: "Customer Care" },
+            ].map((tab) => (
+              <li key={tab.id}>
+                <motion.button
+                  className={activeTab === tab.id ? "active" : ""}
+                  onClick={() => setActiveTab(tab.id)}
+                  whileHover={{ x: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <i className={tab.icon}></i> {tab.label}
+                </motion.button>
+              </li>
+            ))}
           </ul>
         </nav>
 
         {/* Tab Content */}
-        <div className="healthcoaching-contentarea">
-          {bookingStep > 0 ? (
-            <div className="healthcoaching-bookingmodal">
+        <div className="healthcoaching-tabcontent">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={tabVariants}
+            >
+              {tabs[activeTab]}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </main>
+
+      {/* Booking Modal */}
+      <AnimatePresence>
+        {bookingStep > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="healthcoaching-modal"
+          >
+            <motion.div
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="healthcoaching-modalcontent"
+            >
+              <motion.button
+                className="healthcoaching-modalclose"
+                onClick={() => setBookingStep(0)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <i className="bi bi-x-lg"></i>
+              </motion.button>
               <div className="healthcoaching-bookingheader">
-                <h2>Book Health Coaching</h2>
-                <button
-                  className="healthcoaching-closebtn"
-                  onClick={() => setBookingStep(0)}
-                >
-                  &times;
-                </button>
-              </div>
-              <div className="healthcoaching-stepper">
-                <div className="healthcoaching-stepprogress">
+                <h2>Book Health Coaching Session</h2>
+                <div className="healthcoaching-progress">
                   <div
                     className="healthcoaching-progressbar"
-                    style={{
-                      width: `${(bookingStep / 5) * 100}%`,
-                    }}
+                    style={{ width: `${(bookingStep / 5) * 100}%` }}
                   ></div>
                 </div>
-                <div className="healthcoaching-steplabels">
-                  <span className={bookingStep >= 1 ? "active" : ""}>
-                    Service
-                  </span>
-                  <span className={bookingStep >= 2 ? "active" : ""}>
-                    Format
-                  </span>
-                  <span className={bookingStep >= 3 ? "active" : ""}>
-                    Focus
-                  </span>
-                  <span className={bookingStep >= 4 ? "active" : ""}>Time</span>
-                  <span className={bookingStep >= 5 ? "active" : ""}>
-                    Details
-                  </span>
-                </div>
               </div>
-              <div className="healthcoaching-bookingcontent">
-                {bookingSteps[bookingStep]}
-              </div>
-            </div>
-          ) : activeWebinar ? (
-            <div className="healthcoaching-webinarmodal">
-              <div className="healthcoaching-webinarmodalheader">
-                <h2>{activeWebinar.title}</h2>
-                <button
-                  className="healthcoaching-closebtn"
-                  onClick={() => setActiveWebinar(null)}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={bookingStep}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 >
-                  &times;
-                </button>
-              </div>
-              <div className="healthcoaching-webinarmodalcontent">
-                <div className="healthcoaching-webinardetails">
-                  <img src="/fa1.jpg" alt="Webinar" />
-                  <div className="healthcoaching-webinarmeta">
+                  {bookingSteps[bookingStep - 1]}
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Webinar Modal */}
+      <AnimatePresence>
+        {activeWebinar && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="healthcoaching-modal"
+          >
+            <motion.div
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="healthcoaching-modalcontent webinar"
+            >
+              <motion.button
+                className="healthcoaching-modalclose"
+                onClick={() => setActiveWebinar(null)}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <i className="bi bi-x-lg"></i>
+              </motion.button>
+              <div className="healthcoaching-webinarmodal">
+                <div className="healthcoaching-webinarmodalimg">
+                  <img
+                    src={activeWebinar.thumbnail || "/fa1.jpg"}
+                    alt={activeWebinar.title}
+                  />
+                </div>
+                <div className="healthcoaching-webinarmodalinfo">
+                  <h3>{activeWebinar.title}</h3>
+                  <div className="healthcoaching-webinarmodaldetails">
                     <p>
                       <i className="bi bi-calendar"></i> {activeWebinar.date} |{" "}
                       {activeWebinar.time}
@@ -1189,45 +1453,47 @@ const HealthCoachingPage = () => {
                       registered
                     </p>
                   </div>
-                  <p className="healthcoaching-webinardescription">
-                    Join this informative session to learn practical strategies
-                    for managing your health through lifestyle changes. Our
-                    expert coach will guide you through evidence-based
-                    approaches that you can implement immediately.
+                  <p className="healthcoaching-webinardesc">
+                    This webinar will explore evidence-based strategies for
+                    managing health conditions through lifestyle modifications.
+                    Learn practical approaches that you can implement
+                    immediately to improve your wellbeing.
                   </p>
+                  <div className="healthcoaching-webinarmodalactions">
+                    {activeWebinar.status === "upcoming" ? (
+                      <motion.button
+                        className="healthcoaching-cta"
+                        onClick={() =>
+                          handleWebinarRegistration(activeWebinar.id)
+                        }
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Register Now
+                      </motion.button>
+                    ) : (
+                      <motion.button
+                        className="healthcoaching-cta"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Watch Recording
+                      </motion.button>
+                    )}
+                    <motion.button
+                      className="healthcoaching-secondarybtn"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      Add to Calendar
+                    </motion.button>
+                  </div>
                 </div>
-                <form
-                  className="healthcoaching-webinarform"
-                  onSubmit={handleWebinarRegistration}
-                >
-                  <h3>Register for this Webinar</h3>
-                  <div className="healthcoaching-formgroup">
-                    <label>Full Name</label>
-                    <input type="text" name="name" required />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Email</label>
-                    <input type="email" name="email" required />
-                  </div>
-                  <button type="submit" className="healthcoaching-cta">
-                    Register Now
-                  </button>
-                </form>
               </div>
-            </div>
-          ) : (
-            <>
-              {activeTab === "personal" && personalCoachingContent}
-              {activeTab === "corporate" && corporateCoachingContent}
-              {activeTab === "online" && onlineCoachingContent}
-              {activeTab === "cluster" && clusteredNeedsContent}
-              {activeTab === "virtual" && virtualRoomsContent}
-              {activeTab === "webinar" && webinarContent}
-              {activeTab === "support" && customerCareContent}
-            </>
-          )}
-        </div>
-      </main>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

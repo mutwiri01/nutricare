@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -10,38 +11,83 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is logged in on app load
     const token = localStorage.getItem("authToken");
-    const userData = localStorage.getItem("userData");
-
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+    if (token) {
+      // Verify token with backend
+      fetch("/api/v1/auth/verify", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Token verification failed");
+        })
+        .then((data) => {
+          setUser(data.data.user);
+        })
+        .catch((error) => {
+          console.error("Token verification error:", error);
+          localStorage.removeItem("authToken");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      setLoading(false);
     }
-
-    setIsLoading(false);
   }, []);
 
-  const login = (userData, token) => {
-    localStorage.setItem("authToken", token);
-    localStorage.setItem("userData", JSON.stringify(userData));
-    setUser(userData);
+  const login = async (email, password) => {
+    try {
+      const response = await fetch("/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const { token, user } = data.data;
+
+        localStorage.setItem("authToken", token);
+        setUser(user);
+        navigate("/health-coaching");
+        return { success: true };
+      } else {
+        const errorData = await response.json();
+        return { success: false, message: errorData.message || "Login failed" };
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false, message: "Network error. Please try again." };
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("authToken");
-    localStorage.removeItem("userData");
     setUser(null);
+    navigate("/");
   };
 
   const value = {
     user,
-    isLoading,
     login,
     logout,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 };
