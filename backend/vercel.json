@@ -13,6 +13,6 @@
     }
   ],
   "env": {
-    "MONGODB_URI": "@mongodb_uri"
+    "MONGODB_URI": "mongodb+srv://cl1:101clnh@clinh.zr55p1f.mongodb.net/health_coaching"
   }
 }
