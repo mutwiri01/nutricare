@@ -1,15 +1,11 @@
+// Booking.js - Updated with ES Module syntax
 import mongoose from "mongoose";
 
-const bookingSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
+const BookingSchema = new mongoose.Schema({
   serviceType: {
     type: String,
     required: true,
-    enum: ["personal", "corporate", "online", "cluster"],
+    enum: ["personal", "corporate"],
   },
   consultationType: {
     type: String,
@@ -18,8 +14,8 @@ const bookingSchema = new mongoose.Schema({
   },
   cluster: {
     type: String,
-    enum: ["diabetes", "hypertension", "weight", "heart", null],
-    default: null,
+    required: true,
+    enum: ["nutrition", "fitness", "stress", "sleep"],
   },
   date: {
     type: Date,
@@ -29,22 +25,30 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    default: "",
+  },
   condition: {
     type: String,
-    required: function () {
-      return this.serviceType !== "cluster";
-    },
+    default: "",
   },
   notes: {
     type: String,
+    default: "",
   },
   status: {
     type: String,
-    enum: ["pending", "confirmed", "cancelled", "completed"],
-    default: "pending",
-  },
-  meetingLink: {
-    type: String,
+    default: "confirmed",
+    enum: ["confirmed", "cancelled", "completed"],
   },
   createdAt: {
     type: Date,
@@ -52,10 +56,4 @@ const bookingSchema = new mongoose.Schema({
   },
 });
 
-// Add indexes for better performance
-bookingSchema.index({ user: 1 });
-bookingSchema.index({ date: 1 });
-bookingSchema.index({ status: 1 });
-
-const Booking = mongoose.model("Booking", bookingSchema);
-export default Booking;
+export default mongoose.model("Booking", BookingSchema);

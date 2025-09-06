@@ -1,15 +1,10 @@
+// Webinar.js - Updated with ES Module syntax
 import mongoose from "mongoose";
 
-const webinarSchema = new mongoose.Schema({
+const WebinarSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "Please provide a webinar title"],
-    trim: true,
-    maxlength: [100, "Title cannot be more than 100 characters"],
-  },
-  description: {
-    type: String,
-    required: [true, "Please provide a description"],
+    required: true,
   },
   date: {
     type: Date,
@@ -22,7 +17,6 @@ const webinarSchema = new mongoose.Schema({
   duration: {
     type: String,
     required: true,
-    default: "60 mins",
   },
   speaker: {
     type: String,
@@ -30,25 +24,24 @@ const webinarSchema = new mongoose.Schema({
   },
   thumbnail: {
     type: String,
-    required: true,
+    default: "",
   },
-  meetingLink: {
+  description: {
     type: String,
-  },
-  attendees: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  status: {
-    type: String,
-    enum: ["upcoming", "live", "completed", "cancelled"],
-    default: "upcoming",
+    default: "",
   },
   maxAttendees: {
     type: Number,
     default: 100,
+  },
+  currentAttendees: {
+    type: Number,
+    default: 0,
+  },
+  status: {
+    type: String,
+    default: "upcoming",
+    enum: ["upcoming", "live", "completed", "cancelled"],
   },
   createdAt: {
     type: Date,
@@ -56,9 +49,6 @@ const webinarSchema = new mongoose.Schema({
   },
 });
 
-// Add indexes
-webinarSchema.index({ date: 1 });
-webinarSchema.index({ status: 1 });
-
-const Webinar = mongoose.model("Webinar", webinarSchema);
+// Create and export the model
+const Webinar = mongoose.model("Webinar", WebinarSchema);
 export default Webinar;

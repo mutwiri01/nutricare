@@ -1,18 +1,31 @@
 /* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+// db.js - Updated with ES Module syntax
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 
+// Load environment variables
+dotenv.config();
+
+// Set strictQuery option to suppress deprecation warning
+mongoose.set("strictQuery", true);
+
+// Define connectDB function to establish connection with MongoDB
 const connectDB = async () => {
   try {
-    // Use the MONGO_URI directly, not DB_NAME separately
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    // Connect to MongoDB using the connection URL from environment variables
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    // Log a success message upon successful connection
+    console.log(` DATABASE CONNECTED`);
   } catch (error) {
+    // Log an error message if connection fails
     console.error(`Error: ${error.message}`);
     process.exit(1);
   }
 };
 
+// Export the connectDB function to make it accessible from other modules
 export default connectDB;

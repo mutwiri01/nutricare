@@ -1,767 +1,930 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
- 
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import "../css/AdminDashboard.css";
 
-const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [users, setUsers] = useState([]);
+const AdminDashboard = ({ apiBaseUrl }) => {
+  const API_BASE_URL = apiBaseUrl || "http://localhost:5000/api";
+  const [activeTab, setActiveTab] = useState("bookings");
   const [bookings, setBookings] = useState([]);
   const [webinars, setWebinars] = useState([]);
-  const [supportTickets, setSupportTickets] = useState([]);
-  const [campaigns, setCampaigns] = useState([]);
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    activeBookings: 0,
-    revenue: 0,
-    webinarAttendees: 0,
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [editingWebinar, setEditingWebinar] = useState(null);
+  const [showWebinarForm, setShowWebinarForm] = useState(false);
+  const [webinarRegistrations, setWebinarRegistrations] = useState({});
+  const [showRegistrations, setShowRegistrations] = useState(null);
+  const [registrationLoading, setRegistrationLoading] = useState({});
+
+  // New webinar form state
+  const [webinarForm, setWebinarForm] = useState({
+    title: "",
+    date: "",
+    time: "",
+    duration: "",
+    speaker: "",
+    description: "",
+    maxAttendees: 100,
+    status: "upcoming",
   });
 
-  // Fetch data from backend
+  // Mock webinar data for fallback
+  const mockWebinars = [
+    {
+      _id: "1",
+      title: "Managing Diabetes Through Lifestyle Changes",
+      date: "2025-08-15",
+      time: "14:00",
+      duration: "60 mins",
+      speaker: "Dr. Sarah Johnson",
+      description:
+        "Learn how to manage diabetes through proper nutrition and exercise.",
+      currentAttendees: 24,
+      maxAttendees: 100,
+      status: "upcoming",
+    },
+    {
+      _id: "2",
+      title: "Workplace Wellness Strategies",
+      date: "2025-08-22",
+      time: "16:00",
+      duration: "45 mins",
+      speaker: "Health Coach Michael Chen",
+      description: "Effective wellness strategies for corporate environments.",
+      currentAttendees: 17,
+      maxAttendees: 50,
+      status: "upcoming",
+    },
+    {
+      _id: "3",
+      title: "Stress Management Techniques",
+      date: "2025-09-05",
+      time: "11:00",
+      duration: "50 mins",
+      speaker: "Dr. Emily Rodriguez",
+      description: "Practical techniques for managing stress in daily life.",
+      currentAttendees: 42,
+      maxAttendees: 75,
+      status: "upcoming",
+    },
+  ];
+
   useEffect(() => {
-    fetchAdminData();
-  }, []);
+    fetchData();
+  }, [activeTab]);
 
-  const fetchAdminData = async () => {
+  const fetchData = async () => {
+    setIsLoading(true);
     try {
-      // In a real app, these would be actual API calls
-      const token = localStorage.getItem("authToken");
+      if (activeTab === "bookings") {
+        const response = await fetch(`${API_BASE_URL}/bookings`);
+        if (response.ok) {
+          const data = await response.json();
+          setBookings(data);
+        } else {
+          setError("Failed to fetch bookings");
+          // Set empty bookings array if API fails
+          setBookings([]);
+        }
+      } else {
+        try {
+          const response = await fetch(`${API_BASE_URL}/webinars`);
+          if (response.ok) {
+            const data = await response.json();
+            setWebinars(data);
+          } else {
+            // Use mock data if API returns error
+            setWebinars(mockWebinars);
+            setError("Using demo data. Webinars API not available.");
+          }
+        } catch (err) {
+          // Use mock data if API call fails completely
+          setWebinars(mockWebinars);
+          setError("Using demo data. Webinars API not available.");
+        }
+      }
+    } catch (error) {
+      setError("Failed to fetch data");
+      // Set empty arrays if all fails
+      if (activeTab === "bookings") {
+        setBookings([]);
+      } else {
+        setWebinars(mockWebinars);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-      // Mock data for demonstration
-      setUsers([
-        {
-          id: 1,
-          name: "John Doe",
-          email: "john@example.com",
-          role: "client",
-          joinDate: "2025-07-15",
-          status: "active",
-        },
-        {
-          id: 2,
-          name: "Jane Smith",
-          email: "jane@example.com",
-          role: "client",
-          joinDate: "2025-07-20",
-          status: "active",
-        },
-        {
-          id: 3,
-          name: "Acme Corp",
-          email: "hr@acme.com",
-          role: "corporate",
-          joinDate: "2025-06-10",
-          status: "active",
-        },
-      ]);
+  const fetchWebinarRegistrations = async (webinarId) => {
+    setRegistrationLoading((prev) => ({ ...prev, [webinarId]: true }));
+    try {
+      // Try to fetch actual registration data from API
+      const response = await fetch(
+        `${API_BASE_URL}/webinars/${webinarId}/registrations`
+      );
 
-      setBookings([
-        {
-          id: 1,
-          userName: "John Doe",
-          service: "Personal Coaching",
-          date: "2025-08-20",
-          time: "14:00",
-          status: "confirmed",
-        },
-        {
-          id: 2,
-          userName: "Jane Smith",
-          service: "Diabetes Cluster",
-          date: "2025-08-22",
-          time: "10:30",
-          status: "confirmed",
-        },
-        {
-          id: 3,
-          userName: "Acme Corp",
-          service: "Corporate Wellness",
-          date: "2025-08-25",
-          time: "09:00",
-          status: "pending",
-        },
-      ]);
+      if (response.ok) {
+        const registrations = await response.json();
+        setWebinarRegistrations((prev) => ({
+          ...prev,
+          [webinarId]: registrations,
+        }));
+      } else {
+        // Fallback to mock data if API fails
+        const mockRegistrations = [
+          {
+            _id: 1,
+            name: "John Doe",
+            email: "john@example.com",
+            registeredAt: "2025-07-15T10:30:00Z",
+          },
+          {
+            _id: 2,
+            name: "Jane Smith",
+            email: "jane@example.com",
+            registeredAt: "2025-07-14T15:45:00Z",
+          },
+          {
+            _id: 3,
+            name: "Robert Johnson",
+            email: "robert@example.com",
+            registeredAt: "2025-07-13T09:15:00Z",
+          },
+          {
+            _id: 4,
+            name: "Sarah Wilson",
+            email: "sarah@example.com",
+            registeredAt: "2025-07-12T14:20:00Z",
+          },
+          {
+            _id: 5,
+            name: "Michael Brown",
+            email: "michael@example.com",
+            registeredAt: "2025-07-11T11:10:00Z",
+          },
+        ];
 
-      setWebinars([
-        {
-          id: 1,
-          title: "Managing Diabetes Through Lifestyle Changes",
-          date: "2025-08-15",
-          attendees: 124,
-          status: "completed",
-        },
-        {
-          id: 2,
-          title: "Workplace Wellness Strategies",
-          date: "2025-08-22",
-          attendees: 87,
-          status: "upcoming",
-        },
-      ]);
+        setWebinarRegistrations((prev) => ({
+          ...prev,
+          [webinarId]: mockRegistrations,
+        }));
+      }
+    } catch (error) {
+      setError("Failed to fetch registrations");
+      // Set empty array if both API and mock data fail
+      setWebinarRegistrations((prev) => ({
+        ...prev,
+        [webinarId]: [],
+      }));
+    } finally {
+      setRegistrationLoading((prev) => ({ ...prev, [webinarId]: false }));
+    }
+  };
 
-      setSupportTickets([
-        {
-          id: 1,
-          subject: "Login issues",
-          user: "john@example.com",
-          status: "resolved",
-          priority: "high",
-          date: "2025-07-01",
-        },
-        {
-          id: 2,
-          subject: "Payment question",
-          user: "jane@example.com",
-          status: "in-progress",
-          priority: "medium",
-          date: "2025-07-03",
-        },
-        {
-          id: 3,
-          subject: "Technical difficulties",
-          user: "acme@example.com",
-          status: "new",
-          priority: "high",
-          date: "2025-08-10",
-        },
-      ]);
+  const handleDeleteBooking = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this booking?"))
+      return;
 
-      setCampaigns([
-        {
-          id: 1,
-          name: "Wellness Campaign",
-          platform: "Facebook",
-          status: "active",
-          budget: "KES 2,000",
-          spend: "KES 1,200",
-          startDate: "2025-06-01",
-          endDate: "2025-08-31",
-        },
-        {
-          id: 2,
-          name: "Corporate Solutions",
-          platform: "LinkedIn",
-          status: "paused",
-          budget: "KES 1,500",
-          spend: "KES 800",
-          startDate: "2025-05-15",
-          endDate: "2025-07-15",
-        },
-      ]);
-
-      setStats({
-        totalUsers: 243,
-        activeBookings: 18,
-        revenue: "KES 56,800",
-        webinarAttendees: 211,
+    try {
+      const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
+        method: "DELETE",
       });
-    } catch (error) {
-      console.error("Error fetching admin data:", error);
-    }
-  };
 
-  const handleStatusUpdate = async (type, id, newStatus) => {
-    try {
-      // In a real app, this would be an API call
-      console.log(`Updating ${type} ${id} to status: ${newStatus}`);
-
-      // Update local state for demo purposes
-      if (type === "booking") {
-        setBookings((prev) =>
-          prev.map((item) =>
-            item.id === id ? { ...item, status: newStatus } : item
-          )
-        );
-      } else if (type === "ticket") {
-        setSupportTickets((prev) =>
-          prev.map((item) =>
-            item.id === id ? { ...item, status: newStatus } : item
-          )
-        );
-      } else if (type === "campaign") {
-        setCampaigns((prev) =>
-          prev.map((item) =>
-            item.id === id ? { ...item, status: newStatus } : item
-          )
-        );
+      if (response.ok) {
+        setBookings(bookings.filter((booking) => booking._id !== id));
+        setSuccess("Booking deleted successfully");
+      } else {
+        setError("Failed to delete booking");
       }
     } catch (error) {
-      console.error("Error updating status:", error);
+      setError("Failed to delete booking");
     }
   };
 
-  const handleDelete = async (type, id) => {
-    try {
-      // In a real app, this would be an API call
-      console.log(`Deleting ${type} with id: ${id}`);
+  const handleDeleteWebinar = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this webinar?"))
+      return;
 
-      // Update local state for demo purposes
-      if (type === "user") {
-        setUsers((prev) => prev.filter((item) => item.id !== id));
-      } else if (type === "webinar") {
-        setWebinars((prev) => prev.filter((item) => item.id !== id));
+    try {
+      const response = await fetch(`${API_BASE_URL}/webinars/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setWebinars(webinars.filter((webinar) => webinar._id !== id));
+        setSuccess("Webinar deleted successfully");
+      } else {
+        // For demo purposes, remove from local state even if API fails
+        setWebinars(webinars.filter((webinar) => webinar._id !== id));
+        setSuccess("Webinar removed from local data (API not available)");
       }
     } catch (error) {
-      console.error("Error deleting item:", error);
+      // For demo purposes, remove from local state even if API fails
+      setWebinars(webinars.filter((webinar) => webinar._id !== id));
+      setSuccess("Webinar removed from local data (API not available)");
     }
   };
 
-  // Dashboard Content
-  const dashboardContent = (
-    <div className="admindash-content">
-      <h2>Admin Dashboard</h2>
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
-      <div className="admindash-statsgrid">
-        <div className="admindash-statscard">
-          <div className="admindash-statsicon users">
-            <i className="bi bi-people"></i>
-          </div>
-          <div className="admindash-statsinfo">
-            <h3>{stats.totalUsers}</h3>
-            <p>Total Users</p>
-          </div>
-        </div>
+      if (response.ok) {
+        setBookings(
+          bookings.map((booking) =>
+            booking._id === id ? { ...booking, status: newStatus } : booking
+          )
+        );
+        setSuccess("Status updated successfully");
+      } else {
+        setError("Failed to update status");
+      }
+    } catch (error) {
+      setError("Failed to update status");
+    }
+  };
 
-        <div className="admindash-statscard">
-          <div className="admindash-statsicon bookings">
-            <i className="bi bi-calendar-check"></i>
-          </div>
-          <div className="admindash-statsinfo">
-            <h3>{stats.activeBookings}</h3>
-            <p>Active Bookings</p>
-          </div>
-        </div>
+  const handleWebinarStatusChange = async (id, newStatus) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/webinars/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
 
-        <div className="admindash-statscard">
-          <div className="admindash-statsicon revenue">
-            <i className="bi bi-currency-exchange"></i>
-          </div>
-          <div className="admindash-statsinfo">
-            <h3>{stats.revenue}</h3>
-            <p>Revenue</p>
-          </div>
-        </div>
+      if (response.ok) {
+        const updatedWebinar = await response.json();
+        setWebinars(
+          webinars.map((webinar) =>
+            webinar._id === id ? updatedWebinar : webinar
+          )
+        );
+        setSuccess("Webinar status updated successfully");
+      } else {
+        // For demo purposes, update local state even if API fails
+        setWebinars(
+          webinars.map((webinar) =>
+            webinar._id === id ? { ...webinar, status: newStatus } : webinar
+          )
+        );
+        setSuccess("Webinar status updated in local data (API not available)");
+      }
+    } catch (error) {
+      // For demo purposes, update local state even if API fails
+      setWebinars(
+        webinars.map((webinar) =>
+          webinar._id === id ? { ...webinar, status: newStatus } : webinar
+        )
+      );
+      setSuccess("Webinar status updated in local data (API not available)");
+    }
+  };
 
-        <div className="admindash-statscard">
-          <div className="admindash-statsicon webinars">
-            <i className="bi bi-camera-video"></i>
-          </div>
-          <div className="admindash-statsinfo">
-            <h3>{stats.webinarAttendees}</h3>
-            <p>Webinar Attendees</p>
-          </div>
-        </div>
-      </div>
+  const handleWebinarFormChange = (e) => {
+    const { name, value } = e.target;
+    setWebinarForm({
+      ...webinarForm,
+      [name]: value,
+    });
+  };
 
-      <div className="admindash-recentactivity">
-        <h3>Recent Activity</h3>
-        <div className="admindash-activitylist">
-          <div className="admindash-activityitem">
-            <div className="admindash-activityicon">
-              <i className="bi bi-person-plus"></i>
-            </div>
-            <div className="admindash-activityinfo">
-              <p>New user registered: Jane Smith</p>
-              <span>2 hours ago</span>
-            </div>
-          </div>
-          <div className="admindash-activityitem">
-            <div className="admindash-activityicon">
-              <i className="bi bi-calendar-event"></i>
-            </div>
-            <div className="admindash-activityinfo">
-              <p>New booking: Corporate Wellness Session</p>
-              <span>5 hours ago</span>
-            </div>
-          </div>
-          <div className="admindash-activityitem">
-            <div className="admindash-activityicon">
-              <i className="bi bi-ticket-detailed"></i>
-            </div>
-            <div className="admindash-activityinfo">
-              <p>Support ticket resolved: Login issues</p>
-              <span>Yesterday</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const handleCreateWebinar = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  // Users Management Content
-  const usersContent = (
-    <div className="admindash-content">
-      <div className="admindash-contentheader">
-        <h2>User Management</h2>
-        <button className="admindash-addbtn">
-          <i className="bi bi-plus"></i> Add User
-        </button>
-      </div>
+    try {
+      const response = await fetch(`${API_BASE_URL}/webinars`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(webinarForm),
+      });
 
-      <div className="admindash-tablecontainer">
-        <table className="admindash-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Join Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>
-                  <span className={`admindash-rolebadge ${user.role}`}>
-                    {user.role}
-                  </span>
-                </td>
-                <td>{user.joinDate}</td>
-                <td>
-                  <span className={`admindash-statusbadge ${user.status}`}>
-                    {user.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="admindash-actionbtns">
-                    <button className="admindash-actionbtn edit">
-                      <i className="bi bi-pencil"></i>
-                    </button>
-                    <button
-                      className="admindash-actionbtn delete"
-                      onClick={() => handleDelete("user", user.id)}
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+      if (response.ok) {
+        const newWebinar = await response.json();
+        setWebinars([...webinars, newWebinar]);
+        setSuccess("Webinar created successfully");
+        setShowWebinarForm(false);
+        setWebinarForm({
+          title: "",
+          date: "",
+          time: "",
+          duration: "",
+          speaker: "",
+          description: "",
+          maxAttendees: 100,
+          status: "upcoming",
+        });
+      } else {
+        // For demo purposes, add to local state even if API fails
+        const newWebinar = {
+          _id: Date.now().toString(),
+          ...webinarForm,
+          currentAttendees: 0,
+        };
+        setWebinars([...webinars, newWebinar]);
+        setSuccess("Webinar added to local data (API not available)");
+        setShowWebinarForm(false);
+        setWebinarForm({
+          title: "",
+          date: "",
+          time: "",
+          duration: "",
+          speaker: "",
+          description: "",
+          maxAttendees: 100,
+          status: "upcoming",
+        });
+      }
+    } catch (error) {
+      // For demo purposes, add to local state even if API fails
+      const newWebinar = {
+        _id: Date.now().toString(),
+        ...webinarForm,
+        currentAttendees: 0,
+      };
+      setWebinars([...webinars, newWebinar]);
+      setSuccess("Webinar added to local data (API not available)");
+      setShowWebinarForm(false);
+      setWebinarForm({
+        title: "",
+        date: "",
+        time: "",
+        duration: "",
+        speaker: "",
+        description: "",
+        maxAttendees: 100,
+        status: "upcoming",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // Bookings Management Content
-  const bookingsContent = (
-    <div className="admindash-content">
-      <div className="admindash-contentheader">
-        <h2>Booking Management</h2>
-        <button className="admindash-addbtn">
-          <i className="bi bi-plus"></i> Add Booking
-        </button>
-      </div>
+  const handleEditWebinar = (webinar) => {
+    setEditingWebinar(webinar);
+    setWebinarForm({
+      title: webinar.title,
+      date: webinar.date,
+      time: webinar.time,
+      duration: webinar.duration,
+      speaker: webinar.speaker,
+      description: webinar.description || "",
+      maxAttendees: webinar.maxAttendees,
+      status: webinar.status,
+    });
+    setShowWebinarForm(true);
+  };
 
-      <div className="admindash-tablecontainer">
-        <table className="admindash-table">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Service</th>
-              <th>Date & Time</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.id}>
-                <td>{booking.userName}</td>
-                <td>{booking.service}</td>
-                <td>
-                  {booking.date} at {booking.time}
-                </td>
-                <td>
-                  <select
-                    value={booking.status}
-                    onChange={(e) =>
-                      handleStatusUpdate("booking", booking.id, e.target.value)
-                    }
-                    className={`admindash-statusselect ${booking.status}`}
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </td>
-                <td>
-                  <div className="admindash-actionbtns">
-                    <button className="admindash-actionbtn view">
-                      <i className="bi bi-eye"></i>
-                    </button>
-                    <button className="admindash-actionbtn edit">
-                      <i className="bi bi-pencil"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+  const handleUpdateWebinar = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  // Webinars Management Content
-  const webinarsContent = (
-    <div className="admindash-content">
-      <div className="admindash-contentheader">
-        <h2>Webinar Management</h2>
-        <button className="admindash-addbtn">
-          <i className="bi bi-plus"></i> Create Webinar
-        </button>
-      </div>
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/webinars/${editingWebinar._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(webinarForm),
+        }
+      );
 
-      <div className="admindash-tablecontainer">
-        <table className="admindash-table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Date</th>
-              <th>Attendees</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {webinars.map((webinar) => (
-              <tr key={webinar.id}>
-                <td>{webinar.title}</td>
-                <td>{webinar.date}</td>
-                <td>{webinar.attendees}</td>
-                <td>
-                  <span className={`admindash-statusbadge ${webinar.status}`}>
-                    {webinar.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="admindash-actionbtns">
-                    <button className="admindash-actionbtn view">
-                      <i className="bi bi-eye"></i>
-                    </button>
-                    <button className="admindash-actionbtn edit">
-                      <i className="bi bi-pencil"></i>
-                    </button>
-                    <button
-                      className="admindash-actionbtn delete"
-                      onClick={() => handleDelete("webinar", webinar.id)}
-                    >
-                      <i className="bi bi-trash"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+      if (response.ok) {
+        const updatedWebinar = await response.json();
+        setWebinars(
+          webinars.map((w) =>
+            w._id === updatedWebinar._id ? updatedWebinar : w
+          )
+        );
+        setSuccess("Webinar updated successfully");
+        setShowWebinarForm(false);
+        setEditingWebinar(null);
+        setWebinarForm({
+          title: "",
+          date: "",
+          time: "",
+          duration: "",
+          speaker: "",
+          description: "",
+          maxAttendees: 100,
+          status: "upcoming",
+        });
+      } else {
+        // For demo purposes, update local state even if API fails
+        setWebinars(
+          webinars.map((w) =>
+            w._id === editingWebinar._id ? { ...w, ...webinarForm } : w
+          )
+        );
+        setSuccess("Webinar updated in local data (API not available)");
+        setShowWebinarForm(false);
+        setEditingWebinar(null);
+        setWebinarForm({
+          title: "",
+          date: "",
+          time: "",
+          duration: "",
+          speaker: "",
+          description: "",
+          maxAttendees: 100,
+          status: "upcoming",
+        });
+      }
+    } catch (error) {
+      // For demo purposes, update local state even if API fails
+      setWebinars(
+        webinars.map((w) =>
+          w._id === editingWebinar._id ? { ...w, ...webinarForm } : w
+        )
+      );
+      setSuccess("Webinar updated in local data (API not available)");
+      setShowWebinarForm(false);
+      setEditingWebinar(null);
+      setWebinarForm({
+        title: "",
+        date: "",
+        time: "",
+        duration: "",
+        speaker: "",
+        description: "",
+        maxAttendees: 100,
+        status: "upcoming",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // Support Management Content
-  const supportContent = (
-    <div className="admindash-content">
-      <div className="admindash-contentheader">
-        <h2>Support Tickets</h2>
-      </div>
+  const cancelWebinarForm = () => {
+    setShowWebinarForm(false);
+    setEditingWebinar(null);
+    setWebinarForm({
+      title: "",
+      date: "",
+      time: "",
+      duration: "",
+      speaker: "",
+      description: "",
+      maxAttendees: 100,
+      status: "upcoming",
+    });
+  };
 
-      <div className="admindash-tablecontainer">
-        <table className="admindash-table">
-          <thead>
-            <tr>
-              <th>Subject</th>
-              <th>User</th>
-              <th>Date</th>
-              <th>Priority</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {supportTickets.map((ticket) => (
-              <tr key={ticket.id}>
-                <td>{ticket.subject}</td>
-                <td>{ticket.user}</td>
-                <td>{ticket.date}</td>
-                <td>
-                  <span
-                    className={`admindash-prioritybadge ${ticket.priority}`}
-                  >
-                    {ticket.priority}
-                  </span>
-                </td>
-                <td>
-                  <select
-                    value={ticket.status}
-                    onChange={(e) =>
-                      handleStatusUpdate("ticket", ticket.id, e.target.value)
-                    }
-                    className={`admindash-statusselect ${ticket.status}`}
-                  >
-                    <option value="new">New</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="resolved">Resolved</option>
-                  </select>
-                </td>
-                <td>
-                  <div className="admindash-actionbtns">
-                    <button className="admindash-actionbtn view">
-                      <i className="bi bi-eye"></i>
-                    </button>
-                    <button className="admindash-actionbtn edit">
-                      <i className="bi bi-pencil"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+  const exportRegistrations = (webinarId) => {
+    const registrations = webinarRegistrations[webinarId] || [];
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [
+        "Name,Email,Registration Date",
+        ...registrations.map(
+          (r) =>
+            `"${r.name}","${r.email}","${new Date(
+              r.registeredAt
+            ).toLocaleDateString()}"`
+        ),
+      ].join("\n");
 
-  // Campaigns Management Content
-  const campaignsContent = (
-    <div className="admindash-content">
-      <div className="admindash-contentheader">
-        <h2>Advertising Campaigns</h2>
-        <button className="admindash-addbtn">
-          <i className="bi bi-plus"></i> Create Campaign
-        </button>
-      </div>
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `webinar-registrations-${webinarId}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-      <div className="admindash-tablecontainer">
-        <table className="admindash-table">
-          <thead>
-            <tr>
-              <th>Campaign Name</th>
-              <th>Platform</th>
-              <th>Budget</th>
-              <th>Spend</th>
-              <th>Dates</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {campaigns.map((campaign) => (
-              <tr key={campaign.id}>
-                <td>{campaign.name}</td>
-                <td>{campaign.platform}</td>
-                <td>{campaign.budget}</td>
-                <td>{campaign.spend}</td>
-                <td>
-                  {campaign.startDate} to {campaign.endDate}
-                </td>
-                <td>
-                  <select
-                    value={campaign.status}
-                    onChange={(e) =>
-                      handleStatusUpdate(
-                        "campaign",
-                        campaign.id,
-                        e.target.value
-                      )
-                    }
-                    className={`admindash-statusselect ${campaign.status}`}
-                  >
-                    <option value="active">Active</option>
-                    <option value="paused">Paused</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                </td>
-                <td>
-                  <div className="admindash-actionbtns">
-                    <button className="admindash-actionbtn view">
-                      <i className="bi bi-eye"></i>
-                    </button>
-                    <button className="admindash-actionbtn edit">
-                      <i className="bi bi-pencil"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
+  const clearMessages = () => {
+    setError("");
+    setSuccess("");
+  };
+
+  const toggleRegistrations = (webinarId) => {
+    if (showRegistrations === webinarId) {
+      setShowRegistrations(null);
+    } else {
+      setShowRegistrations(webinarId);
+      if (!webinarRegistrations[webinarId]) {
+        fetchWebinarRegistrations(webinarId);
+      }
+    }
+  };
 
   return (
-    <div className="admindash-portal">
-      {/* Sidebar */}
-      <aside className="admindash-sidebar">
-        <div className="admindash-sidebarheader">
-          <h2>Admin Portal</h2>
-        </div>
-
-        <nav className="admindash-sidenav">
+    <div className="admin-dashboard">
+      <header className="admin-header">
+        <h1>Admin Dashboard</h1>
+        <nav className="admin-nav">
           <button
-            className={`admindash-navitem ${
-              activeTab === "dashboard" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("dashboard")}
-          >
-            <i className="bi bi-speedometer2"></i> Dashboard
-          </button>
-          <button
-            className={`admindash-navitem ${
-              activeTab === "users" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("users")}
-          >
-            <i className="bi bi-people"></i> Users
-          </button>
-          <button
-            className={`admindash-navitem ${
-              activeTab === "bookings" ? "active" : ""
-            }`}
+            className={activeTab === "bookings" ? "active" : ""}
             onClick={() => setActiveTab("bookings")}
           >
-            <i className="bi bi-calendar-event"></i> Bookings
+            Bookings
           </button>
           <button
-            className={`admindash-navitem ${
-              activeTab === "webinars" ? "active" : ""
-            }`}
+            className={activeTab === "webinars" ? "active" : ""}
             onClick={() => setActiveTab("webinars")}
           >
-            <i className="bi bi-camera-video"></i> Webinars
-          </button>
-          <button
-            className={`admindash-navitem ${
-              activeTab === "support" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("support")}
-          >
-            <i className="bi bi-headset"></i> Support
-          </button>
-          <button
-            className={`admindash-navitem ${
-              activeTab === "campaigns" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("campaigns")}
-          >
-            <i className="bi bi-megaphone"></i> Campaigns
-          </button>
-          <button className="admindash-navitem">
-            <i className="bi bi-gear"></i> Settings
-          </button>
-          <button className="admindash-navitem logout">
-            <i className="bi bi-box-arrow-right"></i> Logout
+            Webinars
           </button>
         </nav>
-      </aside>
+      </header>
 
-      {/* Main Content */}
-      <main className="admindash-main">
-        <header className="admindash-header">
-          <div className="admindash-headerleft">
-            <h1>
-              {activeTab === "dashboard" && "Dashboard"}
-              {activeTab === "users" && "User Management"}
-              {activeTab === "bookings" && "Booking Management"}
-              {activeTab === "webinars" && "Webinar Management"}
-              {activeTab === "support" && "Support Management"}
-              {activeTab === "campaigns" && "Campaign Management"}
-            </h1>
+      <main className="admin-content">
+        {error && (
+          <div className="admin-message error">
+            <span>{error}</span>
+            <button onClick={clearMessages}>×</button>
           </div>
-          <div className="admindash-headerright">
-            <div className="admindash-search">
-              <input type="text" placeholder="Search..." />
-              <i className="bi bi-search"></i>
-            </div>
-            <div className="admindash-userprofile">
-              <img src="/admin-avatar.jpg" alt="Admin" />
-              <span>Admin User</span>
+        )}
+        {success && (
+          <div className="admin-message success">
+            <span>{success}</span>
+            <button onClick={clearMessages}>×</button>
+          </div>
+        )}
+
+        {activeTab === "bookings" && (
+          <div className="admin-section">
+            <h2>Manage Bookings ({bookings.length})</h2>
+            <div className="admin-table-container">
+              {bookings.length === 0 ? (
+                <p>
+                  No bookings found. {API_BASE_URL}/bookings might not be
+                  available.
+                </p>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Client</th>
+                      <th>Service</th>
+                      <th>Date & Time</th>
+                      <th>Focus Area</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bookings.map((booking) => (
+                      <tr key={booking._id}>
+                        <td>{booking.name}</td>
+                        <td>
+                          {booking.serviceType === "personal"
+                            ? "Personal"
+                            : "Corporate"}
+                        </td>
+                        <td>
+                          {new Date(booking.date).toLocaleDateString()} at{" "}
+                          {booking.time}
+                        </td>
+                        <td>{booking.cluster}</td>
+                        <td>
+                          <select
+                            value={booking.status}
+                            onChange={(e) =>
+                              handleStatusChange(booking._id, e.target.value)
+                            }
+                          >
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="completed">Completed</option>
+                          </select>
+                        </td>
+                        <td>
+                          <button
+                            className="admin-btn delete"
+                            onClick={() => handleDeleteBooking(booking._id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
-        </header>
+        )}
 
-        <div className="admindash-contentarea">
-          <AnimatePresence mode="wait">
-            {activeTab === "dashboard" && (
-              <motion.div
-                key="dashboard"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+        {activeTab === "webinars" && (
+          <div className="admin-section">
+            <div className="admin-section-header">
+              <h2>Manage Webinars ({webinars.length})</h2>
+              <button
+                className="admin-btn primary"
+                onClick={() => setShowWebinarForm(true)}
               >
-                {dashboardContent}
-              </motion.div>
+                + Add New Webinar
+              </button>
+            </div>
+
+            {showWebinarForm && (
+              <div className="admin-form-modal">
+                <div className="admin-form-content">
+                  <h3>
+                    {editingWebinar ? "Edit Webinar" : "Create New Webinar"}
+                  </h3>
+                  <form
+                    onSubmit={
+                      editingWebinar ? handleUpdateWebinar : handleCreateWebinar
+                    }
+                  >
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Title *</label>
+                        <input
+                          type="text"
+                          name="title"
+                          value={webinarForm.title}
+                          onChange={handleWebinarFormChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Speaker *</label>
+                        <input
+                          type="text"
+                          name="speaker"
+                          value={webinarForm.speaker}
+                          onChange={handleWebinarFormChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Date *</label>
+                        <input
+                          type="date"
+                          name="date"
+                          value={webinarForm.date}
+                          onChange={handleWebinarFormChange}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Time *</label>
+                        <input
+                          type="time"
+                          name="time"
+                          value={webinarForm.time}
+                          onChange={handleWebinarFormChange}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Duration *</label>
+                        <input
+                          type="text"
+                          name="duration"
+                          value={webinarForm.duration}
+                          onChange={handleWebinarFormChange}
+                          placeholder="e.g., 60 mins"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Max Attendees *</label>
+                        <input
+                          type="number"
+                          name="maxAttendees"
+                          value={webinarForm.maxAttendees}
+                          onChange={handleWebinarFormChange}
+                          min="1"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label>Description</label>
+                      <textarea
+                        name="description"
+                        value={webinarForm.description}
+                        onChange={handleWebinarFormChange}
+                        rows="3"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Status *</label>
+                      <select
+                        name="status"
+                        value={webinarForm.status}
+                        onChange={handleWebinarFormChange}
+                        required
+                      >
+                        <option value="upcoming">Upcoming</option>
+                        <option value="live">Live</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </div>
+
+                    <div className="form-actions">
+                      <button
+                        type="button"
+                        className="admin-btn secondary"
+                        onClick={cancelWebinarForm}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="admin-btn primary"
+                        disabled={isLoading}
+                      >
+                        {isLoading
+                          ? "Processing..."
+                          : editingWebinar
+                          ? "Update Webinar"
+                          : "Create Webinar"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             )}
 
-            {activeTab === "users" && (
-              <motion.div
-                key="users"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {usersContent}
-              </motion.div>
-            )}
+            <div className="admin-table-container">
+              {webinars.length === 0 ? (
+                <p>
+                  No webinars found. {API_BASE_URL}/webinars might not be
+                  available.
+                </p>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Date & Time</th>
+                      <th>Speaker</th>
+                      <th>Attendees</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {webinars.map((webinar) => (
+                      <tr key={webinar._id}>
+                        <td>
+                          <strong>{webinar.title}</strong>
+                        </td>
+                        <td>
+                          {new Date(webinar.date).toLocaleDateString()} at{" "}
+                          {webinar.time}
+                        </td>
+                        <td>{webinar.speaker}</td>
+                        <td>
+                          {webinar.currentAttendees}/{webinar.maxAttendees}
+                        </td>
+                        <td>
+                          <select
+                            value={webinar.status}
+                            onChange={(e) =>
+                              handleWebinarStatusChange(
+                                webinar._id,
+                                e.target.value
+                              )
+                            }
+                          >
+                            <option value="upcoming">Upcoming</option>
+                            <option value="live">Live</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                        </td>
+                        <td>
+                          <div className="action-buttons">
+                            <button
+                              className="admin-btn"
+                              onClick={() => handleEditWebinar(webinar)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="admin-btn"
+                              onClick={() => toggleRegistrations(webinar._id)}
+                            >
+                              {showRegistrations === webinar._id
+                                ? "Hide Reg"
+                                : "View Reg"}
+                            </button>
+                            <button
+                              className="admin-btn delete"
+                              onClick={() => handleDeleteWebinar(webinar._id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
 
-            {activeTab === "bookings" && (
-              <motion.div
-                key="bookings"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {bookingsContent}
-              </motion.div>
-            )}
+              {/* Registration Panels */}
+              {webinars.map(
+                (webinar) =>
+                  showRegistrations === webinar._id && (
+                    <div
+                      key={`reg-${webinar._id}`}
+                      className="registrations-panel"
+                    >
+                      <div className="registrations-header">
+                        <h3>Registrations for: {webinar.title}</h3>
+                        <button
+                          className="close-registrations"
+                          onClick={() => setShowRegistrations(null)}
+                        >
+                          ×
+                        </button>
+                      </div>
 
-            {activeTab === "webinars" && (
-              <motion.div
-                key="webinars"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {webinarsContent}
-              </motion.div>
-            )}
+                      {registrationLoading[webinar._id] ? (
+                        <div className="loading-registrations">
+                          <p>Loading registrations...</p>
+                        </div>
+                      ) : webinarRegistrations[webinar._id] ? (
+                        <>
+                          <div className="registrations-summary">
+                            <p>
+                              Total Registrations:{" "}
+                              {webinarRegistrations[webinar._id].length}
+                            </p>
+                            <button
+                              className="admin-btn secondary"
+                              onClick={() => exportRegistrations(webinar._id)}
+                            >
+                              Export to CSV
+                            </button>
+                          </div>
 
-            {activeTab === "support" && (
-              <motion.div
-                key="support"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {supportContent}
-              </motion.div>
-            )}
+                          <div className="registrations-table-container">
+                            <table className="registrations-table">
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Email</th>
+                                  <th>Registration Date</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {webinarRegistrations[webinar._id].map(
+                                  (reg) => (
+                                    <tr key={reg._id || reg.id}>
+                                      <td>{reg.name}</td>
+                                      <td>{reg.email}</td>
+                                      <td>
+                                        {new Date(
+                                          reg.registeredAt
+                                        ).toLocaleDateString()}
+                                      </td>
+                                    </tr>
+                                  )
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
 
-            {activeTab === "campaigns" && (
-              <motion.div
-                key="campaigns"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {campaignsContent}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                          {webinarRegistrations[webinar._id].length === 0 && (
+                            <p className="no-registrations">
+                              No registrations found for this webinar.
+                            </p>
+                          )}
+                        </>
+                      ) : (
+                        <div className="loading-registrations">
+                          <p>No registration data available.</p>
+                        </div>
+                      )}
+                    </div>
+                  )
+              )}
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

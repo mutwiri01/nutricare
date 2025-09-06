@@ -1,512 +1,316 @@
-/* Admin Dashboard Styles */
-.admindash-portal {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f5f7f9;
+.admin-dashboard {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    sans-serif;
 }
 
-.admindash-sidebar {
-  width: 280px;
-  background: linear-gradient(
-    180deg,
-    var(--healthcoaching-primary-dark) 0%,
-    var(--healthcoaching-primary) 100%
-  );
-  color: white;
-  padding: 0;
-  position: fixed;
-  height: 100vh;
-  overflow-y: auto;
-  z-index: 100;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.admindash-sidebarheader {
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.admindash-sidebarheader h2 {
-  color: white;
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.admindash-sidenav {
-  padding: 1rem 0;
-}
-
-.admindash-navitem {
-  width: 100%;
-  padding: 1rem 1.5rem;
-  border: none;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.8);
-  text-align: left;
-  cursor: pointer;
-  transition: var(--healthcoaching-transition);
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 0.95rem;
-}
-
-.admindash-navitem:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.admindash-navitem.active {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: white;
-  border-left: 4px solid white;
-}
-
-.admindash-navitem.logout {
-  margin-top: 2rem;
-  color: #ff6b6b;
-}
-
-.admindash-navitem.logout:hover {
-  background-color: rgba(255, 107, 107, 0.1);
-}
-
-.admindash-main {
-  flex: 1;
-  margin-left: 280px;
-  min-height: 100vh;
-}
-
-.admindash-header {
-  background-color: white;
-  padding: 1rem 2rem;
+.admin-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 90;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e1e5e9;
 }
 
-.admindash-headerleft h1 {
-  color: var(--healthcoaching-dark);
+.admin-header h1 {
+  color: #2c3e50;
   margin: 0;
-  font-size: 1.5rem;
 }
 
-.admindash-headerright {
+.admin-nav {
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  gap: 10px;
 }
 
-.admindash-search {
-  position: relative;
-}
-
-.admindash-search input {
-  padding: 0.6rem 1rem 0.6rem 2.5rem;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  width: 250px;
-}
-
-.admindash-search i {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--healthcoaching-gray);
-}
-
-.admindash-userprofile {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
+.admin-nav button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  color: #6c757d;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.admindash-userprofile img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--healthcoaching-primary-light);
+.admin-nav button.active {
+  background-color: #3498db;
+  color: white;
 }
 
-.admindash-userprofile span {
-  font-weight: 500;
-  color: var(--healthcoaching-dark);
+.admin-nav button:hover:not(.active) {
+  background-color: #e9ecef;
 }
 
-.admindash-contentarea {
-  padding: 2rem;
+.admin-content {
+  background: white;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.admindash-content {
-  background-color: white;
-  border-radius: var(--healthcoaching-border-radius);
-  padding: 2rem;
-  box-shadow: var(--healthcoaching-shadow);
-  margin-bottom: 2rem;
-}
-
-.admindash-contentheader {
+.admin-message {
+  padding: 12px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #eee;
 }
 
-.admindash-contentheader h2 {
-  color: var(--healthcoaching-primary);
-  margin: 0;
+.admin-message.error {
+  background-color: #fee;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
 }
 
-.admindash-addbtn {
-  background-color: var(--healthcoaching-primary);
-  color: white;
+.admin-message.success {
+  background-color: #eff8ef;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+.admin-message button {
+  background: none;
   border: none;
-  border-radius: var(--healthcoaching-border-radius-sm);
-  padding: 0.6rem 1.2rem;
-  font-weight: 500;
+  font-size: 18px;
   cursor: pointer;
-  transition: var(--healthcoaching-transition);
+}
+
+.admin-section {
+  margin-bottom: 30px;
+}
+
+.admin-section-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  margin-bottom: 20px;
 }
 
-.admindash-addbtn:hover {
-  background-color: var(--healthcoaching-primary-dark);
-}
-
-/* Stats Grid */
-.admindash-statsgrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.admindash-statscard {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border-radius: var(--healthcoaching-border-radius);
-  padding: 1.5rem;
-  box-shadow: var(--healthcoaching-shadow);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  border-left: 4px solid var(--healthcoaching-primary);
-}
-
-.admindash-statsicon {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-}
-
-.admindash-statsicon.users {
-  background-color: rgba(46, 125, 50, 0.1);
-  color: var(--healthcoaching-primary);
-}
-
-.admindash-statsicon.bookings {
-  background-color: rgba(255, 152, 0, 0.1);
-  color: #ff9800;
-}
-
-.admindash-statsicon.revenue {
-  background-color: rgba(57, 73, 171, 0.1);
-  color: #3949ab;
-}
-
-.admindash-statsicon.webinars {
-  background-color: rgba(156, 39, 176, 0.1);
-  color: #9c27b0;
-}
-
-.admindash-statsinfo h3 {
-  font-size: 1.8rem;
+.admin-section-header h2 {
+  color: #2c3e50;
   margin: 0;
-  color: var(--healthcoaching-dark);
 }
 
-.admindash-statsinfo p {
-  margin: 0;
-  color: var(--healthcoaching-gray);
-  font-size: 0.9rem;
-}
-
-/* Recent Activity */
-.admindash-recentactivity {
-  margin-top: 2rem;
-}
-
-.admindash-activitylist {
-  margin-top: 1rem;
-}
-
-.admindash-activityitem {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
-}
-
-.admindash-activityitem:last-child {
-  border-bottom: none;
-}
-
-.admindash-activityicon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(46, 125, 50, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--healthcoaching-primary);
-}
-
-.admindash-activityinfo p {
-  margin: 0;
-  font-weight: 500;
-}
-
-.admindash-activityinfo span {
-  font-size: 0.8rem;
-  color: var(--healthcoaching-gray);
-}
-
-/* Tables */
-.admindash-tablecontainer {
+.admin-table-container {
   overflow-x: auto;
-  margin-top: 1.5rem;
 }
 
-.admindash-table {
+.admin-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border-radius: var(--healthcoaching-border-radius);
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
 }
 
-.admindash-table th {
-  background-color: #f8f9fa;
-  padding: 1rem;
+.admin-table th,
+.admin-table td {
+  padding: 12px 15px;
   text-align: left;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.admin-table th {
+  background-color: #f8f9fa;
   font-weight: 600;
-  color: var(--healthcoaching-dark);
-  border-bottom: 2px solid #eee;
+  color: #2c3e50;
 }
 
-.admindash-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #eee;
-}
-
-.admindash-table tr:last-child td {
-  border-bottom: none;
-}
-
-.admindash-table tr:hover {
+.admin-table tr:hover {
   background-color: #f8f9fa;
 }
 
-/* Badges */
-.admindash-rolebadge,
-.admindash-statusbadge,
-.admindash-prioritybadge {
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: inline-block;
-}
-
-.admindash-rolebadge.client {
-  background-color: rgba(46, 125, 50, 0.1);
-  color: var(--healthcoaching-primary);
-}
-
-.admindash-rolebadge.corporate {
-  background-color: rgba(57, 73, 171, 0.1);
-  color: #3949ab;
-}
-
-.admindash-rolebadge.admin {
-  background-color: rgba(156, 39, 176, 0.1);
-  color: #9c27b0;
-}
-
-.admindash-statusbadge.active,
-.admindash-statusbadge.confirmed,
-.admindash-statusbadge.upcoming {
-  background-color: rgba(46, 125, 50, 0.1);
-  color: var(--healthcoaching-primary);
-}
-
-.admindash-statusbadge.pending {
-  background-color: rgba(255, 152, 0, 0.1);
-  color: #ff9800;
-}
-
-.admindash-statusbadge.cancelled,
-.admindash-statusbadge.inactive {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #f44336;
-}
-
-.admindash-prioritybadge.high {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #f44336;
-}
-
-.admindash-prioritybadge.medium {
-  background-color: rgba(255, 152, 0, 0.1);
-  color: #ff9800;
-}
-
-.admindash-prioritybadge.low {
-  background-color: rgba(46, 125, 50, 0.1);
-  color: var(--healthcoaching-primary);
-}
-
-/* Status Select */
-.admindash-statusselect {
-  padding: 0.3rem 0.8rem;
+.admin-btn {
+  padding: 8px 12px;
+  border: none;
   border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin: 2px;
+}
+
+.admin-btn.primary {
+  background-color: #3498db;
+  color: white;
+}
+
+.admin-btn.primary:hover {
+  background-color: #2980b9;
+}
+
+.admin-btn.secondary {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.admin-btn.secondary:hover {
+  background-color: #7f8c8d;
+}
+
+.admin-btn.delete {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.admin-btn.delete:hover {
+  background-color: #c0392b;
+}
+
+.admin-btn:hover {
+  opacity: 0.9;
+}
+
+select {
+  padding: 8px;
   border: 1px solid #ddd;
-  font-size: 0.8rem;
+  border-radius: 4px;
   background-color: white;
 }
 
-.admindash-statusselect.active,
-.admindash-statusselect.confirmed {
-  background-color: rgba(46, 125, 50, 0.1);
-  color: var(--healthcoaching-primary);
-  border-color: rgba(46, 125, 50, 0.2);
-}
-
-.admindash-statusselect.pending {
-  background-color: rgba(255, 152, 0, 0.1);
-  color: #ff9800;
-  border-color: rgba(255, 152, 0, 0.2);
-}
-
-/* Action Buttons */
-.admindash-actionbtns {
+/* Form Styles */
+.admin-form-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  gap: 0.5rem;
-}
-
-.admindash-actionbtn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: none;
-  display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-form-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.admin-form-content h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Registrations Panel */
+.registrations-panel {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+  border: 1px solid #e1e5e9;
+}
+
+.registrations-panel h4 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.registrations-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+
+.registrations-table th,
+.registrations-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  font-size: 13px;
+}
+
+.registrations-table th {
+  background-color: #e9ecef;
+}
+
+.close-registrations {
+  background: none;
+  border: none;
+  color: #3498db;
   cursor: pointer;
-  transition: var(--healthcoaching-transition);
-  font-size: 0.9rem;
+  text-decoration: underline;
+  font-size: 13px;
 }
 
-.admindash-actionbtn.view {
-  background-color: rgba(33, 150, 243, 0.1);
-  color: #2196f3;
-}
-
-.admindash-actionbtn.edit {
-  background-color: rgba(255, 152, 0, 0.1);
-  color: #ff9800;
-}
-
-.admindash-actionbtn.delete {
-  background-color: rgba(244, 67, 54, 0.1);
-  color: #f44336;
-}
-
-.admindash-actionbtn:hover {
-  transform: scale(1.1);
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
-  .admindash-sidebar {
-    width: 240px;
-  }
-
-  .admindash-main {
-    margin-left: 240px;
-  }
-}
-
 @media (max-width: 768px) {
-  .admindash-sidebar {
-    width: 100%;
-    position: relative;
-    height: auto;
-  }
-
-  .admindash-main {
-    margin-left: 0;
-  }
-
-  .admindash-header {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .admindash-headerright {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .admindash-search input {
-    width: 200px;
-  }
-
-  .admindash-statsgrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .admindash-contentarea {
-    padding: 1rem;
-  }
-
-  .admindash-content {
-    padding: 1.5rem;
-  }
-
-  .admindash-contentheader {
+  .admin-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 15px;
   }
 
-  .admindash-headerright {
+  .admin-section-header {
     flex-direction: column;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 15px;
   }
 
-  .admindash-search input {
-    width: 100%;
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .admin-btn {
+    font-size: 12px;
+    padding: 6px 10px;
   }
 }

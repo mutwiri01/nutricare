@@ -1,4 +1,3 @@
-
 import "./css/GlobalStyles.css";
 import "./css/AdminDashboard.css";
 import "./css/AuthPages.css";
@@ -29,12 +28,13 @@ import PlantProtein from "./pages/PlantProtein";
 import PhysicalEducation from "./pages/PhysicalEducation";
 import AboutUs from "./pages/AboutUs";
 import Advocacy from "./pages/Advocacy";
-import PDFUploader from "./pages/PDFUploader";
-import PdfList from "./PdfList";
-import Chatbot from "./components/Chatbot";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
+
+// API base URL - using a direct value instead of process.env for frontend
+const API_BASE_URL =
+  window._env_?.REACT_APP_API_URL || "http://localhost:5000/api";
 
 // Wrapper component to scroll to the top on route change
 const ScrollToTop = () => {
@@ -67,17 +67,20 @@ function AppContent() {
         <Route path="/health-freedom" element={<HealthFreedom />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/resources" element={<ResourceCenter />} />
-        <Route path="/coaching" element={<HealthCoachingPage />} />
+        <Route
+          path="/coaching"
+          element={<HealthCoachingPage apiBaseUrl={API_BASE_URL} />}
+        />
         <Route path="/plant" element={<PlantProtein />} />
         <Route path="/physical" element={<PhysicalEducation />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/advocacy" element={<Advocacy />} />
-        <Route path="/listpdf" element={<PdfList />} />
-        <Route path="/uploadpdf" element={<PDFUploader />} />
-        <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/admin"
+          element={<AdminDashboard apiBaseUrl={API_BASE_URL} />}
+        />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
