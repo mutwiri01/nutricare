@@ -1,23 +1,13 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-// server.js - Updated with ES Module syntax for Vercel
+// server.js - Optimized for Vercel serverless functions
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// Import routes
-import bookingRoutes from "./routes/bookings.js";
-import webinarRoutes from "./routes/webinars.js";
 
 // Load environment variables
 dotenv.config();
-
-// Define __dirname for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,46 +16,76 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-try {
-  // Set strictQuery option to suppress deprecation warning
-  mongoose.set("strictQuery", true);
+// MongoDB Connection - with serverless optimization
+let cachedDb = null;
 
-  // Connect to MongoDB using the connection URL from environment variables
-  mongoose
-    .connect(process.env.MONGODB_URI, {
+async function connectToDatabase() {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  try {
+    // Set strictQuery option to suppress deprecation warning
+    mongoose.set("strictQuery", true);
+
+    // Connect to MongoDB using the connection URL from environment variables
+    const client = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-    })
-    .then(() => {
-      console.log("MongoDB Connected");
-    })
-    .catch((error) => {
-      console.error("MongoDB Connection Error:", error);
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
     });
-} catch (error) {
-  console.error("Error connecting to MongoDB:", error);
+
+    cachedDb = client;
+    console.log("MongoDB Connected successfully");
+    return client;
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    throw error;
+  }
 }
 
-// Routes
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/webinars", webinarRoutes);
-
-// Health check endpoint
-app.get("/api/health", (req, res) => {
-  res.status(200).json({ message: "Server is running!" });
+// Add a simple route for testing
+app.get("/api", (req, res) => {
+  res.json({ message: "API is working!" });
 });
 
-// Handle production - serve static files from React build
-if (process.env.NODE_ENV === "production") {
-  // Set static folder
-  app.use(express.static(path.join(__dirname, "../client/build")));
+// Health check endpoint
+app.get("/api/health", async (req, res) => {
+  try {
+    await connectToDatabase();
+    res.status(200).json({
+      message: "Server is running!",
+      database: "Connected",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server is running but database connection failed",
+      error: error.message,
+    });
+  }
+});
 
-  // Handle React routing, return all requests to React app
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
-  });
-}
+// Import routes dynamically to avoid loading issues
+app.use("/api/bookings", async (req, res, next) => {
+  try {
+    const { default: bookingRoutes } = await import("./routes/bookings.js");
+    return bookingRoutes(req, res, next);
+  } catch (error) {
+    console.error("Error loading bookings routes:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.use("/api/webinars", async (req, res, next) => {
+  try {
+    const { default: webinarRoutes } = await import("./routes/webinars.js");
+    return webinarRoutes(req, res, next);
+  } catch (error) {
+    console.error("Error loading webinars routes:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // For Vercel deployment, we need to export the app as a serverless function
 export default app;
