@@ -1,27 +1,14 @@
 /* eslint-disable no-undef */
-// server.js - Optimized for Vercel serverless functions
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
-
-// Load environment variables
-dotenv.config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware - updated CORS configuration
-app.use(
-  cors({
-    origin: [
-      "https://center4nutritionalhealthcare.vercel.app",
-      "http://localhost:3000", // for local development
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true,
-  })
-);
+// Middleware
+app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection - with serverless optimization
@@ -33,10 +20,7 @@ async function connectToDatabase() {
   }
 
   try {
-    // Set strictQuery option to suppress deprecation warning
     mongoose.set("strictQuery", true);
-
-    // Connect to MongoDB using the connection URL from environment variables
     const client = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -53,12 +37,14 @@ async function connectToDatabase() {
   }
 }
 
-// Add a simple route for testing
+// Connect to MongoDB
+connectToDatabase();
+
+// Define routes
 app.get("/api", (req, res) => {
   res.json({ message: "API is working!" });
 });
 
-// Health check endpoint
 app.get("/api/health", async (req, res) => {
   try {
     await connectToDatabase();
@@ -74,21 +60,15 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Create basic routes to replace the missing imports
 app.post("/api/bookings", async (req, res) => {
   try {
-    // Connect to database
     await connectToDatabase();
-
-    // Basic booking functionality
-    // In a real app, you would save to a database
     const { name, email, date, service } = req.body;
 
     if (!name || !email || !date || !service) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Simulate saving a booking
     const booking = {
       id: Date.now(),
       name,
@@ -110,10 +90,7 @@ app.post("/api/bookings", async (req, res) => {
 
 app.get("/api/webinars", async (req, res) => {
   try {
-    // Connect to database
     await connectToDatabase();
-
-    // Sample webinar data
     const webinars = [
       {
         id: 1,
@@ -136,12 +113,14 @@ app.get("/api/webinars", async (req, res) => {
   }
 });
 
-// For Vercel deployment, we need to export the app as a serverless function
-export default app;
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
-// Only listen locally when not in Vercel environment
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port: ${PORT}`);
-  });
-}
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome to the API' });
+});
+
+// Export the app
+module.exports = app;

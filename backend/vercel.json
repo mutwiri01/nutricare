@@ -2,15 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/index.js",
+      "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/index.js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"]
+      "dest": "server.js"
     }
-  ]
+  ],
+  "env": {
+    "MONGODB_URI": "mongodb+srv://cl1:101clnh@clinh.zr55p1f.mongodb.net/health_coaching"
+  }
 }
