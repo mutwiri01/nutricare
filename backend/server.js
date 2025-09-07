@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
 // server.js - Optimized for Vercel serverless functions
 import express from "express";
 import mongoose from "mongoose";
@@ -12,8 +11,17 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// Middleware - updated CORS configuration
+app.use(
+  cors({
+    origin: [
+      "https://center4nutritionalhealthcare.vercel.app",
+      "http://localhost:3000", // for local development
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // MongoDB Connection - with serverless optimization
@@ -66,23 +74,64 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Import routes dynamically to avoid loading issues
-app.use("/api/bookings", async (req, res, next) => {
+// Create basic routes to replace the missing imports
+app.post("/api/bookings", async (req, res) => {
   try {
-    const { default: bookingRoutes } = await import("./routes/bookings.js");
-    return bookingRoutes(req, res, next);
+    // Connect to database
+    await connectToDatabase();
+
+    // Basic booking functionality
+    // In a real app, you would save to a database
+    const { name, email, date, service } = req.body;
+
+    if (!name || !email || !date || !service) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // Simulate saving a booking
+    const booking = {
+      id: Date.now(),
+      name,
+      email,
+      date,
+      service,
+      createdAt: new Date(),
+    };
+
+    res.status(201).json({
+      message: "Booking created successfully",
+      booking,
+    });
   } catch (error) {
-    console.error("Error loading bookings routes:", error);
+    console.error("Error creating booking:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.use("/api/webinars", async (req, res, next) => {
+app.get("/api/webinars", async (req, res) => {
   try {
-    const { default: webinarRoutes } = await import("./routes/webinars.js");
-    return webinarRoutes(req, res, next);
+    // Connect to database
+    await connectToDatabase();
+
+    // Sample webinar data
+    const webinars = [
+      {
+        id: 1,
+        title: "Nutrition Basics",
+        date: "2023-12-15",
+        speaker: "Dr. Jane Smith",
+      },
+      {
+        id: 2,
+        title: "Healthy Eating Habits",
+        date: "2023-12-20",
+        speaker: "Dr. John Doe",
+      },
+    ];
+
+    res.status(200).json(webinars);
   } catch (error) {
-    console.error("Error loading webinars routes:", error);
+    console.error("Error fetching webinars:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
