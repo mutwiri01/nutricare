@@ -287,106 +287,204 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
   const renderPersonalTab = () => (
     <div className="healthcoaching-content">
-      <h2>Personal Health Coaching</h2>
-      <p className="healthcoaching-subtitle">
-        Get personalized guidance to achieve your health and wellness goals
-      </p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h2>Personal Health Coaching</h2>
+        <p className="healthcoaching-subtitle">
+          A proactive and preventive process that guides clients in experiential
+          lifestyle change that leads to pure health.
+        </p>
 
-      <div className="healthcoaching-featuregrid">
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-person-heart"></i>
-          </div>
-          <h3>One-on-One Sessions</h3>
-          <p>
-            Private consultations with certified health coaches tailored to your
-            specific needs and goals.
-          </p>
+        <div className="healthcoaching-featuregrid">
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-person-heart"></i>
+            </div>
+            <h3>Elimination & Adaptation</h3>
+            <p>
+              Through a guided process, people are empowered to make appropriate
+              health-supporting choices that suit their individual health needs
+              .
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-shield-check"></i>
+            </div>
+            <h3>Disease Disruption</h3>
+            <p>
+              Our approach safeguards well-being and disrupts disease
+              progression by addressing underlying causes through individual
+              lifestyle change.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-journal-medical"></i>
+            </div>
+            <h3>Personalized Solutions</h3>
+            <p>
+              This approach provides solutions for individuals at risk of or
+              living with chronic health challenges like cardiovascular,
+              respiratory, inflammatory, metabolic, or auto-immune disorders .
+            </p>
+          </motion.div>
         </div>
 
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-clipboard2-pulse"></i>
-          </div>
-          <h3>Health Assessments</h3>
-          <p>
-            Comprehensive evaluations to understand your current health status
-            and create personalized plans.
-          </p>
-        </div>
+        <motion.div
+          className="healthcoaching-section-box"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <h3>The Coaching Process</h3>
+          <ul className="healthcoaching-list">
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Enables clients to understand and identify their health issues .
+            </li>
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Helps them set goals to overcome these challenges.
+            </li>
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Develops a simple action plan to guide behavior change.
+            </li>
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Supports clients in appreciating healthy change for long-term
+              sustainability.
+            </li>
+          </ul>
+        </motion.div>
 
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-graph-up-arrow"></i>
-          </div>
-          <h3>Progress Tracking</h3>
-          <p>
-            Monitor your improvements with detailed tracking tools and regular
-            progress reviews.
-          </p>
-        </div>
-      </div>
-
-      <button className="healthcoaching-cta" onClick={() => setBookingStep(0)}>
-        <i className="bi bi-calendar2-check"></i>
-        Book a Session
-      </button>
+        <button
+          className="healthcoaching-cta"
+          onClick={() => setBookingStep(0)}
+        >
+          <i className="bi bi-calendar2-check"></i>
+          Book a Session
+        </button>
+      </motion.div>
     </div>
   );
 
   const renderCorporateTab = () => (
     <div className="healthcoaching-content">
-      <h2>Corporate Wellness Programs</h2>
-      <p className="healthcoaching-subtitle">
-        Enhance employee wellbeing and productivity with our comprehensive
-        corporate wellness solutions
-      </p>
-
-      <div className="healthcoaching-featuregrid">
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-people-fill"></i>
-          </div>
-          <h3>Group Workshops</h3>
-          <p>
-            Interactive sessions on various health topics tailored for your
-            organization's needs.
-          </p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-building"></i>
-          </div>
-          <h3>Workplace Wellness</h3>
-          <p>
-            Comprehensive programs designed to improve employee health and
-            reduce healthcare costs.
-          </p>
-        </div>
-
-        <div className="healthcoaching-featurecard">
-          <div className="healthcoaching-featureicon">
-            <i className="bi bi-bar-chart-line"></i>
-          </div>
-          <h3>ROI Reporting</h3>
-          <p>
-            Detailed analytics showing the impact of wellness programs on
-            productivity and healthcare savings.
-          </p>
-        </div>
-      </div>
-
-      <button
-        className="healthcoaching-cta"
-        onClick={() => {
-          setBookingData({ ...bookingData, serviceType: "corporate" });
-          setBookingStep(0);
-        }}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
       >
-        <i className="bi bi-info-circle"></i>
-        Request Information
-      </button>
+        <h2>Corporate Health Coaching</h2>
+        <p className="healthcoaching-subtitle">
+          Our model provides holistic solutions to workers, creating a healthy
+          workforce that is able to deliver profits at reduced healthcare costs
+          .
+        </p>
+
+        <div className="healthcoaching-featuregrid">
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-graph-up-arrow"></i>
+            </div>
+            <h3>Increased Productivity</h3>
+            <p>
+              Healthier employees are often more productive and have reduced
+              absenteeism.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-piggy-bank"></i>
+            </div>
+            <h3>Reduced Healthcare Costs</h3>
+            <p>
+              By promoting preventative care, coaching helps reduce long-term
+              healthcare costs for both employees and employers.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-heart-pulse"></i>
+            </div>
+            <h3>Improved Employee Health</h3>
+            <p>
+              Employees experience better physical and mental health, leading to
+              increased energy and overall wellness.
+            </p>
+          </motion.div>
+        </div>
+
+        <motion.div
+          className="healthcoaching-section-box"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <h3>Our Approach</h3>
+          <div className="healthcoaching-approach-grid">
+            <div className="healthcoaching-approach-item">
+              <h4>Wellness Strategies</h4>
+              <p>
+                We help staff adopt sustainable lifestyle changes by addressing
+                nutrition, exercise, stress, and work environment tailored to
+                corporate demands.
+              </p>
+            </div>
+            <div className="healthcoaching-approach-item">
+              <h4>Team Building</h4>
+              <p>
+                By coaching teams, we help build personnel capacities and
+                re-engineer teamwork for maximum benefit.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+
+        <button
+          className="healthcoaching-cta"
+          onClick={() => {
+            setBookingData({ ...bookingData, serviceType: "corporate" });
+            setBookingStep(0);
+          }}
+        >
+          <i className="bi bi-info-circle"></i>
+          Request Information
+        </button>
+      </motion.div>
     </div>
   );
 
@@ -481,7 +579,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               onClick={() => handleJoinWebinar(webinar._id)}
               disabled={webinar.currentAttendees >= webinar.maxAttendees}
             >
-              <i className="bi bi-play-circle"></i>
+              <i className="bi bi-play-circle"></i>{" "}
               {webinar.currentAttendees >= webinar.maxAttendees
                 ? "Webinar Full"
                 : "Register Now"}
@@ -530,7 +628,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
       <div style={{ marginTop: "3rem" }}>
         <h3 style={{ marginBottom: "1.5rem", color: "var(--darker)" }}>
-          Submit a Support Ticket
+          {" "}
+          Submit a Support Ticket{" "}
         </h3>
         <div className="healthcoaching-formgroup">
           <label>Subject</label>
@@ -572,8 +671,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           onClick={handleSubmitTicket}
           disabled={isLoading}
         >
-          <i className="bi bi-send"></i>
-          Submit Ticket
+          <i className="bi bi-send"></i> Submit Ticket{" "}
         </button>
       </div>
     </div>
@@ -592,7 +690,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         >
           <i className="bi bi-x-lg"></i>
         </button>
-
         <div className="healthcoaching-bookingheader">
           <h2>Book Health Coaching Session</h2>
           <div className="healthcoaching-progress">
@@ -604,7 +701,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             ></div>
           </div>
         </div>
-
         {bookingStep === 0 && (
           <div className="healthcoaching-bookingstep">
             <h3>Select Service Type</h3>
@@ -621,7 +717,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 <h4>Personal Coaching</h4>
                 <p>One-on-one sessions for individual health goals</p>
               </div>
-
               <div
                 className={`healthcoaching-optioncard ${
                   bookingData.serviceType === "corporate" ? "active" : ""
@@ -635,7 +730,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 <p>Group programs for organizations</p>
               </div>
             </div>
-
             <div className="healthcoaching-formgroup">
               <label>Consultation Type</label>
               <select
@@ -648,496 +742,375 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 <option value="in-person">In-Person</option>
               </select>
             </div>
-
             <div className="healthcoaching-bookingnav">
               <button
                 className="healthcoaching-navbtn prev"
                 onClick={() => setBookingStep(-1)}
               >
-                <i className="bi bi-arrow-left"></i>
-                Cancel
+                <i className="bi bi-arrow-left"></i> Cancel
               </button>
               <button
                 className="healthcoaching-navbtn next"
                 onClick={handleNextStep}
               >
-                Next
-                <i className="bi bi-arrow-right"></i>
+                Next <i className="bi bi-arrow-right"></i>
               </button>
             </div>
           </div>
         )}
-
         {bookingStep === 1 && (
           <div className="healthcoaching-bookingstep">
-            <h3>Select Health Focus Area</h3>
+            <h3>Select Health Cluster</h3>
             <div className="healthcoaching-optiongrid">
               <div
                 className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "nutrition" ? "active" : ""
+                  bookingData.cluster === "cardiovascular" ? "active" : ""
                 }`}
-                onClick={() => handleBookingChange("cluster", "nutrition")}
-              >
-                <div className="healthcoaching-optionicon">
-                  <i className="bi bi-egg-fried"></i>
-                </div>
-                <h4>Nutrition & Diet</h4>
-                <p>Healthy eating habits and meal planning</p>
-              </div>
-
-              <div
-                className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "fitness" ? "active" : ""
-                }`}
-                onClick={() => handleBookingChange("cluster", "fitness")}
+                onClick={() => handleBookingChange("cluster", "cardiovascular")}
               >
                 <div className="healthcoaching-optionicon">
                   <i className="bi bi-heart-pulse"></i>
                 </div>
-                <h4>Fitness & Exercise</h4>
-                <p>Workout plans and physical activity</p>
+                <h4>Cardiovascular Health</h4>
+                <p>Heart health, blood pressure management, and circulation.</p>
               </div>
-
               <div
                 className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "stress" ? "active" : ""
+                  bookingData.cluster === "metabolic" ? "active" : ""
                 }`}
-                onClick={() => handleBookingChange("cluster", "stress")}
+                onClick={() => handleBookingChange("cluster", "metabolic")}
               >
                 <div className="healthcoaching-optionicon">
-                  <i className="bi bi-cloud-sun"></i>
+                  <i className="bi bi-apple"></i>
                 </div>
-                <h4>Stress Management</h4>
-                <p>Mindfulness and relaxation techniques</p>
+                <h4>Metabolic Health</h4>
+                <p>Diabetes, weight management, and nutritional guidance.</p>
               </div>
-
               <div
                 className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "sleep" ? "active" : ""
+                  bookingData.cluster === "mental" ? "active" : ""
                 }`}
-                onClick={() => handleBookingChange("cluster", "sleep")}
+                onClick={() => handleBookingChange("cluster", "mental")}
               >
                 <div className="healthcoaching-optionicon">
-                  <i className="bi bi-moon"></i>
+                  <i className="bi bi-journal-check"></i>
                 </div>
-                <h4>Sleep Optimization</h4>
-                <p>Improving sleep quality and patterns</p>
+                <h4>Mental & Emotional Wellness</h4>
+                <p>Stress management, mindfulness, and emotional balance.</p>
+              </div>
+              <div
+                className={`healthcoaching-optioncard ${
+                  bookingData.cluster === "respiratory" ? "active" : ""
+                }`}
+                onClick={() => handleBookingChange("cluster", "respiratory")}
+              >
+                <div className="healthcoaching-optionicon">
+                  <i className="bi bi-lungs"></i>
+                </div>
+                <h4>Respiratory Health</h4>
+                <p>Asthma and other lung-related conditions.</p>
               </div>
             </div>
-
             <div className="healthcoaching-bookingnav">
               <button
                 className="healthcoaching-navbtn prev"
                 onClick={handlePrevStep}
               >
-                <i className="bi bi-arrow-left"></i>
-                Back
+                <i className="bi bi-arrow-left"></i> Previous
               </button>
               <button
                 className="healthcoaching-navbtn next"
                 onClick={handleNextStep}
               >
-                Next
-                <i className="bi bi-arrow-right"></i>
+                Next <i className="bi bi-arrow-right"></i>
               </button>
             </div>
           </div>
         )}
-
         {bookingStep === 2 && (
           <div className="healthcoaching-bookingstep">
             <h3>Select Date & Time</h3>
-
-            <div className="healthcoaching-datetime">
-              <div className="healthcoaching-calendar">
-                <label>Select Date</label>
-                <input
-                  type="date"
-                  value={bookingData.date}
-                  onChange={(e) => handleBookingChange("date", e.target.value)}
-                  min={new Date().toISOString().split("T")[0]}
-                />
-              </div>
-
-              <div className="healthcoaching-timeslots">
-                <h4>Available Times</h4>
-                <div className="healthcoaching-slotgrid">
-                  {availableTimes.map((time) => (
-                    <div
-                      key={time}
-                      className={`healthcoaching-timeslot ${
-                        bookingData.time === time ? "selected" : ""
-                      }`}
-                      onClick={() => handleBookingChange("time", time)}
-                    >
-                      {time}
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <div className="healthcoaching-formgroup">
+              <label>Date</label>
+              <input
+                type="date"
+                value={bookingData.date}
+                onChange={(e) => handleBookingChange("date", e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+              />
             </div>
-
+            <div className="healthcoaching-formgroup">
+              <label>Time</label>
+              <select
+                value={bookingData.time}
+                onChange={(e) => handleBookingChange("time", e.target.value)}
+              >
+                <option value="">Select a time</option>
+                {availableTimes.map((time, index) => (
+                  <option key={index} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div className="healthcoaching-bookingnav">
               <button
                 className="healthcoaching-navbtn prev"
                 onClick={handlePrevStep}
               >
-                <i className="bi bi-arrow-left"></i>
-                Back
+                <i className="bi bi-arrow-left"></i> Previous
               </button>
               <button
                 className="healthcoaching-navbtn next"
                 onClick={handleNextStep}
               >
-                Next
-                <i className="bi bi-arrow-right"></i>
+                Next <i className="bi bi-arrow-right"></i>
               </button>
             </div>
           </div>
         )}
-
         {bookingStep === 3 && (
           <div className="healthcoaching-bookingstep">
-            <h3>Your Information</h3>
-
-            <div className="healthcoaching-formgrid">
-              <div className="healthcoaching-formgroup">
-                <label>Full Name *</label>
-                <input
-                  type="text"
-                  value={bookingData.name}
-                  onChange={(e) => handleBookingChange("name", e.target.value)}
-                  placeholder="Enter your full name"
-                />
-              </div>
-
-              <div className="healthcoaching-formgroup">
-                <label>Email Address *</label>
-                <input
-                  type="email"
-                  value={bookingData.email}
-                  onChange={(e) => handleBookingChange("email", e.target.value)}
-                  placeholder="your.email@example.com"
-                />
-              </div>
-            </div>
-
+            <h3>Your Details</h3>
             <div className="healthcoaching-formgroup">
-              <label>Phone Number</label>
+              <label>Full Name</label>
+              <input
+                type="text"
+                value={bookingData.name}
+                onChange={(e) => handleBookingChange("name", e.target.value)}
+                placeholder="Your full name"
+              />
+            </div>
+            <div className="healthcoaching-formgroup">
+              <label>Email</label>
+              <input
+                type="email"
+                value={bookingData.email}
+                onChange={(e) => handleBookingChange("email", e.target.value)}
+                placeholder="Your email address"
+              />
+            </div>
+            <div className="healthcoaching-formgroup">
+              <label>Phone Number (Optional)</label>
               <input
                 type="tel"
                 value={bookingData.phone}
                 onChange={(e) => handleBookingChange("phone", e.target.value)}
-                placeholder="(123) 456-7890"
+                placeholder="Your phone number"
               />
             </div>
-
             <div className="healthcoaching-formgroup">
-              <label>Health Condition or Goal</label>
+              <label>Health Condition / Concerns (Optional)</label>
               <textarea
                 rows="3"
                 value={bookingData.condition}
                 onChange={(e) =>
                   handleBookingChange("condition", e.target.value)
                 }
-                placeholder="Please describe your main health concern or goal..."
+                placeholder="e.g., managing high blood pressure, seeking weight loss support"
               ></textarea>
             </div>
-
             <div className="healthcoaching-formgroup">
-              <label>Additional Notes</label>
+              <label>Additional Notes (Optional)</label>
               <textarea
-                rows="2"
+                rows="3"
                 value={bookingData.notes}
                 onChange={(e) => handleBookingChange("notes", e.target.value)}
-                placeholder="Any additional information you'd like to share..."
+                placeholder="Any other details you'd like to share"
               ></textarea>
             </div>
-
             <div className="healthcoaching-bookingnav">
               <button
                 className="healthcoaching-navbtn prev"
                 onClick={handlePrevStep}
               >
-                <i className="bi bi-arrow-left"></i>
-                Back
+                <i className="bi bi-arrow-left"></i> Previous
               </button>
               <button
-                className="healthcoaching-navbtn submit"
+                className="healthcoaching-cta"
                 onClick={handleSubmitBooking}
                 disabled={isLoading}
               >
-                {isLoading ? (
-                  <>
-                    <i className="bi bi-arrow-clockwise"></i>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-check-lg"></i>
-                    Confirm Booking
-                  </>
-                )}
+                <i className="bi bi-calendar2-plus"></i> Confirm Booking
               </button>
             </div>
           </div>
         )}
-
         {bookingStep === 4 && (
-          <div className="healthcoaching-bookingstep">
-            <div className="healthcoaching-confirmation">
-              <div className="healthcoaching-successicon">
-                <i className="bi bi-check-lg"></i>
-              </div>
+          <div className="healthcoaching-bookingstep success-step">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+            >
+              <i className="bi bi-check-circle-fill success-icon"></i>
               <h3>Booking Confirmed!</h3>
-              <p>Your health coaching session has been successfully booked.</p>
-
-              <div className="healthcoaching-bookingdetails">
-                <p>
-                  <strong>Service:</strong>{" "}
-                  {bookingData.serviceType === "personal"
-                    ? "Personal Coaching"
-                    : "Corporate Wellness"}
-                </p>
-                <p>
-                  <strong>Type:</strong>{" "}
-                  {bookingData.consultationType === "virtual"
-                    ? "Virtual Session"
-                    : "In-Person"}
-                </p>
-                <p>
-                  <strong>Focus Area:</strong> {bookingData.cluster}
-                </p>
-                <p>
-                  <strong>Date & Time:</strong> {bookingData.date} at{" "}
-                  {bookingData.time}
-                </p>
-                <p>
-                  <strong>Client:</strong> {bookingData.name}
-                </p>
-              </div>
-
               <p>
-                A confirmation email has been sent to {bookingData.email} with
-                all the details and a calendar invitation.
+                Thank you, your health coaching session has been successfully
+                booked. We have sent a confirmation email to{" "}
+                <strong>{bookingData.email}</strong> with all the details.
               </p>
-
-              <button
-                className="healthcoaching-cta"
-                onClick={() => {
-                  setBookingStep(-1);
-                  setBookingData({
-                    serviceType: "",
-                    consultationType: "virtual",
-                    cluster: "",
-                    date: "",
-                    time: "",
-                    name: "",
-                    email: "",
-                    phone: "",
-                    condition: "",
-                    notes: "",
-                  });
-                }}
+              <div
+                className="healthcoaching-bookingnav"
+                style={{ justifyContent: "center" }}
               >
-                <i className="bi bi-calendar2-plus"></i>
-                Book Another Session
-              </button>
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="healthcoaching-message error">
-            <span>{error}</span>
-            <button onClick={clearMessages}>
-              <i className="bi bi-x"></i>
-            </button>
-          </div>
-        )}
-
-        {success && (
-          <div className="healthcoaching-message success">
-            <span>{success}</span>
-            <button onClick={clearMessages}>
-              <i className="bi bi-x"></i>
-            </button>
+                <button
+                  className="healthcoaching-navbtn"
+                  onClick={() => {
+                    setBookingStep(-1);
+                    setSuccess("");
+                    setBookingData({
+                      serviceType: "",
+                      consultationType: "virtual",
+                      cluster: "",
+                      date: "",
+                      time: "",
+                      name: "",
+                      email: "",
+                      phone: "",
+                      condition: "",
+                      notes: "",
+                    });
+                  }}
+                >
+                  <i className="bi bi-house"></i> Return to Homepage
+                </button>
+              </div>
+            </motion.div>
           </div>
         )}
       </div>
     </div>
   );
 
-  const renderWebinarRegistrationModal = () => {
-    const webinar = webinars.find(
-      (w) => w._id === webinarRegistration.webinarId
-    );
-    if (!webinar) return null;
-
-    return (
-      <div className="healthcoaching-modal">
-        <div className="healthcoaching-modalcontent">
-          <button
-            className="healthcoaching-modalclose"
-            onClick={closeWebinarRegistration}
+  const renderWebinarRegistrationModal = () => (
+    <AnimatePresence>
+      {webinarRegistration.step > 0 && (
+        <motion.div
+          className="healthcoaching-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="healthcoaching-modalcontent"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
           >
-            <i className="bi bi-x-lg"></i>
-          </button>
-
-          <div className="healthcoaching-bookingheader">
-            <h2>Register for Webinar</h2>
-            <p>{webinar.title}</p>
-            <div className="healthcoaching-progress">
-              <div
-                className="healthcoaching-progressbar"
-                style={{
-                  width: `${((webinarRegistration.step + 1) / 3) * 100}%`,
-                }}
-              ></div>
+            <button
+              className="healthcoaching-modalclose"
+              onClick={closeWebinarRegistration}
+            >
+              <i className="bi bi-x-lg"></i>
+            </button>
+            <div className="healthcoaching-bookingheader">
+              <h2>Register for Webinar</h2>
             </div>
-          </div>
-
-          {webinarRegistration.step === 1 && (
-            <div className="healthcoaching-bookingstep">
-              <h3>Your Information</h3>
-              <p>Please provide your details to complete registration</p>
-
-              <div className="healthcoaching-formgroup">
-                <label>Full Name *</label>
-                <input
-                  type="text"
-                  value={webinarRegistration.name}
-                  onChange={(e) =>
-                    handleWebinarRegistrationChange("name", e.target.value)
-                  }
-                  placeholder="Enter your full name"
-                />
-              </div>
-
-              <div className="healthcoaching-formgroup">
-                <label>Email Address *</label>
-                <input
-                  type="email"
-                  value={webinarRegistration.email}
-                  onChange={(e) =>
-                    handleWebinarRegistrationChange("email", e.target.value)
-                  }
-                  placeholder="your.email@example.com"
-                />
-              </div>
-
-              <div className="healthcoaching-bookingnav">
-                <button
-                  className="healthcoaching-navbtn prev"
-                  onClick={closeWebinarRegistration}
-                >
-                  <i className="bi bi-arrow-left"></i>
-                  Cancel
-                </button>
-                <button
-                  className="healthcoaching-navbtn next"
-                  onClick={handleSubmitWebinarRegistration}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <i className="bi bi-arrow-clockwise"></i>
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <i className="bi bi-check-lg"></i>
-                      Complete Registration
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {webinarRegistration.step === 2 && (
-            <div className="healthcoaching-bookingstep">
-              <div className="healthcoaching-confirmation">
-                <div className="healthcoaching-successicon">
-                  <i className="bi bi-check-lg"></i>
-                </div>
-                <h3>Registration Complete!</h3>
-                <p>You have successfully registered for the webinar.</p>
-
-                <div className="healthcoaching-bookingdetails">
-                  <p>
-                    <strong>Webinar:</strong> {webinar.title}
-                  </p>
-                  <p>
-                    <strong>Date & Time:</strong>{" "}
-                    {new Date(webinar.date).toLocaleDateString()} at{" "}
-                    {webinar.time}
-                  </p>
-                  <p>
-                    <strong>Duration:</strong> {webinar.duration}
-                  </p>
-                  <p>
-                    <strong>Attendee:</strong> {webinarRegistration.name}
-                  </p>
-                </div>
-
+            {webinarRegistration.step === 1 && (
+              <div className="healthcoaching-bookingstep">
                 <p>
-                  A confirmation email has been sent to{" "}
-                  {webinarRegistration.email} with the webinar details and
-                  joining instructions.
+                  Please provide your details to register for the webinar:{" "}
+                  <strong>
+                    {
+                      webinars.find(
+                        (w) => w._id === webinarRegistration.webinarId
+                      )?.title
+                    }
+                  </strong>
                 </p>
-
-                <button
-                  className="healthcoaching-cta"
-                  onClick={closeWebinarRegistration}
-                >
-                  <i className="bi bi-check-lg"></i>
-                  Close
-                </button>
+                <div className="healthcoaching-formgroup">
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    value={webinarRegistration.name}
+                    onChange={(e) =>
+                      handleWebinarRegistrationChange("name", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="healthcoaching-formgroup">
+                  <label>Email Address</label>
+                  <input
+                    type="email"
+                    value={webinarRegistration.email}
+                    onChange={(e) =>
+                      handleWebinarRegistrationChange("email", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="healthcoaching-bookingnav">
+                  <button
+                    className="healthcoaching-navbtn next"
+                    onClick={handleSubmitWebinarRegistration}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Registering..." : "Register"}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-
-          {error && (
-            <div className="healthcoaching-message error">
-              <span>{error}</span>
-              <button onClick={clearMessages}>
-                <i className="bi bi-x"></i>
-              </button>
-            </div>
-          )}
-
-          {success && (
-            <div className="healthcoaching-message success">
-              <span>{success}</span>
-              <button onClick={clearMessages}>
-                <i className="bi bi-x"></i>
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
+            )}
+            {webinarRegistration.step === 2 && (
+              <div className="healthcoaching-bookingstep success-step">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
+                >
+                  <i className="bi bi-check-circle-fill success-icon"></i>
+                  <h3>Registration Confirmed!</h3>
+                  <p>
+                    You are now registered for the webinar. We've sent a
+                    confirmation email with the access link.
+                  </p>
+                  <div
+                    className="healthcoaching-bookingnav"
+                    style={{ justifyContent: "center" }}
+                  >
+                    <button
+                      className="healthcoaching-navbtn"
+                      onClick={closeWebinarRegistration}
+                    >
+                      <i className="bi bi-arrow-left"></i> Back to Webinars
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 
   return (
     <div className="healthcoaching-portal">
       <header className="healthcoaching-header">
         <div className="healthcoaching-headercontent">
           <h1>Health Coaching Portal</h1>
-          <p>Your journey to better health starts here</p>
+          <p>
+            Your journey to a healthier, happier you starts here. Welcome to
+            Pure Health.
+          </p>
         </div>
         <button
           className="healthcoaching-menubtn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           <i className="bi bi-list"></i>
-          Menu
         </button>
       </header>
 
       <main className="healthcoaching-main">
-        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "active" : ""}`}>
+        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "open" : ""}`}>
           <ul>
             <li>
               <button
@@ -1147,7 +1120,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                   setMobileMenuOpen(false);
                 }}
               >
-                <i className="bi bi-person-heart"></i>
+                <i className="bi bi-person-fill"></i>
                 Personal Coaching
               </button>
             </li>
@@ -1160,7 +1133,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 }}
               >
                 <i className="bi bi-buildings"></i>
-                Corporate Wellness
+                Corporate Coaching
               </button>
             </li>
             <li>
