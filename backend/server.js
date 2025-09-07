@@ -1,8 +1,9 @@
-/* eslint-disable no-undef */
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -113,14 +114,14 @@ app.get("/api/webinars", async (req, res) => {
   }
 });
 
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome to the API' });
+});
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Welcome to the API' });
-});
-
-// Export the app
-module.exports = app;
+// Export the app for Vercel
+export default app;
