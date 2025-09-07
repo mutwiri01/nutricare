@@ -1,9 +1,9 @@
-/* eslint-disable no-undef */
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -22,6 +22,11 @@ async function connectToDatabase() {
   }
 
   try {
+    // Check if MONGODB_URI is defined
+    if (!process.env.MONGODB_URI) {
+      throw new Error("MONGODB_URI environment variable is not defined");
+    }
+
     mongoose.set("strictQuery", true);
     const client = await mongoose.connect(process.env.MONGODB_URI, {
       useNewUrlParser: true,
@@ -39,15 +44,13 @@ async function connectToDatabase() {
   }
 }
 
-// Connect to MongoDB
-connectToDatabase();
-
 // Define routes
 app.get("/", (req, res) => {
-  res.json({ 
+  res.json({
     message: "CNH101 Backend is running successfully!",
     status: "OK",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    mongodb_uri_defined: !!process.env.MONGODB_URI,
   });
 });
 
@@ -61,13 +64,13 @@ app.get("/api/health", async (req, res) => {
     res.status(200).json({
       message: "Server is running!",
       database: "Connected",
-      status: "Healthy"
+      status: "Healthy",
     });
   } catch (error) {
     res.status(500).json({
       message: "Server is running but database connection failed",
       error: error.message,
-      status: "Unhealthy"
+      status: "Unhealthy",
     });
   }
 });
@@ -125,10 +128,11 @@ app.get("/api/webinars", async (req, res) => {
   }
 });
 
-// Start the server
+// Start the server only if not in production (for local development)
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log(`MONGODB_URI defined: ${!!process.env.MONGODB_URI}`);
   });
 }
 
