@@ -1,7 +1,8 @@
-import express from "express";
-import mongoose from "mongoose";
-import cors from "cors";
-import dotenv from "dotenv";
+/* eslint-disable no-undef */
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
 // Load environment variables
 dotenv.config();
@@ -128,13 +129,11 @@ app.get("/api/webinars", async (req, res) => {
   }
 });
 
-// Start the server only if not in production (for local development)
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`MONGODB_URI defined: ${!!process.env.MONGODB_URI}`);
-  });
-}
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`MONGODB_URI defined: ${!!process.env.MONGODB_URI}`);
+});
 
-// Export the app for Vercel
-export default app;
+// Export the app
+module.exports = app;
