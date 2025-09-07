@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -42,6 +43,14 @@ async function connectToDatabase() {
 connectToDatabase();
 
 // Define routes
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "CNH101 Backend is running successfully!",
+    status: "OK",
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.get("/api", (req, res) => {
   res.json({ message: "API is working!" });
 });
@@ -52,11 +61,13 @@ app.get("/api/health", async (req, res) => {
     res.status(200).json({
       message: "Server is running!",
       database: "Connected",
+      status: "Healthy"
     });
   } catch (error) {
     res.status(500).json({
       message: "Server is running but database connection failed",
       error: error.message,
+      status: "Unhealthy"
     });
   }
 });
@@ -114,14 +125,12 @@ app.get("/api/webinars", async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Welcome to the API' });
-});
-
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
 // Export the app for Vercel
 export default app;
