@@ -309,9 +309,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Disease Symptoms Tracking and Cause finding</h3>
             <p>
-              Through a guided process, people are empowered to make appropriate
-              health-supporting choices that suit their individual health needs
-              .
+              Identifying triggers and underline causes of lifestyle diseases.
             </p>
           </motion.div>
 
@@ -325,9 +323,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Chronic Conditions Management</h3>
             <p>
-              Our approach safeguards well-being and disrupts disease
-              progression by addressing underlying causes through individual
-              lifestyle change.
+              Supporting People living with chronic diseases by addressing underlying causes through individual lifestyle change.
             </p>
           </motion.div>
 
@@ -341,9 +337,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Preventive Health Coaching</h3>
             <p>
-              This approach provides solutions for individuals at risk of or
-              living with chronic health challenges like cardiovascular,
-              respiratory, inflammatory, metabolic, or auto-immune disorders .
+              Providing preemptive support to lifestyle diseases.
             </p>
           </motion.div>
         </div>
