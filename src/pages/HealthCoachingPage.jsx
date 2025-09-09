@@ -41,6 +41,9 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     email: "",
     step: 0, // 0: not started, 1: form, 2: confirmation
   });
+  const [showPersonalFullContent, setShowPersonalFullContent] = useState(false);
+  const [showCorporateFullContent, setShowCorporateFullContent] =
+    useState(false);
 
   useEffect(() => {
     fetchWebinars();
@@ -323,7 +326,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Chronic Conditions Management</h3>
             <p>
-              Supporting People living with chronic diseases by addressing underlying causes through individual lifestyle change.
+              Supporting People living with chronic diseases by addressing
+              underlying causes through individual lifestyle change.
             </p>
           </motion.div>
 
@@ -336,9 +340,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               <i className="bi bi-journal-medical"></i>
             </div>
             <h3>Preventive Health Coaching</h3>
-            <p>
-              Providing preemptive support to lifestyle diseases.
-            </p>
+            <p>Providing preemptive support to lifestyle diseases.</p>
           </motion.div>
         </div>
 
@@ -370,13 +372,151 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           </ul>
         </motion.div>
 
-        <button
-          className="healthcoaching-cta"
-          onClick={() => setBookingStep(0)}
-        >
-          <i className="bi bi-calendar2-check"></i>
-          Book a Session
-        </button>
+        {!showPersonalFullContent && (
+          <div style={{ textAlign: "center", margin: "2rem 0" }}>
+            <button
+              className="healthcoaching-readmore"
+              onClick={() => setShowPersonalFullContent(true)}
+            >
+              <i className="bi bi-arrow-down-circle"></i>
+              Read More About Personal Coaching
+            </button>
+          </div>
+        )}
+
+        {showPersonalFullContent && (
+          <motion.div
+            className="healthcoaching-fullcontent"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3>Personal Health Coaching - Complete Information</h3>
+            <p>
+              Many cases of lifestyle diseases proceed to severe stages or
+              death, when they could have been prevented or reversed at early
+              stages. Our personal health coaching is a proactive and preventive
+              process that guides clients in experiential lifestyle change that
+              leads to pure health.
+            </p>
+
+            <p>
+              Through a guided process of elimination and adaptation, people are
+              empowered to make appropriate health-supporting choices that suite
+              their individual health needs. This approach not only safeguards
+              their wellbeing but also disrupts disease progression by
+              addressing the underlying causes through individual lifestyle
+              change.
+            </p>
+
+            <p>The coaching process:</p>
+            <ul className="healthcoaching-list">
+              <li>
+                enables clients understand and identify the health issues that
+                affect them
+              </li>
+              <li>helps them set goals to overcome these challenges</li>
+              <li>
+                helps them develop a simple action plan to guide them in
+                behavior change
+              </li>
+              <li>
+                supports clients in appreciating healthy change to build a
+                foundation for sustainability
+              </li>
+            </ul>
+
+            <p>
+              This personalized approach provides solutions to people with or at
+              risk of one or more chronic health challenges which may be
+              cardiovascular, respiratory, inflammatory, metabolic or
+              auto-immune disorders. Under these categories are diseases such as
+              high blood pressure, heart attack, asthma arthritis, diabetes,
+              cancer and obesity among others.
+            </p>
+
+            <p>
+              At the end of the coaching season, clients benefit from knowledge,
+              skills, and confidence on how to manage their conditions. Personal
+              health coaching motivates people and equips them to self-manage
+              and adopt healthier behaviors with confidence.
+            </p>
+
+            <h4>What does it involve?</h4>
+            <p>
+              The sessions address lifestyle risk factors for these diseases,
+              and support the required behaviour change based on the following:
+            </p>
+
+            <ul className="healthcoaching-list">
+              <li>
+                <strong>Cause analysis:</strong> Identifying triggers and
+                underlying causes of lifestyle diseases through health history
+                evaluation.
+              </li>
+
+              <li>
+                <strong>Integrating physical activity in healthcare:</strong>{" "}
+                Customised physical activity and exercise programmes for
+                different health conditions and fitness levels.
+              </li>
+
+              <li>
+                <strong>Personalised nutrition plans:</strong> Nutritional
+                adjustments for preventive and restorative health, focusing on
+                locally available, nutrient dense foods.
+              </li>
+
+              <li>
+                <strong>Environmental adjustments:</strong> Transforming the
+                working and living space for positive impact to health.
+              </li>
+
+              <li>
+                <strong>Mental wellness support:</strong> Stress management
+                strategies, mindfulness practices and emotional resilience to
+                address stress related illnesses.
+              </li>
+
+              <li>
+                <strong>Community support:</strong> Reconfiguring capacity for
+                better relationships to increase coping in the family and social
+                scene
+              </li>
+
+              <li>
+                <strong>Spirituality support:</strong> Guidance on spiritual
+                grounding for inner peace and life balance
+              </li>
+            </ul>
+
+            <p>
+              The sessions provide an understanding on how to navigate the
+              tricky path of balancing lifestyle choices and behaviour change
+              for happier and healthier.
+            </p>
+
+            <div style={{ textAlign: "center", margin: "2rem 0" }}>
+              <button
+                className="healthcoaching-readmore"
+                onClick={() => setShowPersonalFullContent(false)}
+              >
+                <i className="bi bi-arrow-up-circle"></i>
+                Show Less
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        <div style={{ textAlign: "center", marginTop: "3rem" }}>
+          <button
+            className="healthcoaching-cta"
+            onClick={() => setBookingStep(0)}
+          >
+            <i className="bi bi-calendar2-check"></i>
+            Book a Session
+          </button>
+        </div>
       </motion.div>
     </div>
   );
@@ -391,8 +531,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <h2>Corporate Health Coaching</h2>
         <p className="healthcoaching-subtitle">
           Our model provides holistic solutions to workers, creating a healthy
-          workforce that is able to deliver profits at reduced healthcare costs
-          .
+          workforce that is able to deliver profits at reduced healthcare costs.
         </p>
 
         <div className="healthcoaching-featuregrid">
@@ -421,7 +560,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Enhancing Workplace Environment</h3>
             <p>
-              Re-engineering the workplace environment to improve employees health for higher productivity.
+              Re-engineering the workplace environment to improve employees
+              health for higher productivity.
             </p>
           </motion.div>
 
@@ -435,7 +575,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Building Effective Teams</h3>
             <p>
-              Reconstructing working relationships for increased synergy and productivity.
+              Reconstructing working relationships for increased synergy and
+              productivity.
             </p>
           </motion.div>
         </div>
@@ -466,16 +607,179 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           </div>
         </motion.div>
 
-        <button
-          className="healthcoaching-cta"
-          onClick={() => {
-            setBookingData({ ...bookingData, serviceType: "corporate" });
-            setBookingStep(0);
-          }}
-        >
-          <i className="bi bi-info-circle"></i>
-          Request Information
-        </button>
+        {!showCorporateFullContent && (
+          <div style={{ textAlign: "center", margin: "2rem 0" }}>
+            <button
+              className="healthcoaching-readmore"
+              onClick={() => setShowCorporateFullContent(true)}
+            >
+              <i className="bi bi-arrow-down-circle"></i>
+              Read More About Corporate Coaching
+            </button>
+          </div>
+        )}
+
+        {showCorporateFullContent && (
+          <motion.div
+            className="healthcoaching-fullcontent"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3>Corporate Health Coaching - Complete Information</h3>
+            <p>
+              Today's busy and hectic occupational space exposes workers to
+              various lifestyle related health risks, undermining productivity
+              and corporate growth. Our corporate health coaching model provides
+              support to workers turning them to a healthy workforce that is
+              able to deliver profits at reduced healthcare costs.
+            </p>
+
+            <p>
+              We offer holistic solutions that lead to increased energy levels
+              and overall wellbeing, by helping staff redefine their lifestyles
+              for healthier, more productive and positive living. By coaching
+              teams, we help build personnel capacities and re-engineer teamwork
+              for maximum benefit.
+            </p>
+
+            <p>
+              Corporate health coaching improves employees overall well-being by
+              promoting healthier lifestyles within a company setting. This
+              coaching approach helps staff adopt sustainable lifestyle changes,
+              by addressing various aspects of health like nutrition, exercise,
+              stress management and work environment tailored to specific
+              demands of the corporate world.
+            </p>
+
+            <h4>Benefits for Employees and Organizations:</h4>
+            <ul className="healthcoaching-list">
+              <li>
+                <strong>Improved Employee Health:</strong> Employees experience
+                better physical and mental health, leading to increased energy
+                levels and overall wellness.
+              </li>
+
+              <li>
+                <strong>Increased Productivity:</strong> Healthier employees are
+                often more productive, with reduced absenteeism.
+              </li>
+
+              <li>
+                <strong>Reduced Healthcare Costs:</strong> By promoting
+                preventative care and healthy lifestyles, corporate health
+                coaching helps reduce long-term healthcare costs for both
+                employees and employers.
+              </li>
+
+              <li>
+                <strong>Enhanced Employee Engagement:</strong> A strong
+                commitment to employee well-being through health coaching boosts
+                employee morale and engagement.
+              </li>
+
+              <li>
+                <strong>Positive Workplace Culture:</strong> Health coaching
+                helps create a more positive and supportive work environment by
+                demonstrating a commitment to employee wellbeing.
+              </li>
+
+              <li>
+                <strong>Better Working Environment:</strong> It helps create a
+                conducive and health friendly working spaces for sustainable
+                wellbeing.
+              </li>
+            </ul>
+
+            <p>
+              Corporate health coaching causes real and lasting change in
+              employee health by preventing and effectively managing common
+              chronic health challenges such as heart disease, stroke, cancer,
+              diabetes, obesity, arthritis, and mental health.
+            </p>
+
+            <p>
+              Health coaching bridges the gap between health care and healthy
+              behaviours by motivating individuals to stick to their healthcare
+              plans. Coaching influences healthcare reform by educating patients
+              about their chronic conditions to help minimize the negative
+              effects of illness, work toward improvement by solving the root
+              issues of chronic disease including lifestyle factors, and
+              empowering patients to effectively manage their own conditions in
+              daily life.
+            </p>
+
+            <p>
+              In summary, corporate health coaching is a proactive and
+              preventive approach to employee wellness that benefits both the
+              workforce and organizations.
+            </p>
+
+            <h4>The corporate wellness process</h4>
+            <p>
+              An effective way to start health coaching in your workplace is to
+              first identify the health status of your population and pinpoint
+              higher-risk individuals.
+            </p>
+
+            <p>
+              A health risk assessment (HRA) can help your company determine who
+              is at highest risk for chronic illness and get an overall sense of
+              the health of your employees. After this baseline is established,
+              health coaches can reach out to individuals and begin working to
+              improve lifestyle factors to prevent or delay illness (American
+              Journal of Lifestyle Medicine).
+            </p>
+
+            <p>Health assessments usually consist of the following:</p>
+
+            <ol className="healthcoaching-list">
+              <li>
+                <strong>
+                  HRA questionnaire about lifestyle and health behavior
+                </strong>
+                <br />A health risk assessment (HRA) is a process used to
+                identify, evaluate, and mitigate potential health hazards. It's
+                a systematic approach to understanding how factors like
+                lifestyle, environment, and medical history can impact an
+                individual's or community's health. HRAs are used in various
+                settings, from individual healthcare to public health planning,
+                to help prioritize interventions and promote well-being.
+              </li>
+
+              <li>
+                <strong>Biometric screening</strong> including a blood draw,
+                usually done with a finger prick, to determine total
+                cholesterol, HDL, LDL, triglycerides, blood pressure, and blood
+                glucose; and additional measurements including heart rate,
+                height, weight, BMI, and abdominal girth
+              </li>
+            </ol>
+
+            <div style={{ textAlign: "center", margin: "2rem 0" }}>
+              <button
+                className="healthcoaching-readmore"
+                onClick={() => setShowCorporateFullContent(false)}
+              >
+                <i className="bi bi-arrow-up-circle"></i>
+                Show Less
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        <div style={{ textAlign: "center", marginTop: "3rem" }}>
+          <button
+            className="healthcoaching-cta"
+            onClick={() => {
+              setBookingData({ ...bookingData, serviceType: "corporate" });
+              setBookingStep(0);
+            }}
+          >
+            <i className="bi bi-info-circle"></i>
+            Request Information
+          </button>
+        </div>
       </motion.div>
     </div>
   );
@@ -491,9 +795,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       <div className="healthcoaching-roomgrid">
         <div className="healthcoaching-roomcard">
           <h3>Consultation</h3>
-          <p>
-            Secure sessions with your health coach to achieve your goals
-          </p>
+          <p>Secure sessions with your health coach to achieve your goals</p>
           <button
             className="healthcoaching-roombtn"
             onClick={() => {
@@ -506,7 +808,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             }}
           >
             <i className="bi bi-camera-video"></i>
-            Book  Session
+            Book Session
           </button>
         </div>
 
@@ -528,7 +830,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div className="healthcoaching-roomcard">
           <h3>Digital Resources</h3>
           <p>
-            Access our library of Information on healthy living,health guides,diet advisory and Physical Activity Advisory.
+            Access our library of Information on healthy living,health
+            guides,diet advisory and Physical Activity Advisory.
           </p>
           <button className="healthcoaching-roombtn">
             <i className="bi bi-journal-bookmark"></i>
@@ -1100,7 +1403,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       </header>
 
       <main className="healthcoaching-main">
-        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "open" : ""}`}>
+        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "active" : ""}`}>
           <ul>
             <li>
               <button

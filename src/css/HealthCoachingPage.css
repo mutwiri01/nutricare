@@ -1096,6 +1096,129 @@ html {
   background: var(--primary-dark);
 }
 
+/* Add these styles to your HealthCoachingPage.css file */
+
+.healthcoaching-readmore {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 6px 20px rgba(44, 119, 68, 0.3);
+  margin: 1rem 0;
+}
+
+.healthcoaching-readmore:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(44, 119, 68, 0.4);
+}
+
+.healthcoaching-fullcontent {
+  background: var(--light);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  border-left: 4px solid var(--primary);
+  box-shadow: var(--shadow);
+}
+
+.healthcoaching-fullcontent h3 {
+  color: var(--darker);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.healthcoaching-fullcontent h4 {
+  color: var(--primary-dark);
+  margin: 1.5rem 0 1rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.healthcoaching-fullcontent p {
+  color: var(--gray);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.healthcoaching-fullcontent ul.healthcoaching-list,
+.healthcoaching-fullcontent ol.healthcoaching-list {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.healthcoaching-fullcontent ul.healthcoaching-list li,
+.healthcoaching-fullcontent ol.healthcoaching-list li {
+  margin-bottom: 0.75rem;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+.healthcoaching-fullcontent ul.healthcoaching-list li strong {
+  color: var(--primary);
+}
+
+.healthcoaching-section-box {
+  background: var(--light);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  border-left: 4px solid var(--primary);
+  box-shadow: var(--shadow);
+}
+
+.healthcoaching-list {
+  list-style: none;
+  padding: 0;
+}
+
+.healthcoaching-list li {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--gray);
+}
+
+.healthcoaching-list li i {
+  color: var(--primary);
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+}
+
+.healthcoaching-approach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.healthcoaching-approach-item {
+  background: var(--lighter);
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border);
+}
+
+.healthcoaching-approach-item h4 {
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.healthcoaching-approach-item p {
+  color: var(--gray);
+  line-height: 1.6;
+}
+
 /* Focus states for accessibility */
 .healthcoaching-nav button:focus,
 .healthcoaching-cta:focus,
