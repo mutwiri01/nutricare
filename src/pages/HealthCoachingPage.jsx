@@ -1159,7 +1159,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 }}
               >
                 <i className="bi bi-headset"></i>
-                Support
+                Customer Care
               </button>
             </li>
           </ul>
