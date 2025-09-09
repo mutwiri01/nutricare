@@ -307,7 +307,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <div className="healthcoaching-featureicon">
               <i className="bi bi-person-heart"></i>
             </div>
-            <h3>Elimination & Adaptation</h3>
+            <h3>Disease Symptoms Tracking and Cause finding</h3>
             <p>
               Through a guided process, people are empowered to make appropriate
               health-supporting choices that suit their individual health needs
@@ -323,7 +323,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <div className="healthcoaching-featureicon">
               <i className="bi bi-shield-check"></i>
             </div>
-            <h3>Disease Disruption</h3>
+            <h3>Chronic Conditions Management</h3>
             <p>
               Our approach safeguards well-being and disrupts disease
               progression by addressing underlying causes through individual
@@ -339,7 +339,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <div className="healthcoaching-featureicon">
               <i className="bi bi-journal-medical"></i>
             </div>
-            <h3>Personalized Solutions</h3>
+            <h3>Preventive Health Coaching</h3>
             <p>
               This approach provides solutions for individuals at risk of or
               living with chronic health challenges like cardiovascular,
