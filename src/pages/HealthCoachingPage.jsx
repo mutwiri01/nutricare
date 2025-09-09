@@ -500,8 +500,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div className="healthcoaching-roomcard">
           <h3>Consultation</h3>
           <p>
-            Secure, private video sessions with your health coach from the
-            comfort of your home or office.
+            Secure,sessions with your health coach to achieve your goals
           </p>
           <button
             className="healthcoaching-roombtn"
@@ -520,7 +519,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         </div>
 
         <div className="healthcoaching-roomcard">
-          <h3>Group Webinars</h3>
+          <h3>Webinars</h3>
           <p>
             Join our live educational webinars on various health and wellness
             topics.
