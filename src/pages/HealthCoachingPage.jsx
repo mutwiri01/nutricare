@@ -474,7 +474,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           }}
         >
           <i className="bi bi-info-circle"></i>
-          Book now
+          Request Information
         </button>
       </motion.div>
     </div>
