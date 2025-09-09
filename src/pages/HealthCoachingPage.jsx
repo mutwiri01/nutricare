@@ -421,8 +421,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Enhancing Workplace Environment</h3>
             <p>
-              By promoting preventative care, coaching helps reduce long-term
-              healthcare costs for both employees and employers.
+              Re-engineering the workplace environment to improve employees health for higher productivity.
             </p>
           </motion.div>
 
@@ -436,8 +435,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Building Effective Teams</h3>
             <p>
-              Employees experience better physical and mental health, leading to
-              increased energy and overall wellness.
+              Reconstructing working relationships for increased synergy and productivity.
             </p>
           </motion.div>
         </div>
