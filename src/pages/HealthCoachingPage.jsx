@@ -500,7 +500,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div className="healthcoaching-roomcard">
           <h3>Consultation</h3>
           <p>
-            Secure,sessions with your health coach to achieve your goals
+            Secure sessions with your health coach to achieve your goals
           </p>
           <button
             className="healthcoaching-roombtn"
