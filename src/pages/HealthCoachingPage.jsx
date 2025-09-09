@@ -410,7 +410,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <div className="healthcoaching-featureicon">
               <i className="bi bi-graph-up-arrow"></i>
             </div>
-            <h3>Increased Productivity</h3>
+            <h3>Employee Wellness</h3>
             <p>
               Healthier employees are often more productive and have reduced
               absenteeism.
@@ -425,7 +425,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <div className="healthcoaching-featureicon">
               <i className="bi bi-piggy-bank"></i>
             </div>
-            <h3>Reduced Healthcare Costs</h3>
+            <h3>Enhancing Workplace Environment</h3>
             <p>
               By promoting preventative care, coaching helps reduce long-term
               healthcare costs for both employees and employers.
@@ -440,7 +440,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <div className="healthcoaching-featureicon">
               <i className="bi bi-heart-pulse"></i>
             </div>
-            <h3>Improved Employee Health</h3>
+            <h3>Building Effective Teams</h3>
             <p>
               Employees experience better physical and mental health, leading to
               increased energy and overall wellness.
