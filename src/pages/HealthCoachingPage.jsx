@@ -498,7 +498,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
       <div className="healthcoaching-roomgrid">
         <div className="healthcoaching-roomcard">
-          <h3>Virtual Consultation Rooms</h3>
+          <h3>Consultation</h3>
           <p>
             Secure, private video sessions with your health coach from the
             comfort of your home or office.
@@ -515,7 +515,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             }}
           >
             <i className="bi bi-camera-video"></i>
-            Book Virtual Session
+            Book  Session
           </button>
         </div>
 
@@ -537,8 +537,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div className="healthcoaching-roomcard">
           <h3>Digital Resources</h3>
           <p>
-            Access our library of health guides, meal plans, and workout
-            routines.
+            Access our library of Information on healthy living,health guides,diet advisory and Physical Activity Advisory.
           </p>
           <button className="healthcoaching-roombtn">
             <i className="bi bi-journal-bookmark"></i>
