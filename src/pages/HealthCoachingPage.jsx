@@ -312,7 +312,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
             <h3>Disease Symptoms Tracking and Cause finding</h3>
             <p>
-              Identifying triggers and underline causes of lifestyle diseases.
+              Identifying triggers and underlying causes of lifestyle diseases.
             </p>
           </motion.div>
 
@@ -412,16 +412,16 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <p>The coaching process:</p>
             <ul className="healthcoaching-list">
               <li>
-                enables clients understand and identify the health issues that
+                - enables clients understand and identify the health issues that
                 affect them
               </li>
-              <li>helps them set goals to overcome these challenges</li>
+              <li> - helps them set goals to overcome these challenges</li>
               <li>
-                helps them develop a simple action plan to guide them in
+                - helps them develop a simple action plan to guide them in
                 behavior change
               </li>
               <li>
-                supports clients in appreciating healthy change to build a
+                - supports clients in appreciating healthy change to build a
                 foundation for sustainability
               </li>
             </ul>
