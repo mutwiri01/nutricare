@@ -1,89 +1,399 @@
-/* Nutrient Harvest Page Styles */
+/* NutrientHarvest.css - Green Color Scheme */
 .nutrient-harvest-container {
-  font-family: "Roboto", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
-  text-align: center;
-  color: #333;
+  color: #2c3e50;
+  line-height: 1.6;
+  background-color: #f9fbf8;
 }
 
-/* Animated Image */
-.nutrient-harvest-image-container {
+/* Hero Section */
+.nutrient-hero {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 50px;
+  padding: 30px;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+}
+
+.nutrient-hero-content {
+  text-align: center;
+}
+
+.nutrient-main-title {
+  font-size: 2.5rem;
+  color: #1b5e20;
   margin-bottom: 20px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-.nutrient-harvest-image {
-  width: 150px;
-  height: 150px;
+.nutrient-quote {
+  font-size: 1.3rem;
+  font-style: italic;
+  color: #388e3c;
+  padding: 15px 0;
+  margin: 0 auto;
+  max-width: 800px;
+  border-left: 4px solid #4caf50;
+  padding-left: 20px;
+  background-color: rgba(76, 175, 80, 0.1);
+  border-radius: 0 8px 8px 0;
+}
+
+.nutrient-hero-image img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  height: 400px;
   object-fit: cover;
-  border-radius: 50%;
-  animation: rotateImage 4s linear infinite;
-  border: 5px solid #116c3e;
-}
-
-@keyframes rotateImage {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Animated Heading */
-.nutrient-harvest-heading {
-  font-size: 32px;
-  color: #116c3e;
-  margin-bottom: 30px;
-  animation: fadeIn 2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  border: 3px solid #c8e6c9;
 }
 
 /* Content Section */
-.nutrient-harvest-content {
-  text-align: left;
-  max-width: 800px;
-  margin: 0 auto;
-  line-height: 1.8;
+.nutrient-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
 }
 
-.nutrient-harvest-content p {
+.nutrient-text-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #4caf50;
+}
+
+.nutrient-text-content h3 {
+  color: #2e7d32;
+  margin: 25px 0 15px 0;
+  font-size: 1.4rem;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #a5d6a7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  font-size: 24px;
+}
+
+.nutrient-text-content p {
   margin-bottom: 15px;
-  font-size: 16px;
-  color: #555;
+  color: #455a64;
+  line-height: 1.7;
 }
 
-/* Icon Styles */
-.nutrient-harvest-icon {
-  color: #116c3e;
-  margin-right: 8px;
-  vertical-align: middle;
-  font-size: 20px;
+.nutrient-definition {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border-left: 4px solid #81c784;
+}
+
+.nutrient-crisis {
+  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border-left: 4px solid #e57373;
+}
+
+.nutrient-solution {
+  background: linear-gradient(135deg, #e8f5e9 0%, #b9f6ca 100%);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border-left: 4px solid #69f0ae;
+}
+
+.nutrient-belief {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-style: italic;
+  border-left: 4px solid #2e7d32;
+}
+
+.nutrient-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.nutrient-facts {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #4caf50;
+}
+
+.nutrient-facts h3 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #c8e6c9;
+  text-align: center;
+}
+
+.nutrient-fact-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px dashed #a5d6a7;
+}
+
+.nutrient-fact-item:last-child {
+  border-bottom: none;
+}
+
+.nutrient-icon {
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8f5e9;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nutrient-fact-content h4 {
+  color: #2e7d32;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+}
+
+.nutrient-fact-content p {
+  color: #555;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.nutrient-stat {
+  background: linear-gradient(135deg, #e8f5e9 0%, #b9f6ca 100%);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border-left: 4px solid #00c853;
+}
+
+.nutrient-stat h4 {
+  color: #2e7d32;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.nutrient-stat p {
+  color: #455a64;
+  font-style: italic;
+  margin: 0;
+}
+
+.nutrient-tips {
+  background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #9ccc65;
+}
+
+.nutrient-tips h4 {
+  color: #2e7d32;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.nutrient-tips ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.nutrient-tips li {
+  padding: 8px 0;
+  padding-left: 25px;
+  position: relative;
+  color: #455a64;
+}
+
+.nutrient-tips li:before {
+  content: "✔";
+  color: #4caf50;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+/* Topics Section */
+.nutrient-topics {
+  margin-top: 40px;
+}
+
+.nutrient-topics h2 {
+  text-align: center;
+  color: #2e7d32;
+  margin-bottom: 40px;
+  font-size: 2rem;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.nutrient-topics h2:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: #4caf50;
+  border-radius: 3px;
+}
+
+.nutrient-topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.nutrient-topic-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 4px solid #4caf50;
+}
+
+.nutrient-topic-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(46, 125, 50, 0.15);
+}
+
+.nutrient-topic-image {
+  height: 200px;
+  overflow: hidden;
+}
+
+.nutrient-topic-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.nutrient-topic-card:hover .nutrient-topic-image img {
+  transform: scale(1.05);
+}
+
+.nutrient-topic-content {
+  padding: 20px;
+}
+
+.nutrient-topic-content h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.2rem;
+}
+
+.nutrient-topic-content h3 a {
+  color: #2e7d32;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nutrient-topic-content h3 a:hover {
+  color: #4caf50;
+}
+
+.nutrient-topic-content p {
+  color: #546e7a;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+.nutrient-topic-cta a {
+  color: #4caf50;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.nutrient-topic-cta a:hover {
+  transform: translateX(5px);
 }
 
 /* Responsive Design */
+@media (max-width: 900px) {
+  .nutrient-content {
+    grid-template-columns: 1fr;
+  }
+
+  .nutrient-sidebar {
+    order: -1;
+  }
+}
+
 @media (max-width: 768px) {
-  .nutrient-harvest-image {
-    width: 100px;
-    height: 100px;
+  .nutrient-main-title {
+    font-size: 2rem;
   }
 
-  .nutrient-harvest-heading {
-    font-size: 24px;
+  .nutrient-quote {
+    font-size: 1.1rem;
   }
 
-  .nutrient-harvest-content {
-    font-size: 14px;
+  .nutrient-hero {
+    padding: 20px;
+  }
+
+  .nutrient-text-content,
+  .nutrient-facts {
+    padding: 20px;
+  }
+
+  .nutrient-topics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .nutrient-harvest-container {
+    padding: 15px;
+  }
+
+  .nutrient-main-title {
+    font-size: 1.7rem;
+  }
+
+  .nutrient-quote {
+    font-size: 1rem;
+    padding-left: 15px;
+  }
+
+  .nutrient-fact-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .nutrient-text-content h3 {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
   }
 }

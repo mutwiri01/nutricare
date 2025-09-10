@@ -1,85 +1,292 @@
-/* General Styles */
+/* OrganicDiet.css */
 .organic-diet-container {
-  font-family: "Roboto", sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
+  color: #333;
+  line-height: 1.6;
 }
 
-/* Header Section */
-.header {
+/* Hero Section */
+.organic-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 50px;
+  padding: 30px;
+  background: linear-gradient(135deg, #f1f8f1 0%, #e6f5e6 100%);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.organic-hero-content {
   text-align: center;
-  margin-bottom: 30px;
 }
 
-.header-image {
+.organic-main-title {
+  font-size: 2.5rem;
+  color: #2e7d32;
+  margin-bottom: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.organic-quote {
+  font-size: 1.3rem;
+  font-style: italic;
+  color: #558b2f;
+  padding: 15px 0;
+  margin: 0 auto;
+  max-width: 800px;
+  border-left: 4px solid #8bc34a;
+  padding-left: 20px;
+  background-color: rgba(139, 195, 74, 0.1);
+  border-radius: 0 8px 8px 0;
+}
+
+.organic-hero-image img {
   width: 100%;
-  max-width: 200px;
-  height: auto;
   border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  height: 400px;
+  object-fit: contain;
 }
 
 /* Content Section */
-.content {
-  margin-bottom: 40px;
+.organic-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
 }
 
-.content h1 {
-  font-size: 28px;
-  color: #116c3e;
+.organic-text-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.organic-intro {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #2e7d32;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px dashed #c8e6c9;
+}
+
+.organic-paragraphs p {
   margin-bottom: 20px;
-  text-align: center;
+  color: #455a64;
+  line-height: 1.7;
 }
 
-.content p {
-  font-size: 16px;
-  line-height: 1.8;
-  color: #555;
-  text-align: justify;
-  margin-bottom: 20px;
-}
-
-/* Image Gallery Section */
-.image-gallery {
+.organic-sidebar {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 25px;
 }
 
-.image-item {
-  flex-basis: 30%;
+.organic-benefits {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.organic-benefits h3 {
+  color: #2e7d32;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #c8e6c9;
+}
+
+.organic-benefits ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.organic-benefits li {
+  padding: 8px 0;
+  padding-left: 25px;
+  position: relative;
+  color: #455a64;
+}
+
+.organic-benefits li:before {
+  content: "✓";
+  color: #4caf50;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+.organic-stat {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  padding: 20px;
+  border-radius: 12px;
   text-align: center;
-  background-color: #f4f4f4;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #4caf50;
 }
 
-.image-item img {
+.organic-stat h4 {
+  color: #2e7d32;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.organic-stat p {
+  color: #455a64;
+  font-style: italic;
+}
+
+/* Topics Section */
+.organic-topics {
+  margin-top: 40px;
+}
+
+.organic-topics h2 {
+  text-align: center;
+  color: #2e7d32;
+  margin-bottom: 40px;
+  font-size: 2rem;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.organic-topics h2:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: #8bc34a;
+  border-radius: 3px;
+}
+
+.organic-topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.organic-topic-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.organic-topic-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.organic-topic-image {
+  height: 200px;
+  overflow: hidden;
+}
+
+.organic-topic-image img {
   width: 100%;
-  max-width: 250px;
-  height: auto;
-  border-radius: 8px;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
-.image-item p {
-  font-size: 14px;
-  color: #333;
-  margin-top: 10px;
+.organic-topic-card:hover .organic-topic-image img {
+  transform: scale(1.05);
+}
+
+.organic-topic-content {
+  padding: 20px;
+}
+
+.organic-topic-content h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.2rem;
+}
+
+.organic-topic-content h3 a {
+  color: #2e7d32;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.organic-topic-content h3 a:hover {
+  color: #8bc34a;
+}
+
+.organic-topic-content p {
+  color: #546e7a;
+  margin-bottom: 15px;
+  font-size: 0.95rem;
+}
+
+.organic-topic-cta a {
+  color: #4caf50;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.organic-topic-cta a:hover {
+  transform: translateX(5px);
 }
 
 /* Responsive Design */
+@media (max-width: 900px) {
+  .organic-content {
+    grid-template-columns: 1fr;
+  }
+
+  .organic-sidebar {
+    order: -1;
+  }
+}
+
 @media (max-width: 768px) {
-  .image-gallery {
-    flex-direction: column;
-    align-items: center;
+  .organic-main-title {
+    font-size: 2rem;
   }
 
-  .image-item {
-    flex-basis: 80%;
-    margin-bottom: 20px;
+  .organic-quote {
+    font-size: 1.1rem;
   }
 
-  .image-item img {
-    max-width: 100%;
+  .organic-hero {
+    padding: 20px;
+  }
+
+  .organic-text-content,
+  .organic-benefits {
+    padding: 20px;
+  }
+
+  .organic-topics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .organic-diet-container {
+    padding: 15px;
+  }
+
+  .organic-main-title {
+    font-size: 1.7rem;
+  }
+
+  .organic-quote {
+    font-size: 1rem;
+    padding-left: 15px;
   }
 }
