@@ -53,7 +53,7 @@ const Campaign = () => {
       <div className="campaign-content">
         <div className="campaign-intro">
           <div className="campaign-intro-image">
-            <img src="/p1.png" alt="Healthy Communities" />
+            <img src="/SDG3.jpg" alt="Healthy Communities" />
           </div>
           <div className="campaign-intro-text">
             <h2>Campaign for Healthy Communities</h2>
