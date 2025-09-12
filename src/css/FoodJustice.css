@@ -75,7 +75,7 @@
 }
 
 .fj-compact-text-block p {
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-bottom: 1rem;
   color: #333;
   line-height: 1.6;
@@ -103,13 +103,13 @@
 }
 
 .fj-compact-card h3 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #0d552c;
   margin-bottom: 0.75rem;
 }
 
 .fj-compact-card p {
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   color: #555;
 }
 
@@ -158,13 +158,13 @@
 }
 
 .fj-compact-topic-content h3 {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #0d552c;
   margin-bottom: 0.5rem;
 }
 
 .fj-compact-topic-content p {
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   color: #555;
 }
 
