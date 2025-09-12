@@ -67,39 +67,36 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         // Fallback to mock data if API fails
         setWebinars([
           {
-            _id: 1,
+            _id: "1",
             title: "Managing Diabetes Through Lifestyle Changes",
             date: "2025-08-15",
             time: "14:00",
             duration: "60 mins",
             speaker: "Dr. Sarah Johnson",
-            thumbnail: "/webinar1.jpg",
-            currentAttendees: 124,
-            maxAttendees: 200,
+            currentAttendees: 24,
+            maxAttendees: 100,
             status: "upcoming",
           },
           {
-            _id: 2,
+            _id: "2",
             title: "Workplace Wellness Strategies",
             date: "2025-08-22",
             time: "16:00",
             duration: "45 mins",
             speaker: "Health Coach Michael Chen",
-            thumbnail: "/webinar2.jpg",
-            currentAttendees: 87,
-            maxAttendees: 150,
+            currentAttendees: 17,
+            maxAttendees: 50,
             status: "upcoming",
           },
           {
-            _id: 3,
+            _id: "3",
             title: "Stress Management Techniques",
             date: "2025-09-05",
             time: "11:00",
             duration: "50 mins",
             speaker: "Dr. Emily Rodriguez",
-            thumbnail: "/webinar3.jpg",
-            currentAttendees: 156,
-            maxAttendees: 250,
+            currentAttendees: 42,
+            maxAttendees: 75,
             status: "upcoming",
           },
         ]);
@@ -159,6 +156,10 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       setError("Please select a date and time");
       return;
     }
+    if (bookingStep === 3 && (!bookingData.name || !bookingData.email)) {
+      setError("Please provide your name and email");
+      return;
+    }
     setBookingStep(bookingStep + 1);
     setError("");
   };
@@ -180,11 +181,14 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       });
 
       if (response.ok) {
-        const savedBooking = await response.json();
+        const result = await response.json();
         setSuccess("Your appointment has been booked successfully!");
         setBookingStep(4);
       } else {
-        setError("Failed to book appointment. Please try again.");
+        const errorData = await response.json();
+        setError(
+          errorData.error || "Failed to book appointment. Please try again."
+        );
       }
     } catch (error) {
       setError("Failed to book appointment. Please try again.");
@@ -257,13 +261,12 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       if (response.ok) {
         const result = await response.json();
         setWebinarRegistration({ ...webinarRegistration, step: 2 });
-        setWebinars(
-          webinars.map((w) => (w._id === webinarId ? result.webinar : w))
-        );
+        // Update the webinar list with new attendee count
+        fetchWebinars();
         setSuccess("Registered for webinar successfully!");
       } else {
         const errorData = await response.json();
-        setError(errorData.message || "Failed to register for webinar");
+        setError(errorData.error || "Failed to register for webinar");
       }
     } catch (error) {
       setError("Failed to register for webinar. Please try again.");
@@ -493,7 +496,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             <p>
               The sessions provide an understanding on how to navigate the
               tricky path of balancing lifestyle choices and behaviour change
-              for happier and healthier.
+              for happier and healthier lives.
             </p>
 
             <div style={{ textAlign: "center", margin: "2rem 0" }}>
@@ -1166,21 +1169,23 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           <div className="healthcoaching-bookingstep">
             <h3>Your Details</h3>
             <div className="healthcoaching-formgroup">
-              <label>Full Name</label>
+              <label>Full Name *</label>
               <input
                 type="text"
                 value={bookingData.name}
                 onChange={(e) => handleBookingChange("name", e.target.value)}
                 placeholder="Your full name"
+                required
               />
             </div>
             <div className="healthcoaching-formgroup">
-              <label>Email</label>
+              <label>Email *</label>
               <input
                 type="email"
                 value={bookingData.email}
                 onChange={(e) => handleBookingChange("email", e.target.value)}
                 placeholder="Your email address"
+                required
               />
             </div>
             <div className="healthcoaching-formgroup">
@@ -1224,7 +1229,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 onClick={handleSubmitBooking}
                 disabled={isLoading}
               >
-                <i className="bi bi-calendar2-plus"></i> Confirm Booking
+                <i className="bi bi-calendar2-plus"></i>{" "}
+                {isLoading ? "Processing..." : "Confirm Booking"}
               </button>
             </div>
           </div>
@@ -1317,23 +1323,25 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                   </strong>
                 </p>
                 <div className="healthcoaching-formgroup">
-                  <label>Full Name</label>
+                  <label>Full Name *</label>
                   <input
                     type="text"
                     value={webinarRegistration.name}
                     onChange={(e) =>
                       handleWebinarRegistrationChange("name", e.target.value)
                     }
+                    required
                   />
                 </div>
                 <div className="healthcoaching-formgroup">
-                  <label>Email Address</label>
+                  <label>Email Address *</label>
                   <input
                     type="email"
                     value={webinarRegistration.email}
                     onChange={(e) =>
                       handleWebinarRegistrationChange("email", e.target.value)
                     }
+                    required
                   />
                 </div>
                 <div className="healthcoaching-bookingnav">
@@ -1479,6 +1487,16 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
       {bookingStep >= 0 && renderBookingModal()}
       {webinarRegistration.step > 0 && renderWebinarRegistrationModal()}
+
+      {/* Error and Success Messages */}
+      {(error || success) && (
+        <div
+          className={`healthcoaching-message ${error ? "error" : "success"}`}
+        >
+          <span>{error || success}</span>
+          <button onClick={clearMessages}>×</button>
+        </div>
+      )}
     </div>
   );
 };

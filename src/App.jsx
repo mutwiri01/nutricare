@@ -31,6 +31,7 @@ import Advocacy from "./pages/Advocacy";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import HealthPrevention from "./pages/HealthPrevention";
 
 // API base URL - using a direct value instead of process.env for frontend
 const API_BASE_URL =
@@ -77,6 +78,7 @@ function AppContent() {
         <Route path="/advocacy" element={<Advocacy />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/health-prevention" element={<HealthPrevention/>}/>
         <Route
           path="/admin"
           element={<AdminDashboard apiBaseUrl={API_BASE_URL} />}

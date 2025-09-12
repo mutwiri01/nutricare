@@ -1,44 +1,132 @@
 import { Link } from "react-router-dom";
-
-import "../css/Education.css";
+import "../css/HighNutrients.css";
 
 const HighNutrients = () => {
   return (
-    <div className="education-container">
-      {/* Header Section with Image and Text */}
-      <div className="header">
-      <h1  style={{ color: "#116c3e" }} >High Nutrient Diets Lead To Healthier Productive Communities</h1>
-        <div className="header-content">
-          <div className="header-text">
-            <p>
-              The growing demand for low nutrient, highly addictive processed
-              foods, preferred for it&apos;s taste poses one of the biggest
-              health challenges of modern society.{" "}
-            </p>
-            <p>The commercialization of the food chain at the turn of the 20th century led to mechanized food processing and chemical based preservation methods to feed the fast growing population</p>
-            <p>As demand grew, market competition led to focus on taste and addiction rather than quality and safety. This led to increased use of artificial food sweeteners and reduced attention to nutrient retention.</p>
-            <p>Unfortunately this narrative fitted well with the socio-economic growth fueled by industrial revolution that introduced fast paced lives.</p>
-            <p>In the quest to maximize profits, the food industry pulled all stops to attract the unsuspecting and innocent consumer to these high calorie foods.</p>
-            <p>Today, 90% of the global disease burden is caused by the consumption of these low nutrient, high calorie foods. Unfortunately, the government agenda globally is not keen on regulating the artificial food industry in favour of the consumer as this would disrupt trade dynamics and upset the much needed revenue flow. </p>
-            <p>Food preparation additives, processed food preservatives, artificial sweeteners and nutrients are today obvious risk factors for several chronic degenerative diseases that plague the society.</p>
-            <p>Under these circumstances, the need for consumer empowerment has never been so dire. Majority of consumers are hurtling blindly to the cliff as they do not understand the cause and effect of the disease cycle associated with this phenomenon.</p>
-            <p>Centre for Lifechange and Nutritional Healthcare through its comprehensive programs shall enable consumers make the right choices and give them the much needed independence to pure health.</p>
-          </div>
-          <img src="/hnu2.jpeg" alt="Education" className="header-image2" />
+    <div className="high-nutrients-container">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <div className="accent-bar"></div>
+          <h1>HIGH NUTRIENT DIETS LEAD TO HEALTHIER PRODUCTIVE COMMUNITIES</h1>
+          <p className="hero-subtitle">
+            Empowering communities through nutritional awareness and healthy
+            choices
+          </p>
         </div>
-      </div>
+        <div className="hero-image">
+          <img src="/hnu2.jpeg" alt="Healthy nutrition" />
+        </div>
+      </section>
 
-      {/* Topics Section */}
-      <div className="topics-section">
-        <h2 style={{ color: "#116c3e" }}>Other Topics</h2>
-        <div className="topics">
-          <div className="topic-item">
-            <img
-              src="/st1.png"
-              alt="Strategies for Alternative Healthcare"
-              className="campaign-card-image"
-            />
-            <div className="topic-info">
+      {/* Content Grid */}
+      <section className="content-grid">
+        <div className="content-card">
+          <div className="card-header">
+            <span className="card-icon">⚠️</span>
+            <h2>The Modern Food Challenge</h2>
+          </div>
+          <p>
+            The growing demand for low nutrient, highly addictive processed
+            foods, preferred for their taste, poses one of the biggest health
+            challenges of modern society.
+          </p>
+        </div>
+
+        <div className="content-card">
+          <div className="card-header">
+            <span className="card-icon">🏭</span>
+            <h2>Historical Shift in Food Production</h2>
+          </div>
+          <p>
+            The commercialization of the food chain at the turn of the 20th
+            century led to mechanized food processing and chemical based
+            preservation methods to feed fast growing populations.
+          </p>
+        </div>
+
+        <div className="content-card full-width">
+          <div className="card-header">
+            <span className="card-icon">📊</span>
+            <h2>From Nutrition to Addiction</h2>
+          </div>
+          <p>
+            As demand grew, market competition led to focus on taste and
+            addiction rather than quality and safety, increasing use of
+            artificial sweeteners while reducing nutrient retention.
+          </p>
+        </div>
+
+        <div className="content-card">
+          <div className="card-header">
+            <span className="card-icon">⚙️</span>
+            <h2>Industrial Revolution Impact</h2>
+          </div>
+          <p>
+            This narrative fitted well with socio-economic growth fueled by
+            industrial revolution that introduced fast paced lives and
+            convenience foods.
+          </p>
+        </div>
+
+        <div className="content-card">
+          <div className="card-header">
+            <span className="card-icon">💸</span>
+            <h2>Profit Over Health</h2>
+          </div>
+          <p>
+            In the quest to maximize profits, the food industry pulled all stops
+            to attract unsuspecting consumers to these high calorie foods.
+          </p>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="stats-section">
+        <div className="stat-item">
+          <h3>90%</h3>
+          <p>
+            of global lifestyle diseases are caused by low nutrient, high
+            calorie foods
+          </p>
+        </div>
+        <div className="stat-item">
+          <h3>100+</h3>
+          <p>artificial additives commonly used in processed foods</p>
+        </div>
+        <div className="stat-item">
+          <h3>1%</h3>
+          <p>
+            of government regulations prioritize nutrient optimization over
+            trade
+          </p>
+        </div>
+      </section>
+
+      {/* Mission Section */}
+      <section className="mission-section">
+        <div className="mission-content">
+          <h2>Our Mission</h2>
+          <p>
+            Through comprehensive programs, Centre for Lifechange and
+            Nutritional Healthcare empowers consumers to make healthy diet
+            choices for independence and pure health.
+          </p>
+          <Link to="/food-justice" className="cta-button">
+            See also Food Justice →
+          </Link>
+        </div>
+      </section>
+
+      {/* Related Topics Section */}
+      <section className="topics-section">
+        <h2>Explore More Topics</h2>
+        <div className="topics-grid">
+          <div className="topic-card">
+            <div className="topic-image">
+              <img src="/st1.png" alt="Strategies for Alternative Healthcare" />
+            </div>
+            <div className="topic-content">
               <Link to="/strategies">
                 <h3>Strategies for Alternative Healthcare</h3>
               </Link>
@@ -49,13 +137,11 @@ const HighNutrients = () => {
             </div>
           </div>
 
-          <div className="topic-item">
-            <img
-              src="/nu2.jpeg"
-              alt="Organic Diet"
-              className="campaign-card-image"
-            />
-            <div className="topic-info">
+          <div className="topic-card">
+            <div className="topic-image">
+              <img src="/nu2.jpeg" alt="Organic Diet" />
+            </div>
+            <div className="topic-content">
               <Link to="/organic">
                 <h3>Organic Diet</h3>
               </Link>
@@ -66,25 +152,23 @@ const HighNutrients = () => {
             </div>
           </div>
 
-          <div className="topic-item">
-            <img
-              src="/pe1.jpg"
-              alt="Physically Active"
-              className="campaign-card-image"
-            />
-            <div className="topic-info">
+          <div className="topic-card">
+            <div className="topic-image">
+              <img src="/pe1.jpg" alt="Physically Active" />
+            </div>
+            <div className="topic-content">
               <Link to="/physical">
-                <h3>Physically Active Life to Keep Diseases at Bay</h3>
+                <h3>Physically Active Lifestyle</h3>
               </Link>
               <p>
-                Understand the role of physical activity in preventing yourself
-                from diseases
+                Understand the role of physical activity in preventing diseases.
               </p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
+
 export default HighNutrients;

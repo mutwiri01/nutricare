@@ -23,14 +23,12 @@ const OrganicDiet = () => {
       {/* Content Section */}
       <section className="organic-content">
         <div className="organic-text-content">
-          <p className="organic-intro">
-            We must make deliberate efforts to restore the ecosystem as a
-            primary measure to reverse the disease pandemic. The importance of
-            consumption of organically produced food for good health and
-            longevity cannot be overemphasized.
-          </p>
 
           <div className="organic-paragraphs">
+            <p>
+              The importance of consumption of organically produced food for
+              good health and longevity cannot be overemphasized.
+            </p>
             <p>
               The human body is an organic structure that operates optimally in
               a natural ecosystem. Industrial food production and processing is
@@ -76,7 +74,7 @@ const OrganicDiet = () => {
           <div className="organic-benefits">
             <h3>Benefits of Organic Diet</h3>
             <ul>
-              <li>Reduced exposure to pesticides</li>
+              <li>No exposure to pesticides</li>
               <li>Higher nutritional value</li>
               <li>Better for the environment</li>
               <li>Supports biodiversity</li>

@@ -86,7 +86,7 @@ const NutrientHarvest = () => {
             </p>
             <div className="nutrient-belief">
               <p>
-                At the Centre for Nutritional Healthcare we believe that broad
+                At the Centre for Life change and Nutritional Healthcare we believe that broad
                 based and sustainable interventions offer the best chances of
                 solving these complex health issues.
               </p>

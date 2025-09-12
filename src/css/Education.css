@@ -24,7 +24,7 @@
 
 /* Base Education Page Styles */
 .education-page {
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto Slab";
   color: var(--education-dark);
   background-color: var(--education-light);
   line-height: 1.6;
