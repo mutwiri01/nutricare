@@ -1,3 +1,4 @@
+// HighNutrients.jsx
 import { Link } from "react-router-dom";
 import "../css/HighNutrients.css";
 
@@ -15,7 +16,7 @@ const HighNutrients = () => {
           </p>
         </div>
         <div className="hero-image">
-          <img src="/hnu2.jpeg" alt="Healthy nutrition" />
+          <img src="/hinutrient.jpg" alt="Healthy nutrition" />
         </div>
       </section>
 

@@ -48,11 +48,11 @@ const ResourceCenter = () => {
       category: "nutrition",
     },
     {
-      title: "Advocacy For Preventive Health",
+      title: "Accelerate Uptake Of Plant Protein To Bridge The Nutrient Gap",
       description: "Adopt suitable proactive and health strategies",
-      link: "/advocacy",
-      image: "/li1.jpg",
-      category: "advocacy",
+      link: "/plant",
+      image: "/p1.jpg",
+      category: "Plant Protein",
     },
     {
       title: "Prevention is Better Than Cure",
