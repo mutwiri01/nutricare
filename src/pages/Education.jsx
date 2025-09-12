@@ -22,7 +22,7 @@ const Education = () => {
       <div className="education-main">
         <div className="education-content-grid">
           <div className="education-featured-image">
-            <img src="/strat.jpg" alt="Education" className="education-img" />
+            <img src="/books1.jpg" alt="Education" className="education-img" />
             <div className="education-image-overlay">
               <div className="education-image-badge">Knowledge is Power</div>
             </div>
