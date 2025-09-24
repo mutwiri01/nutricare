@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const dotenv = require("dotenv");
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config();
@@ -464,4 +464,4 @@ app.listen(PORT, () => {
 });
 
 // Export the app
-module.exports = app;
+export default app;
