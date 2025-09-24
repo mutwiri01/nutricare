@@ -57,17 +57,9 @@ const HomePage = () => {
         <div className="homepage-hero-content">
           <div className="homepage-hero-text">
             <h1>
-              <span className="homepage-highlight">
-                Developing Innovative Approaches
-              </span>{" "}
-              to Combat Lifestyle Diseases
+              <span className="homepage-highlight">Lifestyle change,</span> the
+              last mile in the fight against chronic diseases.
             </h1>
-            <p className="homepage-lead">
-              Lifestyle diseases have taken the place of infectious diseases and
-              are indiscriminately afflicting people across the demographic
-              divide. Healthcare systems are overwhelmed and there is an urgent
-              need to deploy new approaches to deal with this scourge.
-            </p>
             <button className="homepage-cta-button" onClick={scrollToServices}>
               Explore Our Solutions
             </button>
@@ -97,12 +89,67 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Hero Lead Section */}
+      <section className="homepage-hero-lead-section">
+        <div className="homepage-hero-lead-content">
+          <div className="homepage-hero-lead-text">
+            <p className="homepage-lead-intro">
+              At the Centre for Lifechange and Nutritional Healthcare (CLiNH),
+              there is new hope for people at risk and living with lifestyle
+              diseases. As the name suggests, these illnesses are a direct
+              result of our lifestyle choices - diet, behaviour and environment.
+              That means, the most effective way to reverse them is through
+              lifestyle change.
+            </p>
+
+            <div className="homepage-lead-details">
+              <div className="homepage-lead-description">
+                <p>
+                  At CLiNH we apply a comprehensive and a holistic process that
+                  guarantees you maximum health benefits. Here we track disease
+                  symptoms, trace causes and eliminate the offending factors
+                  through a rigorous health coaching process. We support you to
+                  overcome negative tendencies through a self driven, mindful
+                  and transformational behaviour change process.
+                </p>
+                <p>
+                  Furthermore, we provide you with ample data to help you make
+                  new informed choices as you scale up the health ladder.
+                </p>
+              </div>
+
+              <div className="homepage-lead-benefits">
+                <h3>
+                  At the end of the coaching season, you will be able to make
+                  the right healthy choices:
+                </h3>
+                <ul className="homepage-benefits-list">
+                  <li>Consuming a healthy and nutritious diet</li>
+                  <li>Identifying and avoiding food that harms your health</li>
+                  <li>Adopting appropriate physically active routines</li>
+                  <li>
+                    Dealing with stress and emotionally draining experiences
+                  </li>
+                  <li>Maintaining healthy relationships</li>
+                  <li>Living a spiritually fulfilling life</li>
+                  <li>Caring for your work and living environment</li>
+                </ul>
+                <p className="homepage-lead-conclusion">
+                  These and many more are our key guarantees for sustainable
+                  healthy living that promises to transform your life.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Stats Section */}
       <section className="homepage-stats-section" ref={statsRef}>
         <div className="homepage-stats-grid">
           <div className="homepage-stat-card">
             <h2>{counts.deaths.toLocaleString()}+</h2>
-            <p>Global deaths from NCDs yearly</p>
+            <p>Global deaths from lifestyle diseases yearly</p>
             <div className="homepage-stat-bar"></div>
           </div>
           <div className="homepage-stat-card">
@@ -122,7 +169,7 @@ const HomePage = () => {
       <section className="homepage-problem-section">
         <div className="homepage-problem-content">
           <div className="homepage-problem-text full-width-text">
-            <h2>The Growing Crisis of NCDs</h2>
+            <h2>The Growing Crisis of lifestyle diseases</h2>
             <p>
               Diabetes, cancers, cardiovascular diseases, and other
               non-communicable diseases are now the leading cause of death in
