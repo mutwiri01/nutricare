@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import "../css/AdminDashboard.css";
 
 const AdminDashboard = ({ apiBaseUrl }) => {
-  const API_BASE_URL = apiBaseUrl || "http://localhost:5000/api";
+  const API_BASE_URL = apiBaseUrl || "https://nutricare-a1g7.vercel.app/api";
   const [activeTab, setActiveTab] = useState("bookings");
   const [bookings, setBookings] = useState([]);
   const [webinars, setWebinars] = useState([]);

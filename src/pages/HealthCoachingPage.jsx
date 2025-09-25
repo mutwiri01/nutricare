@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import "../css/HealthCoachingPage.css";
 
 const HealthCoachingPage = ({ apiBaseUrl }) => {
-  const API_BASE_URL = apiBaseUrl || "http://localhost:5000/api";
+  const API_BASE_URL = apiBaseUrl || "https://nutricare-a1g7.vercel.app/api";
   const [activeTab, setActiveTab] = useState("personal");
   const [bookingStep, setBookingStep] = useState(-1);
   const [bookingData, setBookingData] = useState({

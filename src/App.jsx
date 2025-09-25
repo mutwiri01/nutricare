@@ -35,7 +35,7 @@ import HealthPrevention from "./pages/HealthPrevention";
 
 // API base URL - using a direct value instead of process.env for frontend
 const API_BASE_URL =
-  window._env_?.REACT_APP_API_URL || "http://localhost:5000/api";
+  window._env_?.REACT_APP_API_URL || "https://nutricare-a1g7.vercel.app/api";
 
 // Wrapper component to scroll to the top on route change
 const ScrollToTop = () => {

@@ -460,13 +460,4 @@ app.post("/api/webinars/:id/register", async (req, res) => {
 // Export the app for Vercel's serverless function handler
 export default app;
 
-// Start the server ONLY if the file is executed directly (local development)
-if (
-  process.env.NODE_ENV !== "production" ||
-  process.env.IS_VERCEL === undefined
-) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    console.log(`MONGODB_URI defined: ${!!process.env.MONGODB_URI}`);
-  });
-}
+
