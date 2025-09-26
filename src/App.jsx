@@ -80,7 +80,7 @@ function AppContent() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/health-prevention" element={<HealthPrevention/>}/>
         <Route
-          path="/admin"
+          path="/me$n&jer"
           element={<AdminDashboard apiBaseUrl={API_BASE_URL} />}
         />
         <Route path="*" element={<Navigate to="/" />} />
