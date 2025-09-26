@@ -5,12 +5,42 @@
 import { useState, useEffect } from "react";
 import "../css/AdminDashboard.css";
 
+// Helper components for Icons (using Emojis as placeholders for visual appeal)
+const Icon = ({ name }) => {
+  switch (name) {
+    case "Bookings":
+      return "🗓️";
+    case "Webinars":
+      return "💡";
+    case "Add":
+      return "✨";
+    case "View":
+      return "👁️";
+    case "Edit":
+      return "✏️";
+    case "Delete":
+      return "🗑️";
+    case "Export":
+      return "📤";
+    case "Register":
+      return "👥";
+    case "Attendee":
+      return "🧑‍💻";
+    case "Sessions":
+      return "✅";
+    default:
+      return "";
+  }
+};
+
 const AdminDashboard = ({ apiBaseUrl }) => {
   const API_BASE_URL = apiBaseUrl || "https://nutricare-a1g7.vercel.app/api";
   const [activeTab, setActiveTab] = useState("bookings");
   const [bookings, setBookings] = useState([]);
   const [webinars, setWebinars] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Used for initial data fetching only
+  const [isSubmittingWebinar, setIsSubmittingWebinar] = useState(false); // ✅ FIX 1: State for webinar form submission
+  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false); // State for booking form submission
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [editingWebinar, setEditingWebinar] = useState(null);
@@ -103,18 +133,23 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   useEffect(() => {
     fetchData();
     calculateStats();
-  }, [activeTab, bookings, webinars]);
+  }, [activeTab]);
+
+  useEffect(() => {
+    calculateStats();
+  }, [bookings, webinars]);
 
   const calculateStats = () => {
     const totalBookings = bookings.length;
+    // Defensive check applied here as well
     const upcomingWebinars = webinars.filter(
-      (w) => w.status === "upcoming"
+      (w) => (w.status || "unknown") === "upcoming"
     ).length;
     const completedSessions = bookings.filter(
       (b) => b.status === "completed"
     ).length;
     const totalAttendees = webinars.reduce(
-      (sum, webinar) => sum + webinar.currentAttendees,
+      (sum, webinar) => sum + (webinar.currentAttendees || 0),
       0
     );
 
@@ -128,38 +163,42 @@ const AdminDashboard = ({ apiBaseUrl }) => {
 
   const fetchData = async () => {
     setIsLoading(true);
+    clearMessages();
     try {
-      if (activeTab === "bookings") {
-        const response = await fetch(`${API_BASE_URL}/bookings`);
-        if (response.ok) {
-          const data = await response.json();
+      // Fetch Bookings
+      if (activeTab === "bookings" || activeTab === "dashboard") {
+        const bookingsResponse = await fetch(`${API_BASE_URL}/bookings`);
+        if (bookingsResponse.ok) {
+          const data = await bookingsResponse.json();
           setBookings(data);
         } else {
-          setError("Failed to fetch bookings");
+          setError((prev) => prev + " Failed to fetch bookings.");
           setBookings([]);
         }
-      } else {
+      }
+
+      // Fetch Webinars
+      if (activeTab === "webinars" || activeTab === "dashboard") {
         try {
-          const response = await fetch(`${API_BASE_URL}/webinars`);
-          if (response.ok) {
-            const data = await response.json();
+          const webinarsResponse = await fetch(`${API_BASE_URL}/webinars`);
+          if (webinarsResponse.ok) {
+            const data = await webinarsResponse.json();
             setWebinars(data);
           } else {
             setWebinars(mockWebinars);
-            setError("Using demo data. Webinars API not available.");
+            setError(
+              (prev) => prev + " Using demo data. Webinars API not available."
+            );
           }
         } catch (err) {
           setWebinars(mockWebinars);
-          setError("Using demo data. Webinars API not available.");
+          setError(
+            (prev) => prev + " Using demo data. Webinars API not available."
+          );
         }
       }
     } catch (error) {
-      setError("Failed to fetch data");
-      if (activeTab === "bookings") {
-        setBookings([]);
-      } else {
-        setWebinars(mockWebinars);
-      }
+      setError("An unexpected error occurred during data fetch.");
     } finally {
       setIsLoading(false);
     }
@@ -204,6 +243,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           ...prev,
           [webinarId]: mockRegistrations,
         }));
+        setError("Using demo data. Registrations API not available.");
       }
     } catch (error) {
       setError("Failed to fetch registrations");
@@ -219,7 +259,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   const handleDeleteBooking = async (id) => {
     if (!window.confirm("Are you sure you want to delete this booking?"))
       return;
-
+    clearMessages();
     try {
       const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
         method: "DELETE",
@@ -239,7 +279,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   const handleDeleteWebinar = async (id) => {
     if (!window.confirm("Are you sure you want to delete this webinar?"))
       return;
-
+    clearMessages();
     try {
       const response = await fetch(`${API_BASE_URL}/webinars/${id}`, {
         method: "DELETE",
@@ -259,6 +299,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
+    clearMessages();
     try {
       const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
         method: "PUT",
@@ -284,6 +325,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   };
 
   const handleWebinarStatusChange = async (id, newStatus) => {
+    clearMessages();
     try {
       const response = await fetch(`${API_BASE_URL}/webinars/${id}`, {
         method: "PUT",
@@ -335,9 +377,11 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     });
   };
 
+  // Use isSubmittingWebinar
   const handleCreateWebinar = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmittingWebinar(true);
+    clearMessages();
 
     try {
       const response = await fetch(`${API_BASE_URL}/webinars`, {
@@ -352,17 +396,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         const newWebinar = await response.json();
         setWebinars([...webinars, newWebinar]);
         setSuccess("Webinar created successfully");
-        setShowWebinarForm(false);
-        setWebinarForm({
-          title: "",
-          date: "",
-          time: "",
-          duration: "",
-          speaker: "",
-          description: "",
-          maxAttendees: 100,
-          status: "upcoming",
-        });
       } else {
         const newWebinar = {
           _id: Date.now().toString(),
@@ -372,17 +405,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         };
         setWebinars([...webinars, newWebinar]);
         setSuccess("Webinar added to local data (API not available)");
-        setShowWebinarForm(false);
-        setWebinarForm({
-          title: "",
-          date: "",
-          time: "",
-          duration: "",
-          speaker: "",
-          description: "",
-          maxAttendees: 100,
-          status: "upcoming",
-        });
       }
     } catch (error) {
       const newWebinar = {
@@ -393,7 +415,9 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       };
       setWebinars([...webinars, newWebinar]);
       setSuccess("Webinar added to local data (API not available)");
+    } finally {
       setShowWebinarForm(false);
+      setIsSubmittingWebinar(false);
       setWebinarForm({
         title: "",
         date: "",
@@ -404,8 +428,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         maxAttendees: 100,
         status: "upcoming",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -419,12 +441,13 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       speaker: webinar.speaker,
       description: webinar.description || "",
       maxAttendees: webinar.maxAttendees,
-      status: webinar.status,
+      status: webinar.status || "upcoming", // Defensive default
     });
     setShowWebinarForm(true);
   };
 
   const handleEditBooking = (booking) => {
+    setSelectedBooking(booking); // Set selected booking for modal view
     setEditingBooking(booking);
     setBookingForm({
       name: booking.name,
@@ -442,9 +465,11 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     setShowBookingForm(true);
   };
 
+  // Use isSubmittingWebinar
   const handleUpdateWebinar = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmittingWebinar(true);
+    clearMessages();
 
     try {
       const response = await fetch(
@@ -466,18 +491,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           )
         );
         setSuccess("Webinar updated successfully");
-        setShowWebinarForm(false);
-        setEditingWebinar(null);
-        setWebinarForm({
-          title: "",
-          date: "",
-          time: "",
-          duration: "",
-          speaker: "",
-          description: "",
-          maxAttendees: 100,
-          status: "upcoming",
-        });
       } else {
         setWebinars(
           webinars.map((w) =>
@@ -485,18 +498,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           )
         );
         setSuccess("Webinar updated in local data (API not available)");
-        setShowWebinarForm(false);
-        setEditingWebinar(null);
-        setWebinarForm({
-          title: "",
-          date: "",
-          time: "",
-          duration: "",
-          speaker: "",
-          description: "",
-          maxAttendees: 100,
-          status: "upcoming",
-        });
       }
     } catch (error) {
       setWebinars(
@@ -505,8 +506,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         )
       );
       setSuccess("Webinar updated in local data (API not available)");
+    } finally {
       setShowWebinarForm(false);
       setEditingWebinar(null);
+      setIsSubmittingWebinar(false);
       setWebinarForm({
         title: "",
         date: "",
@@ -517,14 +520,14 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         maxAttendees: 100,
         status: "upcoming",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
+  // Use isSubmittingBooking for update
   const handleUpdateBooking = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmittingBooking(true);
+    clearMessages();
 
     try {
       const response = await fetch(
@@ -546,21 +549,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           )
         );
         setSuccess("Booking updated successfully");
-        setShowBookingForm(false);
-        setEditingBooking(null);
-        setBookingForm({
-          name: "",
-          email: "",
-          phone: "",
-          serviceType: "personal",
-          consultationType: "virtual",
-          cluster: "nutrition",
-          date: "",
-          time: "",
-          condition: "",
-          notes: "",
-          status: "confirmed",
-        });
       } else {
         setBookings(
           bookings.map((b) =>
@@ -568,21 +556,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           )
         );
         setSuccess("Booking updated in local data (API not available)");
-        setShowBookingForm(false);
-        setEditingBooking(null);
-        setBookingForm({
-          name: "",
-          email: "",
-          phone: "",
-          serviceType: "personal",
-          consultationType: "virtual",
-          cluster: "nutrition",
-          date: "",
-          time: "",
-          condition: "",
-          notes: "",
-          status: "confirmed",
-        });
       }
     } catch (error) {
       setBookings(
@@ -591,8 +564,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         )
       );
       setSuccess("Booking updated in local data (API not available)");
+    } finally {
       setShowBookingForm(false);
       setEditingBooking(null);
+      setIsSubmittingBooking(false);
       setBookingForm({
         name: "",
         email: "",
@@ -606,8 +581,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         notes: "",
         status: "confirmed",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -629,6 +602,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   const cancelBookingForm = () => {
     setShowBookingForm(false);
     setEditingBooking(null);
+    setSelectedBooking(null);
     setBookingForm({
       name: "",
       email: "",
@@ -662,7 +636,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
             ).toLocaleDateString()}"`
         ),
       ].join("\n");
-
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -692,361 +665,353 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     <div className={`stat-card stat-${color}`}>
       <div className="stat-icon">{icon}</div>
       <div className="stat-content">
-        <h3>{value}</h3>
+        <h3>{value.toLocaleString()}</h3>
         <p>{title}</p>
       </div>
     </div>
   );
 
+  const getStatusBadgeClass = (status) => {
+    switch (status) {
+      case "pending":
+        return "status-badge pending";
+      case "confirmed":
+        return "status-badge confirmed";
+      case "completed":
+        return "status-badge completed";
+      case "cancelled":
+        return "status-badge cancelled";
+      case "upcoming":
+        return "status-badge upcoming";
+      case "live":
+        return "status-badge live";
+      default:
+        return "status-badge";
+    }
+  };
+
+  const renderBookings = () => (
+    <div className="admin-section">
+      <div className="section-header">
+        <div className="section-title">
+          <h2>Client Bookings</h2>
+          <p>
+            Manage and view all client consultation bookings ({bookings.length}{" "}
+            Total)
+          </p>
+        </div>
+        <button
+          className="admin-btn primary"
+          onClick={() => {
+            setEditingBooking(null);
+            cancelBookingForm();
+            setShowBookingForm(true);
+          }}
+        >
+          <Icon name="Add" /> New Booking
+        </button>
+      </div>
+
+      {isLoading ? (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Fetching bookings data...</p>
+        </div>
+      ) : bookings.length === 0 ? (
+        <div className="empty-state">
+          <Icon name="Bookings" />
+          <p>No bookings found.</p>
+        </div>
+      ) : (
+        <div className="table-container stunning-table">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Service/Cluster</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookings.map((booking) => (
+                <tr key={booking._id}>
+                  <td>
+                    <div className="client-info">
+                      <div className="client-avatar">
+                        {booking.name ? booking.name[0] : "C"}
+                      </div>
+                      <div className="client-details">
+                        <strong>{booking.name}</strong>
+                        <span>{booking.email}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span className={`service-badge ${booking.serviceType}`}>
+                      {booking.serviceType}
+                    </span>
+                    <span className="cluster-badge">{booking.cluster}</span>
+                  </td>
+                  <td>
+                    {new Date(booking.date).toLocaleDateString()} at{" "}
+                    {booking.time}
+                  </td>
+                  <td>
+                    <select
+                      value={booking.status}
+                      className={getStatusBadgeClass(booking.status)}
+                      onChange={(e) =>
+                        handleStatusChange(booking._id, e.target.value)
+                      }
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </td>
+                  <td className="actions-cell">
+                    <button
+                      className="admin-btn view small"
+                      onClick={() => viewBookingDetails(booking)}
+                      title="View Details"
+                    >
+                      <Icon name="View" />
+                    </button>
+                    <button
+                      className="admin-btn edit small"
+                      onClick={() => handleEditBooking(booking)}
+                      title="Edit Booking"
+                    >
+                      <Icon name="Edit" />
+                    </button>
+                    <button
+                      className="admin-btn delete small"
+                      onClick={() => handleDeleteBooking(booking._id)}
+                      title="Delete Booking"
+                    >
+                      <Icon name="Delete" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderWebinars = () => (
+    <div className="admin-section">
+      <div className="section-header">
+        <div className="section-title">
+          <h2>Webinar Management</h2>
+          <p>Schedule and manage upcoming and past webinars.</p>
+        </div>
+        <button
+          className="admin-btn primary"
+          onClick={() => {
+            setEditingWebinar(null);
+            cancelWebinarForm();
+            setShowWebinarForm(true);
+          }}
+        >
+          <Icon name="Add" /> Schedule Webinar
+        </button>
+      </div>
+
+      {isLoading ? (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Fetching webinars data...</p>
+        </div>
+      ) : webinars.length === 0 ? (
+        <div className="empty-state">
+          <Icon name="Webinars" />
+          <p>No webinars scheduled.</p>
+        </div>
+      ) : (
+        <div className="webinar-cards-container stunning-cards">
+          {webinars.map((webinar) => {
+            // ✅ FIX 1: Defensive status check to prevent TypeError
+            const currentStatus = webinar.status || "unknown";
+
+            return (
+              <div key={webinar._id} className="webinar-card">
+                <div className="webinar-header">
+                  <span className={`webinar-status ${currentStatus}`}>
+                    {currentStatus.toUpperCase()}
+                  </span>
+                  <select
+                    value={currentStatus}
+                    className="status-dropdown"
+                    onChange={(e) =>
+                      handleWebinarStatusChange(webinar._id, e.target.value)
+                    }
+                  >
+                    <option value="upcoming">Upcoming</option>
+                    <option value="live">Live</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+                <h3 className="webinar-title">{webinar.title}</h3>
+                <p className="webinar-speaker">
+                  Speaker: <strong>{webinar.speaker}</strong>
+                </p>
+                <div className="webinar-info">
+                  <span>🗓️ {new Date(webinar.date).toLocaleDateString()}</span>
+                  <span>
+                    🕒 {webinar.time} ({webinar.duration})
+                  </span>
+                  <span>
+                    👥{" "}
+                    <strong>
+                      {webinar.currentAttendees}/{webinar.maxAttendees}
+                    </strong>{" "}
+                    Attendees
+                  </span>
+                </div>
+                <p className="webinar-description">{webinar.description}</p>
+                <div className="webinar-actions">
+                  <button
+                    className="admin-btn view small"
+                    onClick={() => toggleRegistrations(webinar._id)}
+                  >
+                    <Icon name="Register" />{" "}
+                    {showRegistrations === webinar._id ? "Hide" : "View"}{" "}
+                    Attendees
+                  </button>
+                  <button
+                    className="admin-btn edit small"
+                    onClick={() => handleEditWebinar(webinar)}
+                  >
+                    <Icon name="Edit" /> Edit
+                  </button>
+                  <button
+                    className="admin-btn delete small"
+                    onClick={() => handleDeleteWebinar(webinar._id)}
+                  >
+                    <Icon name="Delete" /> Delete
+                  </button>
+                </div>
+
+                {/* Registrations List */}
+                {showRegistrations === webinar._id && (
+                  <div className="registration-list">
+                    <h4>Registrations:</h4>
+                    {registrationLoading[webinar._id] ? (
+                      <p>Loading registrations...</p>
+                    ) : webinarRegistrations[webinar._id]?.length > 0 ? (
+                      <>
+                        <button
+                          className="admin-btn secondary small"
+                          onClick={() => exportRegistrations(webinar._id)}
+                        >
+                          <Icon name="Export" /> Export CSV
+                        </button>
+                        <ul>
+                          {webinarRegistrations[webinar._id].map((r) => (
+                            <li key={r._id}>
+                              {r.name} - {r.email}
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : (
+                      <p className="no-registrations">No registrations yet.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="admin-dashboard">
-      {/* Header */}
       <header className="admin-header">
         <div className="header-content">
           <div className="header-title">
-            <h1>Wellness Admin Dashboard</h1>
-            <p>Manage bookings and webinars efficiently</p>
+            <h1>
+              Admin Dashboard <Icon name="Add" />
+            </h1>
+            <p>
+              Welcome back! Manage your client bookings and webinars
+              efficiently.
+            </p>
           </div>
           <div className="header-stats">
             <StatCard
               icon="📅"
               title="Total Bookings"
               value={stats.totalBookings}
-              color="primary"
+              color="blue"
             />
             <StatCard
-              icon="🎯"
+              icon="💡"
               title="Upcoming Webinars"
               value={stats.upcomingWebinars}
-              color="success"
+              color="green"
             />
             <StatCard
               icon="✅"
               title="Completed Sessions"
               value={stats.completedSessions}
-              color="warning"
+              color="yellow"
             />
             <StatCard
-              icon="👥"
+              icon="🧑‍💻"
               title="Total Attendees"
               value={stats.totalAttendees}
-              color="info"
+              color="red"
             />
           </div>
         </div>
-
         <nav className="admin-nav">
           <button
             className={activeTab === "bookings" ? "active" : ""}
             onClick={() => setActiveTab("bookings")}
           >
-            <span className="nav-icon">📋</span>
-            Bookings
+            <Icon name="Bookings" /> Bookings
           </button>
           <button
             className={activeTab === "webinars" ? "active" : ""}
             onClick={() => setActiveTab("webinars")}
           >
-            <span className="nav-icon">🎤</span>
-            Webinars
+            <Icon name="Webinars" /> Webinars
           </button>
         </nav>
       </header>
 
       <main className="admin-content">
-        {/* Messages */}
         {error && (
-          <div className="admin-message error">
-            <span>{error}</span>
-            <button onClick={clearMessages}>×</button>
+          <div className="message error" onClick={clearMessages}>
+            ⚠️ {error}
           </div>
         )}
         {success && (
-          <div className="admin-message success">
-            <span>{success}</span>
-            <button onClick={clearMessages}>×</button>
+          <div className="message success" onClick={clearMessages}>
+            ✅ {success}
           </div>
         )}
 
-        {/* Bookings Tab */}
-        {activeTab === "bookings" && (
-          <div className="admin-section">
-            <div className="section-header">
-              <div className="section-title">
-                <h2>📋 Booking Management</h2>
-                <p>Manage client appointments and consultations</p>
-              </div>
-              <button
-                className="admin-btn primary"
-                onClick={() => setShowBookingForm(true)}
-              >
-                <span>+</span> Add New Booking
-              </button>
-            </div>
+        {activeTab === "bookings" && renderBookings()}
+        {activeTab === "webinars" && renderWebinars()}
 
-            <div className="table-container">
-              {bookings.length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">📅</div>
-                  <h3>No bookings found</h3>
-                  <p>Start by creating your first booking</p>
-                </div>
-              ) : (
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Client</th>
-                      <th>Contact</th>
-                      <th>Service Type</th>
-                      <th>Date & Time</th>
-                      <th>Focus Area</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bookings.map((booking) => (
-                      <tr key={booking._id}>
-                        <td>
-                          <div className="client-info">
-                            <div className="client-avatar">
-                              {booking.name.charAt(0)}
-                            </div>
-                            <div className="client-details">
-                              <strong>{booking.name}</strong>
-                              <span>{booking.cluster}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="contact-info">
-                            <span>{booking.email}</span>
-                            {booking.phone && <small>{booking.phone}</small>}
-                          </div>
-                        </td>
-                        <td>
-                          <span
-                            className={`service-badge ${booking.serviceType}`}
-                          >
-                            {booking.serviceType === "personal"
-                              ? "Personal"
-                              : "Corporate"}
-                          </span>
-                        </td>
-                        <td>
-                          <div className="datetime-info">
-                            <strong>
-                              {new Date(booking.date).toLocaleDateString()}
-                            </strong>
-                            <span>at {booking.time}</span>
-                          </div>
-                        </td>
-                        <td>
-                          <span className={`cluster-badge ${booking.cluster}`}>
-                            {booking.cluster}
-                          </span>
-                        </td>
-                        <td>
-                          <select
-                            value={booking.status}
-                            onChange={(e) =>
-                              handleStatusChange(booking._id, e.target.value)
-                            }
-                            className={`status-select status-${booking.status}`}
-                          >
-                            <option value="confirmed">Confirmed</option>
-                            <option value="cancelled">Cancelled</option>
-                            <option value="completed">Completed</option>
-                          </select>
-                        </td>
-                        <td>
-                          <div className="action-buttons">
-                            <button
-                              className="admin-btn view"
-                              onClick={() => viewBookingDetails(booking)}
-                              title="View Details"
-                            >
-                              👁️
-                            </button>
-                            <button
-                              className="admin-btn edit"
-                              onClick={() => handleEditBooking(booking)}
-                              title="Edit"
-                            >
-                              ✏️
-                            </button>
-                            <button
-                              className="admin-btn delete"
-                              onClick={() => handleDeleteBooking(booking._id)}
-                              title="Delete"
-                            >
-                              🗑️
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Webinars Tab */}
-        {activeTab === "webinars" && (
-          <div className="admin-section">
-            <div className="section-header">
-              <div className="section-title">
-                <h2>🎤 Webinar Management</h2>
-                <p>Create and manage wellness webinars</p>
-              </div>
-              <button
-                className="admin-btn primary"
-                onClick={() => setShowWebinarForm(true)}
-              >
-                <span>+</span> Add New Webinar
-              </button>
-            </div>
-
-            <div className="webinar-grid">
-              {webinars.map((webinar) => (
-                <div key={webinar._id} className="webinar-card">
-                  <div className="webinar-header">
-                    <div className="webinar-thumbnail">
-                      {webinar.thumbnail || "📊"}
-                    </div>
-                    <div className="webinar-title">
-                      <h3>{webinar.title}</h3>
-                      <span className={`status-badge ${webinar.status}`}>
-                        {webinar.status}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="webinar-details">
-                    <div className="detail-item">
-                      <span className="detail-icon">👨‍🏫</span>
-                      <span>{webinar.speaker}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-icon">📅</span>
-                      <span>
-                        {webinar.date} at {webinar.time}
-                      </span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-icon">⏱️</span>
-                      <span>{webinar.duration}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-icon">👥</span>
-                      <span>
-                        {webinar.currentAttendees}/{webinar.maxAttendees}{" "}
-                        attendees
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="webinar-actions">
-                    <select
-                      value={webinar.status}
-                      onChange={(e) =>
-                        handleWebinarStatusChange(webinar._id, e.target.value)
-                      }
-                      className={`status-select status-${webinar.status}`}
-                    >
-                      <option value="upcoming">Upcoming</option>
-                      <option value="live">Live</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
-
-                    <div className="action-buttons">
-                      <button
-                        className="admin-btn edit"
-                        onClick={() => handleEditWebinar(webinar)}
-                        title="Edit"
-                      >
-                        ✏️
-                      </button>
-                      <button
-                        className="admin-btn view"
-                        onClick={() => toggleRegistrations(webinar._id)}
-                        title="Registrations"
-                      >
-                        👥
-                      </button>
-                      <button
-                        className="admin-btn delete"
-                        onClick={() => handleDeleteWebinar(webinar._id)}
-                        title="Delete"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-
-                  {showRegistrations === webinar._id && (
-                    <div className="webinar-registrations">
-                      <div className="registrations-header">
-                        <h4>
-                          Registrations (
-                          {webinarRegistrations[webinar._id]?.length || 0})
-                        </h4>
-                        <button
-                          className="admin-btn primary small"
-                          onClick={() => exportRegistrations(webinar._id)}
-                        >
-                          📥 Export CSV
-                        </button>
-                      </div>
-                      {registrationLoading[webinar._id] ? (
-                        <div className="loading">Loading...</div>
-                      ) : webinarRegistrations[webinar._id]?.length > 0 ? (
-                        <div className="registrations-list">
-                          {webinarRegistrations[webinar._id].map(
-                            (registration) => (
-                              <div
-                                key={registration._id}
-                                className="registration-item"
-                              >
-                                <div className="registration-avatar">
-                                  {registration.name.charAt(0)}
-                                </div>
-                                <div className="registration-info">
-                                  <strong>{registration.name}</strong>
-                                  <span>{registration.email}</span>
-                                </div>
-                                <span className="registration-date">
-                                  {new Date(
-                                    registration.registeredAt
-                                  ).toLocaleDateString()}
-                                </span>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      ) : (
-                        <div className="empty-registrations">
-                          No registrations yet
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Modals */}
-        {showWebinarForm && (
+        {/* Webinar Form Modal */}
+        {(showWebinarForm || editingWebinar) && (
           <div className="modal-overlay">
-            <div className="modal-content">
+            <div className="modal-content large-modal">
               <div className="modal-header">
                 <h3>
-                  {editingWebinar ? "Edit Webinar" : "Create New Webinar"}
+                  {editingWebinar ? "Edit Webinar" : "Schedule New Webinar"}
                 </h3>
                 <button className="close-modal" onClick={cancelWebinarForm}>
                   ×
@@ -1059,9 +1024,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
               >
                 <div className="form-grid">
                   <div className="form-group">
-                    <label>Title *</label>
+                    <label htmlFor="title">Title</label>
                     <input
                       type="text"
+                      id="title"
                       name="title"
                       value={webinarForm.title}
                       onChange={handleWebinarFormChange}
@@ -1069,9 +1035,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Speaker *</label>
+                    <label htmlFor="speaker">Speaker</label>
                     <input
                       type="text"
+                      id="speaker"
                       name="speaker"
                       value={webinarForm.speaker}
                       onChange={handleWebinarFormChange}
@@ -1079,9 +1046,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Date *</label>
+                    <label htmlFor="date">Date</label>
                     <input
                       type="date"
+                      id="date"
                       name="date"
                       value={webinarForm.date}
                       onChange={handleWebinarFormChange}
@@ -1089,9 +1057,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Time *</label>
+                    <label htmlFor="time">Time</label>
                     <input
                       type="time"
+                      id="time"
                       name="time"
                       value={webinarForm.time}
                       onChange={handleWebinarFormChange}
@@ -1099,20 +1068,21 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Duration *</label>
+                    <label htmlFor="duration">Duration (e.g., 60 mins)</label>
                     <input
                       type="text"
+                      id="duration"
                       name="duration"
                       value={webinarForm.duration}
                       onChange={handleWebinarFormChange}
-                      placeholder="e.g., 60 mins"
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Max Attendees *</label>
+                    <label htmlFor="maxAttendees">Max Attendees</label>
                     <input
                       type="number"
+                      id="maxAttendees"
                       name="maxAttendees"
                       value={webinarForm.maxAttendees}
                       onChange={handleWebinarFormChange}
@@ -1120,30 +1090,49 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                       required
                     />
                   </div>
+                  <div className="form-group full-width">
+                    <label htmlFor="description">Description</label>
+                    <textarea
+                      id="description"
+                      name="description"
+                      value={webinarForm.description}
+                      onChange={handleWebinarFormChange}
+                      rows="3"
+                    ></textarea>
+                  </div>
+                  {editingWebinar && (
+                    <div className="form-group">
+                      <label htmlFor="status">Status</label>
+                      <select
+                        id="status"
+                        name="status"
+                        value={webinarForm.status}
+                        onChange={handleWebinarFormChange}
+                      >
+                        <option value="upcoming">Upcoming</option>
+                        <option value="live">Live</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
-                <div className="form-group full-width">
-                  <label>Description</label>
-                  <textarea
-                    name="description"
-                    value={webinarForm.description}
-                    onChange={handleWebinarFormChange}
-                    rows="3"
-                  />
-                </div>
+
                 <div className="form-actions">
                   <button
                     type="button"
                     className="admin-btn secondary"
                     onClick={cancelWebinarForm}
+                    disabled={isSubmittingWebinar}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     className="admin-btn primary"
-                    disabled={isLoading}
+                    disabled={isSubmittingWebinar}
                   >
-                    {isLoading
+                    {isSubmittingWebinar
                       ? "⏳ Processing..."
                       : editingWebinar
                       ? "Update Webinar"
@@ -1155,9 +1144,181 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           </div>
         )}
 
+        {/* Booking Form Modal (for editing/creating) */}
+        {(showBookingForm || editingBooking) && (
+          <div className="modal-overlay">
+            <div className="modal-content large-modal">
+              <div className="modal-header">
+                <h3>
+                  {editingBooking ? "Edit Booking" : "Create New Booking"}
+                </h3>
+                <button className="close-modal" onClick={cancelBookingForm}>
+                  ×
+                </button>
+              </div>
+              <form onSubmit={handleUpdateBooking}>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="name">Client Name</label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={bookingForm.name}
+                      onChange={handleBookingFormChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={bookingForm.email}
+                      onChange={handleBookingFormChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="phone">Phone (Optional)</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={bookingForm.phone}
+                      onChange={handleBookingFormChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="serviceType">Service Type</label>
+                    <select
+                      id="serviceType"
+                      name="serviceType"
+                      value={bookingForm.serviceType}
+                      onChange={handleBookingFormChange}
+                      required
+                    >
+                      <option value="personal">Personal</option>
+                      <option value="corporate">Corporate</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="consultationType">Consultation Type</label>
+                    <select
+                      id="consultationType"
+                      name="consultationType"
+                      value={bookingForm.consultationType}
+                      onChange={handleBookingFormChange}
+                      required
+                    >
+                      <option value="virtual">Virtual</option>
+                      <option value="in-person">In-Person</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="cluster">Cluster</label>
+                    <select
+                      id="cluster"
+                      name="cluster"
+                      value={bookingForm.cluster}
+                      onChange={handleBookingFormChange}
+                      required
+                    >
+                      <option value="nutrition">Nutrition</option>
+                      <option value="fitness">Fitness</option>
+                      <option value="mental health">Mental Health</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="date">Date</label>
+                    <input
+                      type="date"
+                      id="date"
+                      name="date"
+                      value={bookingForm.date}
+                      onChange={handleBookingFormChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="time">Time</label>
+                    <input
+                      type="time"
+                      id="time"
+                      name="time"
+                      value={bookingForm.time}
+                      onChange={handleBookingFormChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="status">Status</label>
+                    <select
+                      id="status"
+                      name="status"
+                      value={bookingForm.status}
+                      onChange={handleBookingFormChange}
+                      required
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div className="form-group full-width">
+                    <label htmlFor="condition">Condition/Reason</label>
+                    <input
+                      type="text"
+                      id="condition"
+                      name="condition"
+                      value={bookingForm.condition}
+                      onChange={handleBookingFormChange}
+                    />
+                  </div>
+                  <div className="form-group full-width">
+                    <label htmlFor="notes">Admin Notes</label>
+                    <textarea
+                      id="notes"
+                      name="notes"
+                      value={bookingForm.notes}
+                      onChange={handleBookingFormChange}
+                      rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    className="admin-btn secondary"
+                    onClick={cancelBookingForm}
+                    disabled={isSubmittingBooking}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="admin-btn primary"
+                    disabled={isSubmittingBooking}
+                  >
+                    {isSubmittingBooking
+                      ? "⏳ Processing..."
+                      : editingBooking
+                      ? "Update Booking"
+                      : "Create Booking"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Booking Details Modal (View only) */}
         {showBookingModal && selectedBooking && (
           <div className="modal-overlay">
-            <div className="modal-content">
+            <div className="modal-content small-modal">
               <div className="modal-header">
                 <h3>Booking Details</h3>
                 <button
@@ -1167,8 +1328,68 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                   ×
                 </button>
               </div>
-              <div className="booking-details">
-                {/* ... booking details content same as before ... */}
+              <div className="booking-details-view">
+                <p>
+                  <strong>Client:</strong> {selectedBooking.name} (
+                  {selectedBooking.email})
+                </p>
+                <p>
+                  <strong>Phone:</strong> {selectedBooking.phone || "N/A"}
+                </p>
+                <p>
+                  <strong>Service:</strong>{" "}
+                  <span
+                    className={`service-badge ${selectedBooking.serviceType}`}
+                  >
+                    {selectedBooking.serviceType}
+                  </span>{" "}
+                  /{" "}
+                  <span className="cluster-badge">
+                    {selectedBooking.cluster}
+                  </span>
+                </p>
+                <p>
+                  <strong>Consult Type:</strong>{" "}
+                  {selectedBooking.consultationType}
+                </p>
+                <p>
+                  <strong>Date & Time:</strong>{" "}
+                  {new Date(selectedBooking.date).toLocaleDateString()} at{" "}
+                  {selectedBooking.time}
+                </p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  <span className={getStatusBadgeClass(selectedBooking.status)}>
+                    {selectedBooking.status.toUpperCase()}
+                  </span>
+                </p>
+                <p>
+                  <strong>Condition:</strong>{" "}
+                  {selectedBooking.condition || "None specified"}
+                </p>
+                <p>
+                  <strong>Notes:</strong> {selectedBooking.notes || "No notes"}
+                </p>
+              </div>
+              <div className="form-actions view-actions">
+                <button
+                  className="admin-btn edit"
+                  onClick={() => {
+                    setShowBookingModal(false);
+                    handleEditBooking(selectedBooking);
+                  }}
+                >
+                  <Icon name="Edit" /> Edit
+                </button>
+                <button
+                  className="admin-btn delete"
+                  onClick={() => {
+                    setShowBookingModal(false);
+                    handleDeleteBooking(selectedBooking._id);
+                  }}
+                >
+                  <Icon name="Delete" /> Delete
+                </button>
               </div>
             </div>
           </div>
