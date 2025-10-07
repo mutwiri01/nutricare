@@ -19,7 +19,7 @@
   --white: #ffffff;
   --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   --transition: all 0.3s ease;
-  font-family: "Roboto Slab", serif;
+  font-family: "Roboto Slab";
   line-height: 1.6;
   color: var(--text);
   scroll-behavior: smooth;

@@ -7,13 +7,7 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const heroImages = [
-    "/Beauty Poster.jpg",
-    "/Allergy Poster.jpg",
-    "/Preventive Poster.jpg",
-    "/Fitness Poster.jpg",
-    "/Weight Poster.jpg",
-    "/BS Poster.jpg",
-    "/BP Poster.jpg",
+    "/h1.jpg",
   ];
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
   const [statsRef, statsInView] = useInView({ triggerOnce: true });
@@ -102,43 +96,42 @@ const HomePage = () => {
               lifestyle change.
             </p>
 
-            <div className="homepage-lead-details">
-              <div className="homepage-lead-description">
-                <p>
-                  At CLiNH we apply a comprehensive and a holistic process that
-                  guarantees you maximum health benefits. Here we track disease
-                  symptoms, trace causes and eliminate the offending factors
-                  through a rigorous health coaching process. We support you to
-                  overcome negative tendencies through a self driven, mindful
-                  and transformational behaviour change process.
-                </p>
-                <p>
-                  Furthermore, we provide you with ample data to help you make
-                  new informed choices as you scale up the health ladder.
-                </p>
-              </div>
+            <div className="homepage-lead-description">
+              <p>
+                At CLiNH we apply a comprehensive and a holistic process that
+                guarantees you maximum health benefits. Here we track disease
+                symptoms, trace causes and eliminate the offending factors
+                through a rigorous health coaching process. We support you to
+                overcome negative tendencies through a self driven, mindful and
+                transformational behaviour change process.
+              </p>
+              <p>
+                Furthermore, we provide you with ample data to help you make new
+                informed choices as you scale up the health ladder.
+              </p>
+            </div>
 
-              <div className="homepage-lead-benefits">
-                <h3>
-                  At the end of the coaching season, you will be able to make
-                  the right healthy choices:
-                </h3>
-                <ul className="homepage-benefits-list">
-                  <li>Consuming a healthy and nutritious diet</li>
-                  <li>Identifying and avoiding food that harms your health</li>
-                  <li>Adopting appropriate physically active routines</li>
-                  <li>
-                    Dealing with stress and emotionally draining experiences
-                  </li>
-                  <li>Maintaining healthy relationships</li>
-                  <li>Living a spiritually fulfilling life</li>
-                  <li>Caring for your work and living environment</li>
-                </ul>
-                <p className="homepage-lead-conclusion">
-                  These and many more are our key guarantees for sustainable
-                  healthy living that promises to transform your life.
-                </p>
-              </div>
+            {/* MOVED: The benefits section now immediately follows the last paragraph for vertical stacking */}
+            <div className="homepage-lead-benefits">
+              <h3>
+                At the end of the coaching season, you will be able to make the
+                right healthy choices:
+              </h3>
+              <ul className="homepage-benefits-list">
+                <li>Consuming a healthy and nutritious diet</li>
+                <li>Identifying and avoiding food that harms your health</li>
+                <li>Adopting appropriate physically active routines</li>
+                <li>
+                  Dealing with stress and emotionally draining experiences
+                </li>
+                <li>Maintaining healthy relationships</li>
+                <li>Living a spiritually fulfilling life</li>
+                <li>Caring for your work and living environment</li>
+              </ul>
+              <p className="homepage-lead-conclusion">
+                These and many more are our key guarantees for sustainable
+                healthy living that promises to transform your life.
+              </p>
             </div>
           </div>
         </div>
@@ -202,13 +195,15 @@ const HomePage = () => {
       <section className="homepage-services-section" ref={servicesRef}>
         <div className="homepage-section-header">
           <h2>Our Comprehensive Approach</h2>
-          <p>We address NCDs through multiple innovative channels</p>
+          <p>
+            We address lifestyle diseases through multiple innovative channels
+          </p>
         </div>
         <div className="homepage-services-grid">
           {[
             {
               image: "/co.jpg",
-              title: "Personalized Coaching",
+              title: "Personalized Health Coaching",
               link: "/coaching",
             },
 
@@ -218,17 +213,17 @@ const HomePage = () => {
               link: "/education",
             },
             {
-              image: "/p1.png",
+              image: "/c2.jpg",
               title: "Awareness Campaigns",
               link: "/campaign",
             },
             {
-              image: "/c1.jpg",
+              image: "/r1.jpg",
               title: "Research Projects",
               link: "/projects",
             },
             {
-              image: "/res.png",
+              image: "/r2.jpg",
               title: "Resource Center",
               link: "/resources",
             },
@@ -247,20 +242,6 @@ const HomePage = () => {
               <button className="homepage-card-button">Learn More →</button>
             </Link>
           ))}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="homepage-cta-section">
-        <div className="homepage-cta-content">
-          <h2>Join the Movement for Healthier Lives</h2>
-          <p>
-            Together we can combat lifestyle diseases through innovation and
-            education
-          </p>
-          <div className="homepage-cta-buttons">
-            <button className="homepage-primary-button">Get Involved</button>
-          </div>
         </div>
       </section>
     </div>

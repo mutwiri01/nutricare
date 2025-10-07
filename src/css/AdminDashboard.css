@@ -26,7 +26,7 @@
 .admin-dashboard {
   min-height: 100vh;
   background: var(--bg-light);
-  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  font-family: "Roboto Slab";
   /* Apply box-sizing/font-color to the root component */
   color: var(--text-dark);
 }

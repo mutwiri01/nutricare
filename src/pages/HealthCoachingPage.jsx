@@ -41,9 +41,10 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     email: "",
     step: 0, // 0: not started, 1: form, 2: confirmation
   });
-  const [showPersonalFullContent, setShowPersonalFullContent] = useState(false);
+  // UPDATED: Set initial state to true to show full content at the top by default
+  const [showPersonalFullContent, setShowPersonalFullContent] = useState(true);
   const [showCorporateFullContent, setShowCorporateFullContent] =
-    useState(false);
+    useState(true);
 
   useEffect(() => {
     fetchWebinars();
@@ -304,89 +305,33 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           lifestyle change that leads to pure health.
         </p>
 
-        <div className="healthcoaching-featuregrid">
-          <motion.div
-            className="healthcoaching-featurecard"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        {/* --- START OF MOVED CTA/ReadMore SECTION --- */}
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <button
+            className="healthcoaching-cta"
+            onClick={() => setBookingStep(0)}
+            style={{ marginRight: "1rem" }}
           >
-            <div className="healthcoaching-featureicon">
-              <i className="bi bi-person-heart"></i>
-            </div>
-            <h3>Disease Symptoms Tracking and Cause finding</h3>
-            <p>
-              Identifying triggers and underlying causes of lifestyle diseases.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="healthcoaching-featurecard"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            <i className="bi bi-calendar2-check"></i>
+            Book a Session
+          </button>
+          <button
+            className="healthcoaching-readmore"
+            onClick={() => setShowPersonalFullContent(!showPersonalFullContent)}
           >
-            <div className="healthcoaching-featureicon">
-              <i className="bi bi-shield-check"></i>
-            </div>
-            <h3>Chronic Conditions Management</h3>
-            <p>
-              Supporting People living with chronic diseases by addressing
-              underlying causes through individual lifestyle change.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="healthcoaching-featurecard"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className="healthcoaching-featureicon">
-              <i className="bi bi-journal-medical"></i>
-            </div>
-            <h3>Preventive Health Coaching</h3>
-            <p>Providing preemptive support to lifestyle diseases.</p>
-          </motion.div>
+            <i
+              className={`bi ${
+                showPersonalFullContent
+                  ? "bi-arrow-up-circle"
+                  : "bi-arrow-down-circle"
+              }`}
+            ></i>
+            {showPersonalFullContent ? "Show Less" : "Read More"}
+          </button>
         </div>
+        {/* --- END OF MOVED CTA/ReadMore SECTION --- */}
 
-        <motion.div
-          className="healthcoaching-section-box"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <h3>The Coaching Process</h3>
-          <ul className="healthcoaching-list">
-            <li>
-              <i className="bi bi-check-circle-fill"></i>
-              Enables clients to understand and identify their health issues .
-            </li>
-            <li>
-              <i className="bi bi-check-circle-fill"></i>
-              Helps them set goals to overcome these challenges.
-            </li>
-            <li>
-              <i className="bi bi-check-circle-fill"></i>
-              Develops a simple action plan to guide behavior change.
-            </li>
-            <li>
-              <i className="bi bi-check-circle-fill"></i>
-              Supports clients in appreciating healthy change for long-term
-              sustainability.
-            </li>
-          </ul>
-        </motion.div>
-
-        {!showPersonalFullContent && (
-          <div style={{ textAlign: "center", margin: "2rem 0" }}>
-            <button
-              className="healthcoaching-readmore"
-              onClick={() => setShowPersonalFullContent(true)}
-            >
-              <i className="bi bi-arrow-down-circle"></i>
-              Read More About Personal Coaching
-            </button>
-          </div>
-        )}
-
+        {/* UPDATED: Full content is now placed at the top and toggled with the state */}
         {showPersonalFullContent && (
           <motion.div
             className="healthcoaching-fullcontent"
@@ -498,28 +443,79 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               tricky path of balancing lifestyle choices and behaviour change
               for happier and healthier lives.
             </p>
-
-            <div style={{ textAlign: "center", margin: "2rem 0" }}>
-              <button
-                className="healthcoaching-readmore"
-                onClick={() => setShowPersonalFullContent(false)}
-              >
-                <i className="bi bi-arrow-up-circle"></i>
-                Show Less
-              </button>
-            </div>
           </motion.div>
         )}
 
-        <div style={{ textAlign: "center", marginTop: "3rem" }}>
-          <button
-            className="healthcoaching-cta"
-            onClick={() => setBookingStep(0)}
+        <div className="healthcoaching-featuregrid">
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <i className="bi bi-calendar2-check"></i>
-            Book a Session
-          </button>
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-person-heart"></i>
+            </div>
+            <h3>Disease Symptoms Tracking and Cause finding</h3>
+            <p>
+              Identifying triggers and underlying causes of lifestyle diseases.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-shield-check"></i>
+            </div>
+            <h3>Chronic Conditions Management</h3>
+            <p>
+              Supporting People living with chronic diseases by addressing
+              underlying causes through individual lifestyle change.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-journal-medical"></i>
+            </div>
+            <h3>Preventive Health Coaching</h3>
+            <p>Providing preemptive support against lifestyle diseases.</p>
+          </motion.div>
         </div>
+
+        <motion.div
+          className="healthcoaching-section-box"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <h3>The Coaching Process</h3>
+          <ul className="healthcoaching-list">
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Enables clients to understand and identify their health issues .
+            </li>
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Helps them set goals to overcome these challenges.
+            </li>
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Develops a simple action plan to guide behavior change.
+            </li>
+            <li>
+              <i className="bi bi-check-circle-fill"></i>
+              Supports clients in appreciating healthy change for long-term
+              sustainability.
+            </li>
+          </ul>
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -537,91 +533,38 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           workforce that is able to deliver profits at reduced healthcare costs.
         </p>
 
-        <div className="healthcoaching-featuregrid">
-          <motion.div
-            className="healthcoaching-featurecard"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        {/* --- START OF MOVED CTA/ReadMore SECTION (Request Information for Corporate) --- */}
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <button
+            className="healthcoaching-cta"
+            onClick={() => {
+              setBookingData({ ...bookingData, serviceType: "corporate" });
+              setBookingStep(0);
+            }}
+            style={{ marginRight: "1rem" }}
           >
-            <div className="healthcoaching-featureicon">
-              <i className="bi bi-graph-up-arrow"></i>
-            </div>
-            <h3>Employee Wellness</h3>
-            <p>
-              Healthier employees are often more productive and have reduced
-              absenteeism.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="healthcoaching-featurecard"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            <i className="bi bi-info-circle"></i>
+            Request Information
+          </button>
+          <button
+            className="healthcoaching-readmore"
+            onClick={() =>
+              setShowCorporateFullContent(!showCorporateFullContent)
+            }
           >
-            <div className="healthcoaching-featureicon">
-              <i className="bi bi-piggy-bank"></i>
-            </div>
-            <h3>Enhancing Workplace Environment</h3>
-            <p>
-              Re-engineering the workplace environment to improve employees
-              health for higher productivity.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="healthcoaching-featurecard"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <div className="healthcoaching-featureicon">
-              <i className="bi bi-heart-pulse"></i>
-            </div>
-            <h3>Building Effective Teams</h3>
-            <p>
-              Reconstructing working relationships for increased synergy and
-              productivity.
-            </p>
-          </motion.div>
+            <i
+              className={`bi ${
+                showCorporateFullContent
+                  ? "bi-arrow-up-circle"
+                  : "bi-arrow-down-circle"
+              }`}
+            ></i>
+            {showCorporateFullContent ? "Show Less" : "Read More"}
+          </button>
         </div>
+        {/* --- END OF MOVED CTA/ReadMore SECTION --- */}
 
-        <motion.div
-          className="healthcoaching-section-box"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <h3>Our Approach</h3>
-          <div className="healthcoaching-approach-grid">
-            <div className="healthcoaching-approach-item">
-              <h4>Wellness Strategies</h4>
-              <p>
-                We help staff adopt sustainable lifestyle changes by addressing
-                nutrition, exercise, stress, and work environment tailored to
-                corporate demands.
-              </p>
-            </div>
-            <div className="healthcoaching-approach-item">
-              <h4>Team Building</h4>
-              <p>
-                By coaching teams, we help build personnel capacities and
-                re-engineer teamwork for maximum benefit.
-              </p>
-            </div>
-          </div>
-        </motion.div>
-
-        {!showCorporateFullContent && (
-          <div style={{ textAlign: "center", margin: "2rem 0" }}>
-            <button
-              className="healthcoaching-readmore"
-              onClick={() => setShowCorporateFullContent(true)}
-            >
-              <i className="bi bi-arrow-down-circle"></i>
-              Read More About Corporate Coaching
-            </button>
-          </div>
-        )}
-
+        {/* UPDATED: Full content is now placed at the top and toggled with the state */}
         {showCorporateFullContent && (
           <motion.div
             className="healthcoaching-fullcontent"
@@ -758,31 +701,81 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 height, weight, BMI, and abdominal girth
               </li>
             </ol>
-
-            <div style={{ textAlign: "center", margin: "2rem 0" }}>
-              <button
-                className="healthcoaching-readmore"
-                onClick={() => setShowCorporateFullContent(false)}
-              >
-                <i className="bi bi-arrow-up-circle"></i>
-                Show Less
-              </button>
-            </div>
           </motion.div>
         )}
 
-        <div style={{ textAlign: "center", marginTop: "3rem" }}>
-          <button
-            className="healthcoaching-cta"
-            onClick={() => {
-              setBookingData({ ...bookingData, serviceType: "corporate" });
-              setBookingStep(0);
-            }}
+        <div className="healthcoaching-featuregrid">
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <i className="bi bi-info-circle"></i>
-            Request Information
-          </button>
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-graph-up-arrow"></i>
+            </div>
+            <h3>Employee Wellness</h3>
+            <p>
+              Healthier employees are often more productive and have reduced
+              absenteeism.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-piggy-bank"></i>
+            </div>
+            <h3>Enhancing Workplace Environment</h3>
+            <p>
+              Re-engineering the workplace environment to improve employees
+              health for higher productivity.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-heart-pulse"></i>
+            </div>
+            <h3>Building Effective Teams</h3>
+            <p>
+              Reconstructing working relationships for increased synergy and
+              productivity.
+            </p>
+          </motion.div>
         </div>
+
+        <motion.div
+          className="healthcoaching-section-box"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <h3>Our Approach</h3>
+          <div className="healthcoaching-approach-grid">
+            <div className="healthcoaching-approach-item">
+              <h4>Wellness Strategies</h4>
+              <p>
+                We help staff adopt sustainable lifestyle changes by addressing
+                nutrition, exercise, stress, and work environment tailored to
+                corporate demands.
+              </p>
+            </div>
+            <div className="healthcoaching-approach-item">
+              <h4>Team Building</h4>
+              <p>
+                By coaching teams, we help build personnel capacities and
+                re-engineer teamwork for maximum benefit.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
     </div>
   );
@@ -1422,7 +1415,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 }}
               >
                 <i className="bi bi-person-fill"></i>
-                Personal Coaching
+                Personal Health Coaching
               </button>
             </li>
             <li>
@@ -1434,7 +1427,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 }}
               >
                 <i className="bi bi-buildings"></i>
-                Corporate Coaching
+                Corporate Health Coaching
               </button>
             </li>
             <li>

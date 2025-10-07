@@ -6,6 +6,13 @@ const AboutUs = () => {
       <header className="header">
         <h1 className="title">About Us</h1>
       </header>
+      <p className="section-text">
+        At CLiNH, we support clients to achieve lasting health and overall
+        wellbeing through simple sustainable choices. Using the Functional
+        Medicine model, that focusses on evidence-based nutrition, personalized
+        care and holistic strategies, we help clients thrive personally while
+        fostering healthier, more productive workplaces.
+      </p>
       <section className="content">
         {/* Vision Section */}
         <div className="section">
@@ -28,10 +35,18 @@ const AboutUs = () => {
         <div className="section">
           <h2 className="section-title">Values</h2>
           <ul className="values-list">
-            <p className="section-text">Restorative</p>
-            <p className="section-text">Transformational</p>
-            <p className="section-text">Sustainable</p>
-            <p className="section-text">Empowering</p>
+            <p className="section-text">
+              Restorative : Renewing balance and vitality
+            </p>
+            <p className="section-text">
+              Transformational : Inspiring lasting change
+            </p>
+            <p className="section-text">
+              Sustainable : Building wellness that endures
+            </p>
+            <p className="section-text">
+              Empowering : Equipping people to thrive
+            </p>
           </ul>
         </div>
       </section>
