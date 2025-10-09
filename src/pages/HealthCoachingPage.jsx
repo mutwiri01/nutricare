@@ -142,36 +142,43 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
   const handleBookingChange = (field, value) => {
     setBookingData({ ...bookingData, [field]: value });
+    // Clear error on change
+    clearMessages();
   };
 
-  const handleNextStep = () => {
-    if (bookingStep === 0 && !bookingData.serviceType) {
-      setError("Please select a service type");
-      return;
-    }
-    if (bookingStep === 1 && !bookingData.cluster) {
-      setError("Please select a health cluster");
-      return;
-    }
-    if (bookingStep === 2 && (!bookingData.date || !bookingData.time)) {
-      setError("Please select a date and time");
-      return;
-    }
-    if (bookingStep === 3 && (!bookingData.name || !bookingData.email)) {
-      setError("Please provide your name and email");
-      return;
-    }
-    setBookingStep(bookingStep + 1);
-    setError("");
-  };
+  /**
+   * REFACTOR: handleNextStep and handlePrevStep removed.
+   * handleSubmitBooking now performs all validation and submission.
+   */
+  const handleSubmitBooking = async (e) => {
+    e.preventDefault();
 
-  const handlePrevStep = () => {
-    setBookingStep(bookingStep - 1);
-    setError("");
-  };
+    const isPersonalBooking = bookingData.serviceType !== "corporate";
 
-  const handleSubmitBooking = async () => {
+    // 1. Full Form Validation Check
+    if (!bookingData.serviceType) {
+      setError("Please select a Service Type.");
+      return;
+    }
+    if (isPersonalBooking) {
+      if (!bookingData.cluster) {
+        setError("Please select a Health Cluster.");
+        return;
+      }
+      if (!bookingData.date || !bookingData.time) {
+        setError("Please select a Preferred Date and Time.");
+        return;
+      }
+    }
+    if (!bookingData.name || !bookingData.email) {
+      setError("Please provide your Full Name and Email Address.");
+      return;
+    }
+
+    // 2. Submission Logic
     setIsLoading(true);
+    setError(""); // Clear previous errors if validation passed
+
     try {
       const response = await fetch(`${API_BASE_URL}/bookings`, {
         method: "POST",
@@ -182,9 +189,11 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        // const result = await response.json();
         setSuccess("Your appointment has been booked successfully!");
-        setBookingStep(4);
+        setBookingStep(4); // Move to confirmation screen
+        // Optionally reset form data after successful submission
+        // setBookingData({ ...initialBookingData });
       } else {
         const errorData = await response.json();
         setError(
@@ -309,7 +318,10 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <button
             className="healthcoaching-cta"
-            onClick={() => setBookingStep(0)}
+            onClick={() => {
+              setBookingData({ ...bookingData, serviceType: "personal" });
+              setBookingStep(0);
+            }}
             style={{ marginRight: "1rem" }}
           >
             <i className="bi bi-calendar2-check"></i>
@@ -605,31 +617,26 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 better physical and mental health, leading to increased energy
                 levels and overall wellness.
               </li>
-
               <li>
                 <strong>Increased Productivity:</strong> Healthier employees are
                 often more productive, with reduced absenteeism.
               </li>
-
               <li>
                 <strong>Reduced Healthcare Costs:</strong> By promoting
                 preventative care and healthy lifestyles, corporate health
                 coaching helps reduce long-term healthcare costs for both
                 employees and employers.
               </li>
-
               <li>
                 <strong>Enhanced Employee Engagement:</strong> A strong
                 commitment to employee well-being through health coaching boosts
                 employee morale and engagement.
               </li>
-
               <li>
                 <strong>Positive Workplace Culture:</strong> Health coaching
                 helps create a more positive and supportive work environment by
                 demonstrating a commitment to employee wellbeing.
               </li>
-
               <li>
                 <strong>Better Working Environment:</strong> It helps create a
                 conducive and health friendly working spaces for sustainable
@@ -678,12 +685,12 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </p>
 
             <p>Health assessments usually consist of the following:</p>
-
             <ol className="healthcoaching-list">
               <li>
                 <strong>
-                  HRA questionnaire about lifestyle and health behavior
-                </strong>
+                  {" "}
+                  HRA questionnaire about lifestyle and health behavior{" "}
+                </strong>{" "}
                 <br />A health risk assessment (HRA) is a process used to
                 identify, evaluate, and mitigate potential health hazards. It's
                 a systematic approach to understanding how factors like
@@ -692,7 +699,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 settings, from individual healthcare to public health planning,
                 to help prioritize interventions and promote well-being.
               </li>
-
               <li>
                 <strong>Biometric screening</strong> including a blood draw,
                 usually done with a finger prick, to determine total
@@ -787,7 +793,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         Access our health coaching services from anywhere through our virtual
         platforms
       </p>
-
       <div className="healthcoaching-roomgrid">
         <div className="healthcoaching-roomcard">
           <h3>Consultation</h3>
@@ -803,35 +808,32 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               setBookingStep(0);
             }}
           >
-            <i className="bi bi-camera-video"></i>
-            Book Session
+            <i className="bi bi-camera-video"></i> Book Session
           </button>
         </div>
-
         <div className="healthcoaching-roomcard">
           <h3>Webinars</h3>
           <p>
+            {" "}
             Join our live educational webinars on various health and wellness
-            topics.
+            topics.{" "}
           </p>
           <button
             className="healthcoaching-roombtn"
             onClick={() => setActiveTab("webinars")}
           >
-            <i className="bi bi-play-btn"></i>
-            View Webinars
+            <i className="bi bi-play-btn"></i> View Webinars
           </button>
         </div>
-
         <div className="healthcoaching-roomcard">
           <h3>Digital Resources</h3>
           <p>
+            {" "}
             Access our library of Information on healthy living,health
-            guides,diet advisory and Physical Activity Advisory.
+            guides,diet advisory and Physical Activity Advisory.{" "}
           </p>
           <button className="healthcoaching-roombtn">
-            <i className="bi bi-journal-bookmark"></i>
-            Browse Resources
+            <i className="bi bi-journal-bookmark"></i> Browse Resources
           </button>
         </div>
       </div>
@@ -844,7 +846,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       <p className="healthcoaching-subtitle">
         Join our live educational sessions on health and wellness topics
       </p>
-
       <div className="healthcoaching-roomgrid">
         {webinars.map((webinar) => (
           <div key={webinar._id} className="healthcoaching-roomcard">
@@ -868,543 +869,623 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               onClick={() => handleJoinWebinar(webinar._id)}
               disabled={webinar.currentAttendees >= webinar.maxAttendees}
             >
-              <i className="bi bi-play-circle"></i>{" "}
+              <i className="bi bi-calendar-plus"></i>{" "}
               {webinar.currentAttendees >= webinar.maxAttendees
-                ? "Webinar Full"
+                ? "Full"
                 : "Register Now"}
             </button>
           </div>
         ))}
+        {webinars.length === 0 && <p>No upcoming webinars at the moment.</p>}
       </div>
     </div>
   );
 
   const renderSupportTab = () => (
     <div className="healthcoaching-content">
-      <h2>Support Center</h2>
+      <h2>Customer Care & Support</h2>
       <p className="healthcoaching-subtitle">
-        Get help with your account, bookings, or technical issues
+        Submit a support ticket or view your existing requests.
       </p>
 
-      <div className="healthcoaching-supportgrid">
-        <div className="healthcoaching-supportcard">
-          <div className="healthcoaching-supporticon">
-            <i className="bi bi-question-circle"></i>
-          </div>
-          <h3>FAQ & Help Articles</h3>
-          <p>Find answers to common questions in our knowledge base.</p>
-          <button className="healthcoaching-supportbtn">Browse Articles</button>
-        </div>
-
-        <div className="healthcoaching-supportcard">
-          <div className="healthcoaching-supporticon">
-            <i className="bi bi-chat-dots"></i>
-          </div>
-          <h3>Live Chat</h3>
-          <p>Chat with our support team for immediate assistance.</p>
-          <button className="healthcoaching-supportbtn">Start Chat</button>
-        </div>
-
-        <div className="healthcoaching-supportcard">
-          <div className="healthcoaching-supporticon">
-            <i className="bi bi-telephone"></i>
-          </div>
-          <h3>Call Support</h3>
-          <p>Speak directly with our support representatives.</p>
-          <button className="healthcoaching-supportbtn">Call Now</button>
-        </div>
-      </div>
-
-      <div style={{ marginTop: "3rem" }}>
-        <h3 style={{ marginBottom: "1.5rem", color: "var(--darker)" }}>
-          {" "}
-          Submit a Support Ticket{" "}
-        </h3>
-        <div className="healthcoaching-formgroup">
-          <label>Subject</label>
-          <input
-            type="text"
-            value={newTicket.subject}
-            onChange={(e) =>
-              setNewTicket({ ...newTicket, subject: e.target.value })
-            }
-            placeholder="Brief description of your issue"
-          />
-        </div>
-        <div className="healthcoaching-formgroup">
-          <label>Message</label>
-          <textarea
-            rows="4"
-            value={newTicket.message}
-            onChange={(e) =>
-              setNewTicket({ ...newTicket, message: e.target.value })
-            }
-            placeholder="Please describe your issue in detail..."
-          ></textarea>
-        </div>
-        <div className="healthcoaching-formgroup">
-          <label>Priority</label>
-          <select
-            value={newTicket.priority}
-            onChange={(e) =>
-              setNewTicket({ ...newTicket, priority: e.target.value })
-            }
-          >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-        <button
-          className="healthcoaching-cta"
-          onClick={handleSubmitTicket}
-          disabled={isLoading}
-        >
-          <i className="bi bi-send"></i> Submit Ticket{" "}
-        </button>
-      </div>
-    </div>
-  );
-
-  const renderBookingModal = () => (
-    <div className="healthcoaching-modal">
-      <div className="healthcoaching-modalcontent">
-        <button
-          className="healthcoaching-modalclose"
-          onClick={() => {
-            setBookingStep(-1);
-            setError("");
-            setSuccess("");
+      {/* New Ticket Submission */}
+      <motion.div
+        className="healthcoaching-section-box"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h3>Submit a New Ticket</h3>
+        <form
+          className="healthcoaching-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmitTicket();
           }}
         >
-          <i className="bi bi-x-lg"></i>
-        </button>
-        <div className="healthcoaching-bookingheader">
-          <h2>Book Health Coaching Session</h2>
-          <div className="healthcoaching-progress">
-            <div
-              className="healthcoaching-progressbar"
-              style={{
-                width: `${((bookingStep + 1) / 4) * 100}%`,
-              }}
-            ></div>
+          <div className="healthcoaching-formgroup">
+            <label htmlFor="subject">Subject *</label>
+            <input
+              type="text"
+              id="subject"
+              placeholder="e.g., Session rescheduling, billing query"
+              value={newTicket.subject}
+              onChange={(e) =>
+                setNewTicket({ ...newTicket, subject: e.target.value })
+              }
+              required
+            />
           </div>
-        </div>
-        {bookingStep === 0 && (
-          <div className="healthcoaching-bookingstep">
-            <h3>Select Service Type</h3>
-            <div className="healthcoaching-optiongrid">
-              <div
-                className={`healthcoaching-optioncard ${
-                  bookingData.serviceType === "personal" ? "active" : ""
-                }`}
-                onClick={() => handleBookingChange("serviceType", "personal")}
-              >
-                <div className="healthcoaching-optionicon">
-                  <i className="bi bi-person"></i>
-                </div>
-                <h4>Personal Coaching</h4>
-                <p>One-on-one sessions for individual health goals</p>
-              </div>
-              <div
-                className={`healthcoaching-optioncard ${
-                  bookingData.serviceType === "corporate" ? "active" : ""
-                }`}
-                onClick={() => handleBookingChange("serviceType", "corporate")}
-              >
-                <div className="healthcoaching-optionicon">
-                  <i className="bi bi-buildings"></i>
-                </div>
-                <h4>Corporate Wellness</h4>
-                <p>Group programs for organizations</p>
-              </div>
-            </div>
-            <div className="healthcoaching-formgroup">
-              <label>Consultation Type</label>
+          <div className="healthcoaching-formgroup">
+            <label htmlFor="message">Message *</label>
+            <textarea
+              id="message"
+              rows="4"
+              placeholder="Provide a detailed description of your issue..."
+              value={newTicket.message}
+              onChange={(e) =>
+                setNewTicket({ ...newTicket, message: e.target.value })
+              }
+              required
+            ></textarea>
+          </div>
+          <div className="healthcoaching-formgroup healthcoaching-split">
+            <div>
+              <label htmlFor="priority">Priority</label>
               <select
-                value={bookingData.consultationType}
+                id="priority"
+                value={newTicket.priority}
                 onChange={(e) =>
-                  handleBookingChange("consultationType", e.target.value)
+                  setNewTicket({ ...newTicket, priority: e.target.value })
                 }
               >
-                <option value="virtual">Virtual (Online)</option>
-                <option value="in-person">In-Person</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
               </select>
             </div>
-            <div className="healthcoaching-bookingnav">
-              <button
-                className="healthcoaching-navbtn prev"
-                onClick={() => setBookingStep(-1)}
-              >
-                <i className="bi bi-arrow-left"></i> Cancel
-              </button>
-              <button
-                className="healthcoaching-navbtn next"
-                onClick={handleNextStep}
-              >
-                Next <i className="bi bi-arrow-right"></i>
-              </button>
-            </div>
           </div>
-        )}
-        {bookingStep === 1 && (
-          <div className="healthcoaching-bookingstep">
-            <h3>Select Health Cluster</h3>
-            <div className="healthcoaching-optiongrid">
-              <div
-                className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "cardiovascular" ? "active" : ""
-                }`}
-                onClick={() => handleBookingChange("cluster", "cardiovascular")}
-              >
-                <div className="healthcoaching-optionicon">
-                  <i className="bi bi-heart-pulse"></i>
+          <button
+            type="submit"
+            className="healthcoaching-supportbtn"
+            disabled={isLoading}
+          >
+            {isLoading ? "Submitting..." : "Submit Ticket"}
+          </button>
+        </form>
+      </motion.div>
+
+      {/* Existing Tickets */}
+      <motion.div
+        className="healthcoaching-section-box"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        style={{ marginTop: "3rem" }}
+      >
+        <h3>My Support Tickets ({supportTickets.length})</h3>
+        {supportTickets.length > 0 ? (
+          <div className="healthcoaching-ticketlist">
+            {supportTickets.map((ticket) => (
+              <div key={ticket.id} className="healthcoaching-ticketitem">
+                <div className="healthcoaching-ticketdetails">
+                  <h4>{ticket.subject}</h4>
+                  <p>
+                    <span className={`status-${ticket.status}`}>
+                      {ticket.status.toUpperCase()}
+                    </span>{" "}
+                    | Priority: {ticket.priority} | Date: {ticket.date}
+                  </p>
                 </div>
-                <h4>Cardiovascular Health</h4>
-                <p>Heart health, blood pressure management, and circulation.</p>
-              </div>
-              <div
-                className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "metabolic" ? "active" : ""
-                }`}
-                onClick={() => handleBookingChange("cluster", "metabolic")}
-              >
-                <div className="healthcoaching-optionicon">
-                  <i className="bi bi-apple"></i>
-                </div>
-                <h4>Metabolic Health</h4>
-                <p>Diabetes, weight management, and nutritional guidance.</p>
-              </div>
-              <div
-                className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "mental" ? "active" : ""
-                }`}
-                onClick={() => handleBookingChange("cluster", "mental")}
-              >
-                <div className="healthcoaching-optionicon">
-                  <i className="bi bi-journal-check"></i>
-                </div>
-                <h4>Mental & Emotional Wellness</h4>
-                <p>Stress management, mindfulness, and emotional balance.</p>
-              </div>
-              <div
-                className={`healthcoaching-optioncard ${
-                  bookingData.cluster === "respiratory" ? "active" : ""
-                }`}
-                onClick={() => handleBookingChange("cluster", "respiratory")}
-              >
-                <div className="healthcoaching-optionicon">
-                  <i className="bi bi-lungs"></i>
-                </div>
-                <h4>Respiratory Health</h4>
-                <p>Asthma and other lung-related conditions.</p>
-              </div>
-            </div>
-            <div className="healthcoaching-bookingnav">
-              <button
-                className="healthcoaching-navbtn prev"
-                onClick={handlePrevStep}
-              >
-                <i className="bi bi-arrow-left"></i> Previous
-              </button>
-              <button
-                className="healthcoaching-navbtn next"
-                onClick={handleNextStep}
-              >
-                Next <i className="bi bi-arrow-right"></i>
-              </button>
-            </div>
-          </div>
-        )}
-        {bookingStep === 2 && (
-          <div className="healthcoaching-bookingstep">
-            <h3>Select Date & Time</h3>
-            <div className="healthcoaching-formgroup">
-              <label>Date</label>
-              <input
-                type="date"
-                value={bookingData.date}
-                onChange={(e) => handleBookingChange("date", e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
-              />
-            </div>
-            <div className="healthcoaching-formgroup">
-              <label>Time</label>
-              <select
-                value={bookingData.time}
-                onChange={(e) => handleBookingChange("time", e.target.value)}
-              >
-                <option value="">Select a time</option>
-                {availableTimes.map((time, index) => (
-                  <option key={index} value={time}>
-                    {time}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="healthcoaching-bookingnav">
-              <button
-                className="healthcoaching-navbtn prev"
-                onClick={handlePrevStep}
-              >
-                <i className="bi bi-arrow-left"></i> Previous
-              </button>
-              <button
-                className="healthcoaching-navbtn next"
-                onClick={handleNextStep}
-              >
-                Next <i className="bi bi-arrow-right"></i>
-              </button>
-            </div>
-          </div>
-        )}
-        {bookingStep === 3 && (
-          <div className="healthcoaching-bookingstep">
-            <h3>Your Details</h3>
-            <div className="healthcoaching-formgroup">
-              <label>Full Name *</label>
-              <input
-                type="text"
-                value={bookingData.name}
-                onChange={(e) => handleBookingChange("name", e.target.value)}
-                placeholder="Your full name"
-                required
-              />
-            </div>
-            <div className="healthcoaching-formgroup">
-              <label>Email *</label>
-              <input
-                type="email"
-                value={bookingData.email}
-                onChange={(e) => handleBookingChange("email", e.target.value)}
-                placeholder="Your email address"
-                required
-              />
-            </div>
-            <div className="healthcoaching-formgroup">
-              <label>Phone Number (Optional)</label>
-              <input
-                type="tel"
-                value={bookingData.phone}
-                onChange={(e) => handleBookingChange("phone", e.target.value)}
-                placeholder="Your phone number"
-              />
-            </div>
-            <div className="healthcoaching-formgroup">
-              <label>Health Condition / Concerns (Optional)</label>
-              <textarea
-                rows="3"
-                value={bookingData.condition}
-                onChange={(e) =>
-                  handleBookingChange("condition", e.target.value)
-                }
-                placeholder="e.g., managing high blood pressure, seeking weight loss support"
-              ></textarea>
-            </div>
-            <div className="healthcoaching-formgroup">
-              <label>Additional Notes (Optional)</label>
-              <textarea
-                rows="3"
-                value={bookingData.notes}
-                onChange={(e) => handleBookingChange("notes", e.target.value)}
-                placeholder="Any other details you'd like to share"
-              ></textarea>
-            </div>
-            <div className="healthcoaching-bookingnav">
-              <button
-                className="healthcoaching-navbtn prev"
-                onClick={handlePrevStep}
-              >
-                <i className="bi bi-arrow-left"></i> Previous
-              </button>
-              <button
-                className="healthcoaching-cta"
-                onClick={handleSubmitBooking}
-                disabled={isLoading}
-              >
-                <i className="bi bi-calendar2-plus"></i>{" "}
-                {isLoading ? "Processing..." : "Confirm Booking"}
-              </button>
-            </div>
-          </div>
-        )}
-        {bookingStep === 4 && (
-          <div className="healthcoaching-bookingstep success-step">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{
-                type: "spring",
-                stiffness: 260,
-                damping: 20,
-              }}
-            >
-              <i className="bi bi-check-circle-fill success-icon"></i>
-              <h3>Booking Confirmed!</h3>
-              <p>
-                Thank you, your health coaching session has been successfully
-                booked. We have sent a confirmation email to{" "}
-                <strong>{bookingData.email}</strong> with all the details.
-              </p>
-              <div
-                className="healthcoaching-bookingnav"
-                style={{ justifyContent: "center" }}
-              >
-                <button
-                  className="healthcoaching-navbtn"
-                  onClick={() => {
-                    setBookingStep(-1);
-                    setSuccess("");
-                    setBookingData({
-                      serviceType: "",
-                      consultationType: "virtual",
-                      cluster: "",
-                      date: "",
-                      time: "",
-                      name: "",
-                      email: "",
-                      phone: "",
-                      condition: "",
-                      notes: "",
-                    });
-                  }}
-                >
-                  <i className="bi bi-house"></i> Return to Homepage
+                <button className="healthcoaching-ticketbtn">
+                  <i className="bi bi-eye"></i> View
                 </button>
               </div>
-            </motion.div>
+            ))}
           </div>
+        ) : (
+          <p>No existing support tickets found.</p>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 
-  const renderWebinarRegistrationModal = () => (
-    <AnimatePresence>
-      {webinarRegistration.step > 0 && (
-        <motion.div
-          className="healthcoaching-modal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
+  /**
+   * REFACTOR: The modal logic is now a single, full form.
+   * Only the confirmation step (4) is handled separately.
+   */
+  const renderBookingModal = () => {
+    const isPersonalBooking = bookingData.serviceType === "personal";
+    const modalTitle =
+      bookingData.serviceType === "corporate"
+        ? "Corporate Wellness Request"
+        : "Book Your Health Coaching Session";
+
+    return (
+      <AnimatePresence>
+        {bookingStep >= 0 && (
           <motion.div
-            className="healthcoaching-modalcontent"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            className="healthcoaching-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <button
-              className="healthcoaching-modalclose"
-              onClick={closeWebinarRegistration}
+            <motion.div
+              className="healthcoaching-modalcontent"
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
             >
-              <i className="bi bi-x-lg"></i>
-            </button>
-            <div className="healthcoaching-bookingheader">
-              <h2>Register for Webinar</h2>
-            </div>
-            {webinarRegistration.step === 1 && (
-              <div className="healthcoaching-bookingstep">
-                <p>
-                  Please provide your details to register for the webinar:{" "}
-                  <strong>
-                    {
-                      webinars.find(
-                        (w) => w._id === webinarRegistration.webinarId
-                      )?.title
-                    }
-                  </strong>
-                </p>
-                <div className="healthcoaching-formgroup">
-                  <label>Full Name *</label>
-                  <input
-                    type="text"
-                    value={webinarRegistration.name}
-                    onChange={(e) =>
-                      handleWebinarRegistrationChange("name", e.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="healthcoaching-formgroup">
-                  <label>Email Address *</label>
-                  <input
-                    type="email"
-                    value={webinarRegistration.email}
-                    onChange={(e) =>
-                      handleWebinarRegistrationChange("email", e.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="healthcoaching-bookingnav">
-                  <button
-                    className="healthcoaching-navbtn next"
-                    onClick={handleSubmitWebinarRegistration}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Registering..." : "Register"}
-                  </button>
-                </div>
+              <button
+                className="healthcoaching-modalclose"
+                onClick={() => {
+                  setBookingStep(-1);
+                  clearMessages();
+                  setIsLoading(false);
+                }}
+              >
+                ×
+              </button>
+
+              <div className="healthcoaching-bookingheader">
+                <h2>{bookingStep === 4 ? "Booking Confirmed!" : modalTitle}</h2>
+                {/* Removed Progress Bar and Step Indicator */}
               </div>
-            )}
-            {webinarRegistration.step === 2 && (
-              <div className="healthcoaching-bookingstep success-step">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 20,
-                  }}
-                >
-                  <i className="bi bi-check-circle-fill success-icon"></i>
-                  <h3>Registration Confirmed!</h3>
-                  <p>
-                    You are now registered for the webinar. We've sent a
-                    confirmation email with the access link.
-                  </p>
-                  <div
-                    className="healthcoaching-bookingnav"
-                    style={{ justifyContent: "center" }}
+
+              {bookingStep === 4 ? (
+                // Confirmation Screen
+                <div className="healthcoaching-bookingstep confirmation-step">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    style={{ textAlign: "center" }}
                   >
+                    <i
+                      className="bi bi-check-circle-fill"
+                      style={{
+                        fontSize: "4rem",
+                        color: "var(--success)",
+                        marginBottom: "1rem",
+                      }}
+                    ></i>
+                    <h3>Thank you, {bookingData.name}!</h3>
+                    <p>
+                      Your{" "}
+                      {isPersonalBooking ? "session" : "information request"}{" "}
+                      has been successfully submitted.
+                    </p>
+                    <p>
+                      We have sent a confirmation email to{" "}
+                      <strong>{bookingData.email}</strong>.
+                      {isPersonalBooking &&
+                        ` We look forward to our ${
+                          bookingData.consultationType
+                        } consultation on ${new Date(
+                          bookingData.date
+                        ).toLocaleDateString()} at ${bookingData.time}.`}
+                      {!isPersonalBooking &&
+                        ` Our corporate wellness team will contact you shortly to discuss your request.`}
+                    </p>
                     <button
-                      className="healthcoaching-navbtn"
-                      onClick={closeWebinarRegistration}
+                      className="healthcoaching-cta"
+                      onClick={() => setBookingStep(-1)}
+                      style={{ marginTop: "2rem" }}
                     >
-                      <i className="bi bi-arrow-left"></i> Back to Webinars
+                      Close
+                    </button>
+                  </motion.div>
+                </div>
+              ) : (
+                // FULL BOOKING FORM
+                <form
+                  className="healthcoaching-bookingstep"
+                  onSubmit={handleSubmitBooking}
+                >
+                  <h3>Complete Your Details</h3>
+
+                  {/* 1. Service Type Selection (Always required, even if pre-selected by CTA) */}
+                  <div className="healthcoaching-formgroup">
+                    <label>1. Service Type *</label>
+                    <div className="healthcoaching-optiongrid">
+                      <div
+                        className={`healthcoaching-optioncard ${
+                          bookingData.serviceType === "personal" ? "active" : ""
+                        }`}
+                        onClick={() =>
+                          handleBookingChange("serviceType", "personal")
+                        }
+                      >
+                        <div className="healthcoaching-optionicon">
+                          <i className="bi bi-person-heart"></i>
+                        </div>
+                        <h4>Personal Coaching</h4>
+                      </div>
+                      <div
+                        className={`healthcoaching-optioncard ${
+                          bookingData.serviceType === "corporate"
+                            ? "active"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          handleBookingChange("serviceType", "corporate")
+                        }
+                      >
+                        <div className="healthcoaching-optionicon">
+                          <i className="bi bi-briefcase"></i>
+                        </div>
+                        <h4>Corporate Wellness</h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Consultation Type Selection (Only for Personal Booking) */}
+                  {isPersonalBooking && (
+                    <div className="healthcoaching-formgroup">
+                      <label>2. Consultation Format</label>
+                      <div className="healthcoaching-radiogroup">
+                        <label>
+                          <input
+                            type="radio"
+                            name="consultationType"
+                            value="virtual"
+                            checked={bookingData.consultationType === "virtual"}
+                            onChange={(e) =>
+                              handleBookingChange(
+                                "consultationType",
+                                e.target.value
+                              )
+                            }
+                          />
+                          <i className="bi bi-camera-video"></i> Virtual
+                          (Online)
+                        </label>
+                        <label>
+                          <input
+                            type="radio"
+                            name="consultationType"
+                            value="in-person"
+                            checked={
+                              bookingData.consultationType === "in-person"
+                            }
+                            onChange={(e) =>
+                              handleBookingChange(
+                                "consultationType",
+                                e.target.value
+                              )
+                            }
+                          />
+                          <i className="bi bi-person-check"></i> In-Person
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Health Cluster Selection (Only for Personal Booking) */}
+                  {isPersonalBooking && (
+                    <div className="healthcoaching-formgroup">
+                      <label>3. Select Health Cluster *</label>
+                      <select
+                        value={bookingData.cluster}
+                        onChange={(e) =>
+                          handleBookingChange("cluster", e.target.value)
+                        }
+                        required
+                      >
+                        <option value="">-- Select a cluster --</option>
+                        <option value="cardiovascular">
+                          Cardiovascular Health
+                        </option>
+                        <option value="metabolic">
+                          Metabolic (Diabetes/Weight)
+                        </option>
+                        <option value="auto-immune">
+                          Auto-Immune/Inflammatory
+                        </option>
+                        <option value="mental-wellness">
+                          Mental Wellness/Stress
+                        </option>
+                        <option value="preventive">
+                          Preventive/General Wellness
+                        </option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Date and Time Selection (Only for Personal Booking) */}
+                  {isPersonalBooking && (
+                    <div className="healthcoaching-formgroup healthcoaching-split">
+                      <div>
+                        <label>4. Preferred Date *</label>
+                        <input
+                          type="date"
+                          min={new Date().toISOString().split("T")[0]}
+                          value={bookingData.date}
+                          onChange={(e) =>
+                            handleBookingChange("date", e.target.value)
+                          }
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label>Preferred Time *</label>
+                        <select
+                          value={bookingData.time}
+                          onChange={(e) =>
+                            handleBookingChange("time", e.target.value)
+                          }
+                          required
+                        >
+                          <option value="">-- Select Time --</option>
+                          {availableTimes.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Contact Information */}
+                  <div
+                    className="healthcoaching-formgroup"
+                    style={{ marginTop: "2rem" }}
+                  >
+                    <label>
+                      {isPersonalBooking
+                        ? "5. Your Contact Information"
+                        : "2. Your Contact Information"}{" "}
+                      *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Full Name *"
+                      value={bookingData.name}
+                      onChange={(e) =>
+                        handleBookingChange("name", e.target.value)
+                      }
+                      required
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email Address *"
+                      value={bookingData.email}
+                      onChange={(e) =>
+                        handleBookingChange("email", e.target.value)
+                      }
+                      required
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Phone Number"
+                      value={bookingData.phone}
+                      onChange={(e) =>
+                        handleBookingChange("phone", e.target.value)
+                      }
+                    />
+                  </div>
+
+                  {/* Additional Details */}
+                  <div className="healthcoaching-formgroup">
+                    <label>
+                      {isPersonalBooking
+                        ? "6. Tell Us About Your Health"
+                        : "3. Corporate Request Details"}
+                    </label>
+                    <textarea
+                      placeholder={
+                        isPersonalBooking
+                          ? "Briefly describe your current condition or health goals..."
+                          : "Describe your organization's wellness needs or information request..."
+                      }
+                      rows="3"
+                      value={bookingData.condition}
+                      onChange={(e) =>
+                        handleBookingChange("condition", e.target.value)
+                      }
+                    ></textarea>
+                  </div>
+
+                  <div className="healthcoaching-formgroup">
+                    <label>Additional Notes</label>
+                    <textarea
+                      placeholder="Any other notes or special requests (e.g., specific coach, referral code)..."
+                      rows="2"
+                      value={bookingData.notes}
+                      onChange={(e) =>
+                        handleBookingChange("notes", e.target.value)
+                      }
+                    ></textarea>
+                  </div>
+
+                  {/* Submission Button */}
+                  <div className="healthcoaching-formactions">
+                    <button
+                      type="submit"
+                      className="healthcoaching-cta"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <i className="bi bi-arrow-clockwise spin"></i>{" "}
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-calendar2-check"></i>{" "}
+                          {isPersonalBooking
+                            ? "Confirm Booking"
+                            : "Request Information"}
+                        </>
+                      )}
                     </button>
                   </div>
-                </motion.div>
-              </div>
-            )}
+                </form>
+              )}
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+        )}
+      </AnimatePresence>
+    );
+  };
+
+  const renderWebinarRegistrationModal = () => {
+    const activeWebinarData = webinars.find(
+      (w) => w._id === webinarRegistration.webinarId
+    );
+    if (!activeWebinarData) return null;
+
+    return (
+      <AnimatePresence>
+        {webinarRegistration.step > 0 && (
+          <motion.div
+            className="healthcoaching-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="healthcoaching-modalcontent"
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
+            >
+              <button
+                className="healthcoaching-modalclose"
+                onClick={closeWebinarRegistration}
+              >
+                ×
+              </button>
+
+              <div className="healthcoaching-bookingheader">
+                <h2>
+                  {webinarRegistration.step === 1
+                    ? `Register for: ${activeWebinarData.title}`
+                    : "Registration Confirmed!"}
+                </h2>
+              </div>
+
+              {webinarRegistration.step === 1 && (
+                <div className="healthcoaching-bookingstep">
+                  <p className="healthcoaching-modal-details">
+                    <i className="bi bi-calendar"></i>{" "}
+                    {new Date(activeWebinarData.date).toLocaleDateString()} at{" "}
+                    {activeWebinarData.time}
+                  </p>
+                  <form
+                    className="healthcoaching-form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleSubmitWebinarRegistration();
+                    }}
+                  >
+                    <div className="healthcoaching-formgroup">
+                      <label htmlFor="name">Your Full Name *</label>
+                      <input
+                        type="text"
+                        id="name"
+                        placeholder="Full Name"
+                        value={webinarRegistration.name}
+                        onChange={(e) =>
+                          handleWebinarRegistrationChange(
+                            "name",
+                            e.target.value
+                          )
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="healthcoaching-formgroup">
+                      <label htmlFor="email">Your Email Address *</label>
+                      <input
+                        type="email"
+                        id="email"
+                        placeholder="Email Address"
+                        value={webinarRegistration.email}
+                        onChange={(e) =>
+                          handleWebinarRegistrationChange(
+                            "email",
+                            e.target.value
+                          )
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="healthcoaching-formactions">
+                      <button
+                        type="submit"
+                        className="healthcoaching-cta"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Registering..." : "Confirm Registration"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {webinarRegistration.step === 2 && (
+                <div className="healthcoaching-bookingstep confirmation-step">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    style={{ textAlign: "center" }}
+                  >
+                    <i
+                      className="bi bi-check-circle-fill"
+                      style={{
+                        fontSize: "4rem",
+                        color: "var(--success)",
+                        marginBottom: "1rem",
+                      }}
+                    ></i>
+                    <h3>You're All Set!</h3>
+                    <p>
+                      A link to join the webinar has been sent to{" "}
+                      <strong>{webinarRegistration.email}</strong>.
+                    </p>
+                    <p>
+                      **{activeWebinarData.title}** is on{" "}
+                      {new Date(activeWebinarData.date).toLocaleDateString()} at{" "}
+                      {activeWebinarData.time}.
+                    </p>
+                    <button
+                      className="healthcoaching-cta"
+                      onClick={closeWebinarRegistration}
+                      style={{ marginTop: "2rem" }}
+                    >
+                      Close
+                    </button>
+                  </motion.div>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  };
 
   return (
     <div className="healthcoaching-portal">
       <header className="healthcoaching-header">
         <div className="healthcoaching-headercontent">
-          <h1>Health Coaching Portal</h1>
-          <p>
-            Your journey to a healthier, happier you starts here. Welcome to
-            Pure Health.
-          </p>
+          <h1>HealthCoaching Hub</h1>
+          <p>Your path to sustainable wellness and vitality</p>
         </div>
         <button
           className="healthcoaching-menubtn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          <i className="bi bi-list"></i>
+          <i className={`bi ${mobileMenuOpen ? "bi-x" : "bi-list"}`}></i>
         </button>
       </header>
 
       <main className="healthcoaching-main">
-        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "active" : ""}`}>
+        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "open" : ""}`}>
           <ul>
             <li>
               <button
@@ -1414,8 +1495,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                   setMobileMenuOpen(false);
                 }}
               >
-                <i className="bi bi-person-fill"></i>
-                Personal Health Coaching
+                <i className="bi bi-person-heart"></i>
+                Personal Coaching
               </button>
             </li>
             <li>
@@ -1426,8 +1507,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                   setMobileMenuOpen(false);
                 }}
               >
-                <i className="bi bi-buildings"></i>
-                Corporate Health Coaching
+                <i className="bi bi-briefcase"></i>
+                Corporate Wellness
               </button>
             </li>
             <li>
