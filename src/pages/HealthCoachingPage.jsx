@@ -45,6 +45,29 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   const [showPersonalFullContent, setShowPersonalFullContent] = useState(true);
   const [showCorporateFullContent, setShowCorporateFullContent] =
     useState(true);
+  const [showLifestyleFullContent, setShowLifestyleFullContent] =
+    useState(true);
+  const [showMealPlanFullContent, setShowMealPlanFullContent] = useState(true);
+
+  // New states for lifestyle and meal plan
+  const [lifestyleForm, setLifestyleForm] = useState({
+    name: "",
+    contact: "",
+    email: "",
+    reasonForAudit: "",
+    currentLifestyleChallenges: "",
+  });
+  const [mealPlanForm, setMealPlanForm] = useState({
+    name: "",
+    contact: "",
+    email: "",
+    reasonForMealPlan: "",
+    durationOfPlan: "",
+    isAllergicOrIntolerant: false,
+    requiresHealthCoaching: false,
+  });
+  const [showLifestyleForm, setShowLifestyleForm] = useState(false);
+  const [showMealPlanForm, setShowMealPlanForm] = useState(false);
 
   useEffect(() => {
     fetchWebinars();
@@ -146,38 +169,120 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     clearMessages();
   };
 
-  /**
-   * REFACTOR: handleNextStep and handlePrevStep removed.
-   * handleSubmitBooking now performs all validation and submission.
-   */
+  const handleLifestyleFormChange = (field, value) => {
+    setLifestyleForm({ ...lifestyleForm, [field]: value });
+    clearMessages();
+  };
+
+  const handleMealPlanFormChange = (field, value) => {
+    setMealPlanForm({ ...mealPlanForm, [field]: value });
+    clearMessages();
+  };
+
+  const handleSubmitLifestyleAudit = async (e) => {
+    e.preventDefault();
+
+    if (!lifestyleForm.name || !lifestyleForm.email) {
+      setError("Please provide your name and email");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/lifestylerequests`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(lifestyleForm),
+      });
+
+      if (response.ok) {
+        setSuccess("Lifestyle audit request submitted successfully!");
+        setLifestyleForm({
+          name: "",
+          contact: "",
+          email: "",
+          reasonForAudit: "",
+          currentLifestyleChallenges: "",
+        });
+        setShowLifestyleForm(false);
+      } else {
+        setError("Failed to submit lifestyle audit request");
+      }
+    } catch (error) {
+      setError("Failed to submit lifestyle audit request");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmitMealPlan = async (e) => {
+    e.preventDefault();
+
+    if (!mealPlanForm.name || !mealPlanForm.email) {
+      setError("Please provide your name and email");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/mealplans`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(mealPlanForm),
+      });
+
+      if (response.ok) {
+        setSuccess("Meal plan request submitted successfully!");
+        setMealPlanForm({
+          name: "",
+          contact: "",
+          email: "",
+          reasonForMealPlan: "",
+          durationOfPlan: "",
+          isAllergicOrIntolerant: false,
+          requiresHealthCoaching: false,
+        });
+        setShowMealPlanForm(false);
+      } else {
+        setError("Failed to submit meal plan request");
+      }
+    } catch (error) {
+      setError("Failed to submit meal plan request");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // FIXED: Proper booking submission function
   const handleSubmitBooking = async (e) => {
     e.preventDefault();
 
-    const isPersonalBooking = bookingData.serviceType !== "corporate";
+    const isPersonalBooking = bookingData.serviceType === "personal";
 
-    // 1. Full Form Validation Check
+    // Validation
     if (!bookingData.serviceType) {
       setError("Please select a Service Type.");
       return;
     }
-    if (isPersonalBooking) {
-      if (!bookingData.cluster) {
-        setError("Please select a Health Cluster.");
-        return;
-      }
-      if (!bookingData.date || !bookingData.time) {
-        setError("Please select a Preferred Date and Time.");
-        return;
-      }
+    if (isPersonalBooking && !bookingData.cluster) {
+      setError("Please select a Health Cluster.");
+      return;
+    }
+    if (isPersonalBooking && (!bookingData.date || !bookingData.time)) {
+      setError("Please select a Preferred Date and Time.");
+      return;
     }
     if (!bookingData.name || !bookingData.email) {
       setError("Please provide your Full Name and Email Address.");
       return;
     }
 
-    // 2. Submission Logic
     setIsLoading(true);
-    setError(""); // Clear previous errors if validation passed
+    setError("");
 
     try {
       const response = await fetch(`${API_BASE_URL}/bookings`, {
@@ -185,15 +290,29 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(bookingData),
+        body: JSON.stringify({
+          ...bookingData,
+          status: "pending", // Set initial status
+        }),
       });
 
       if (response.ok) {
-        // const result = await response.json();
+        const result = await response.json();
         setSuccess("Your appointment has been booked successfully!");
         setBookingStep(4); // Move to confirmation screen
-        // Optionally reset form data after successful submission
-        // setBookingData({ ...initialBookingData });
+        // Reset form data
+        setBookingData({
+          serviceType: "",
+          consultationType: "virtual",
+          cluster: "",
+          date: "",
+          time: "",
+          name: "",
+          email: "",
+          phone: "",
+          condition: "",
+          notes: "",
+        });
       } else {
         const errorData = await response.json();
         setError(
@@ -301,6 +420,49 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     setSuccess("");
   };
 
+  const closeLifestyleForm = () => {
+    setShowLifestyleForm(false);
+    setLifestyleForm({
+      name: "",
+      contact: "",
+      email: "",
+      reasonForAudit: "",
+      currentLifestyleChallenges: "",
+    });
+    clearMessages();
+  };
+
+  const closeMealPlanForm = () => {
+    setShowMealPlanForm(false);
+    setMealPlanForm({
+      name: "",
+      contact: "",
+      email: "",
+      reasonForMealPlan: "",
+      durationOfPlan: "",
+      isAllergicOrIntolerant: false,
+      requiresHealthCoaching: false,
+    });
+    clearMessages();
+  };
+
+  const closeBookingModal = () => {
+    setBookingStep(-1);
+    setBookingData({
+      serviceType: "",
+      consultationType: "virtual",
+      cluster: "",
+      date: "",
+      time: "",
+      name: "",
+      email: "",
+      phone: "",
+      condition: "",
+      notes: "",
+    });
+    clearMessages();
+  };
+
   const renderPersonalTab = () => (
     <div className="healthcoaching-content">
       <motion.div
@@ -314,7 +476,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           lifestyle change that leads to pure health.
         </p>
 
-        {/* --- START OF MOVED CTA/ReadMore SECTION --- */}
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <button
             className="healthcoaching-cta"
@@ -341,9 +502,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             {showPersonalFullContent ? "Show Less" : "Read More"}
           </button>
         </div>
-        {/* --- END OF MOVED CTA/ReadMore SECTION --- */}
 
-        {/* UPDATED: Full content is now placed at the top and toggled with the state */}
         {showPersonalFullContent && (
           <motion.div
             className="healthcoaching-fullcontent"
@@ -545,7 +704,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           workforce that is able to deliver profits at reduced healthcare costs.
         </p>
 
-        {/* --- START OF MOVED CTA/ReadMore SECTION (Request Information for Corporate) --- */}
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <button
             className="healthcoaching-cta"
@@ -574,9 +732,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             {showCorporateFullContent ? "Show Less" : "Read More"}
           </button>
         </div>
-        {/* --- END OF MOVED CTA/ReadMore SECTION --- */}
 
-        {/* UPDATED: Full content is now placed at the top and toggled with the state */}
         {showCorporateFullContent && (
           <motion.div
             className="healthcoaching-fullcontent"
@@ -786,6 +942,341 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     </div>
   );
 
+  const renderLifestyleTab = () => (
+    <div className="healthcoaching-content">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h2>Lifestyle Audit</h2>
+        <p className="healthcoaching-subtitle">
+          Comprehensive analysis of your daily habits and routines to identify
+          areas for improvement and create a personalized wellness roadmap.
+        </p>
+
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <button
+            className="healthcoaching-cta"
+            onClick={() => setShowLifestyleForm(true)}
+            style={{ marginRight: "1rem" }}
+          >
+            <i className="bi bi-clipboard2-pulse"></i>
+            Request Lifestyle Audit
+          </button>
+          <button
+            className="healthcoaching-readmore"
+            onClick={() =>
+              setShowLifestyleFullContent(!showLifestyleFullContent)
+            }
+          >
+            <i
+              className={`bi ${
+                showLifestyleFullContent
+                  ? "bi-arrow-up-circle"
+                  : "bi-arrow-down-circle"
+              }`}
+            ></i>
+            {showLifestyleFullContent ? "Show Less" : "Read More"}
+          </button>
+        </div>
+
+        {showLifestyleFullContent && (
+          <motion.div
+            className="healthcoaching-fullcontent"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3>Comprehensive Lifestyle Assessment</h3>
+            <p>
+              Our lifestyle audit is a thorough evaluation of your daily habits,
+              routines, and environmental factors that impact your overall
+              wellbeing. We analyze multiple dimensions of your lifestyle to
+              provide actionable insights.
+            </p>
+
+            <h4>What We Assess:</h4>
+            <ul className="healthcoaching-list">
+              <li>
+                <strong>Sleep Patterns:</strong> Quality, duration, and
+                consistency of your sleep
+              </li>
+              <li>
+                <strong>Nutrition Habits:</strong> Dietary patterns, meal
+                timing, and nutritional balance
+              </li>
+              <li>
+                <strong>Physical Activity:</strong> Exercise routines, daily
+                movement, and fitness levels
+              </li>
+              <li>
+                <strong>Stress Management:</strong> Coping mechanisms,
+                relaxation practices, and stress triggers
+              </li>
+              <li>
+                <strong>Work-Life Balance:</strong> Time management, work
+                demands, and personal time
+              </li>
+              <li>
+                <strong>Social Connections:</strong> Relationships, social
+                support, and community engagement
+              </li>
+              <li>
+                <strong>Environmental Factors:</strong> Living space, work
+                environment, and daily exposures
+              </li>
+            </ul>
+
+            <h4>Benefits of Lifestyle Audit:</h4>
+            <div className="healthcoaching-featuregrid">
+              <div className="healthcoaching-featurecard">
+                <div className="healthcoaching-featureicon">
+                  <i className="bi bi-graph-up"></i>
+                </div>
+                <h4>Personalized Insights</h4>
+                <p>
+                  Customized recommendations based on your unique lifestyle
+                  patterns
+                </p>
+              </div>
+              <div className="healthcoaching-featurecard">
+                <div className="healthcoaching-featureicon">
+                  <i className="bi bi-target"></i>
+                </div>
+                <h4>Actionable Plan</h4>
+                <p>
+                  Clear, achievable steps to improve your daily habits and
+                  routines
+                </p>
+              </div>
+              <div className="healthcoaching-featurecard">
+                <div className="healthcoaching-featureicon">
+                  <i className="bi bi-bar-chart"></i>
+                </div>
+                <h4>Progress Tracking</h4>
+                <p>Monitor improvements and adjust strategies as needed</p>
+              </div>
+            </div>
+
+            <p>
+              Our lifestyle audit provides the foundation for sustainable
+              change, helping you build healthier habits that last a lifetime.
+            </p>
+          </motion.div>
+        )}
+
+        <div className="healthcoaching-featuregrid">
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-clock-history"></i>
+            </div>
+            <h3>Daily Routine Analysis</h3>
+            <p>
+              Evaluate your daily schedule and identify opportunities for
+              healthier habits.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-heart-pulse"></i>
+            </div>
+            <h3>Health Risk Assessment</h3>
+            <p>
+              Identify potential health risks based on your current lifestyle
+              patterns.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-lightbulb"></i>
+            </div>
+            <h3>Personalized Recommendations</h3>
+            <p>
+              Get tailored advice to optimize your lifestyle for better health.
+            </p>
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
+  );
+
+  const renderMealPlanTab = () => (
+    <div className="healthcoaching-content">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h2>Personalized Meal Plans</h2>
+        <p className="healthcoaching-subtitle">
+          Custom nutrition plans designed for your unique needs, preferences,
+          and health goals.
+        </p>
+
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <button
+            className="healthcoaching-cta"
+            onClick={() => setShowMealPlanForm(true)}
+            style={{ marginRight: "1rem" }}
+          >
+            <i className="bi bi-egg-fried"></i>
+            Request Meal Plan
+          </button>
+          <button
+            className="healthcoaching-readmore"
+            onClick={() => setShowMealPlanFullContent(!showMealPlanFullContent)}
+          >
+            <i
+              className={`bi ${
+                showMealPlanFullContent
+                  ? "bi-arrow-up-circle"
+                  : "bi-arrow-down-circle"
+              }`}
+            ></i>
+            {showMealPlanFullContent ? "Show Less" : "Read More"}
+          </button>
+        </div>
+
+        {showMealPlanFullContent && (
+          <motion.div
+            className="healthcoaching-fullcontent"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3>Tailored Nutrition Solutions</h3>
+            <p>
+              Our personalized meal plans are designed to meet your specific
+              nutritional needs, dietary preferences, and health objectives.
+              Whether you're managing a health condition, aiming for weight
+              management, or simply wanting to eat healthier, we create
+              practical and sustainable eating plans.
+            </p>
+
+            <h4>What's Included:</h4>
+            <ul className="healthcoaching-list">
+              <li>
+                <strong>Customized Meal Plans:</strong> Weekly or monthly meal
+                plans based on your preferences
+              </li>
+              <li>
+                <strong>Grocery Lists:</strong> Detailed shopping lists to make
+                grocery shopping easy
+              </li>
+              <li>
+                <strong>Recipe Collection:</strong> Delicious, easy-to-prepare
+                recipes with nutritional information
+              </li>
+              <li>
+                <strong>Portion Guidance:</strong> Clear portion sizes and
+                serving recommendations
+              </li>
+              <li>
+                <strong>Allergy Accommodations:</strong> Adjustments for food
+                allergies and intolerances
+              </li>
+              <li>
+                <strong>Cultural Preferences:</strong> Respect for cultural and
+                religious dietary practices
+              </li>
+              <li>
+                <strong>Budget Considerations:</strong> Plans that fit your
+                financial constraints
+              </li>
+            </ul>
+
+            <h4>Specialized Plans Available:</h4>
+            <div className="healthcoaching-featuregrid">
+              <div className="healthcoaching-featurecard">
+                <div className="healthcoaching-featureicon">
+                  <i className="bi bi-heart"></i>
+                </div>
+                <h4>Heart Health</h4>
+                <p>Low-sodium, heart-healthy eating plans</p>
+              </div>
+              <div className="healthcoaching-featurecard">
+                <div className="healthcoaching-featureicon">
+                  <i className="bi bi-droplet"></i>
+                </div>
+                <h4>Diabetes Management</h4>
+                <p>Blood sugar balancing meal plans</p>
+              </div>
+              <div className="healthcoaching-featurecard">
+                <div className="healthcoaching-featureicon">
+                  <i className="bi bi-arrow-down-up"></i>
+                </div>
+                <h4>Weight Management</h4>
+                <p>Calorie-controlled plans for weight goals</p>
+              </div>
+            </div>
+
+            <p>
+              Our meal plans are not just about what you eat, but about creating
+              sustainable eating habits that support your long-term health and
+              wellness goals.
+            </p>
+          </motion.div>
+        )}
+
+        <div className="healthcoaching-featuregrid">
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-basket"></i>
+            </div>
+            <h3>Customized Nutrition</h3>
+            <p>
+              Meal plans tailored to your specific health needs and dietary
+              preferences.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-clock"></i>
+            </div>
+            <h3>Easy Preparation</h3>
+            <p>Simple recipes with clear instructions for busy lifestyles.</p>
+          </motion.div>
+
+          <motion.div
+            className="healthcoaching-featurecard"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="healthcoaching-featureicon">
+              <i className="bi bi-arrow-repeat"></i>
+            </div>
+            <h3>Flexible Options</h3>
+            <p>Adaptable plans that can evolve with your changing needs.</p>
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
+  );
+
   const renderOnlineTab = () => (
     <div className="healthcoaching-content">
       <h2>Online Services</h2>
@@ -990,10 +1481,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     </div>
   );
 
-  /**
-   * REFACTOR: The modal logic is now a single, full form.
-   * Only the confirmation step (4) is handled separately.
-   */
   const renderBookingModal = () => {
     const isPersonalBooking = bookingData.serviceType === "personal";
     const modalTitle =
@@ -1018,11 +1505,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             >
               <button
                 className="healthcoaching-modalclose"
-                onClick={() => {
-                  setBookingStep(-1);
-                  clearMessages();
-                  setIsLoading(false);
-                }}
+                onClick={closeBookingModal}
               >
                 ×
               </button>
@@ -1059,17 +1542,13 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                       We have sent a confirmation email to{" "}
                       <strong>{bookingData.email}</strong>.
                       {isPersonalBooking &&
-                        ` We look forward to our ${
-                          bookingData.consultationType
-                        } consultation on ${new Date(
-                          bookingData.date
-                        ).toLocaleDateString()} at ${bookingData.time}.`}
+                        ` We look forward to our ${bookingData.consultationType} consultation.`}
                       {!isPersonalBooking &&
                         ` Our corporate wellness team will contact you shortly to discuss your request.`}
                     </p>
                     <button
                       className="healthcoaching-cta"
-                      onClick={() => setBookingStep(-1)}
+                      onClick={closeBookingModal}
                       style={{ marginTop: "2rem" }}
                     >
                       Close
@@ -1084,7 +1563,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 >
                   <h3>Complete Your Details</h3>
 
-                  {/* 1. Service Type Selection (Always required, even if pre-selected by CTA) */}
+                  {/* 1. Service Type Selection */}
                   <div className="healthcoaching-formgroup">
                     <label>1. Service Type *</label>
                     <div className="healthcoaching-optiongrid">
@@ -1124,7 +1603,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                     <div className="healthcoaching-formgroup">
                       <label>2. Consultation Format</label>
                       <div className="healthcoaching-radiogroup">
-                        <label>
+                        <label className="healthcoaching-radio-label">
                           <input
                             type="radio"
                             name="consultationType"
@@ -1140,7 +1619,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                           <i className="bi bi-camera-video"></i> Virtual
                           (Online)
                         </label>
-                        <label>
+                        <label className="healthcoaching-radio-label">
                           <input
                             type="radio"
                             name="consultationType"
@@ -1195,8 +1674,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
                   {/* Date and Time Selection (Only for Personal Booking) */}
                   {isPersonalBooking && (
-                    <div className="healthcoaching-formgroup healthcoaching-split">
-                      <div>
+                    <div className="healthcoaching-datetime">
+                      <div className="healthcoaching-calendar">
                         <label>4. Preferred Date *</label>
                         <input
                           type="date"
@@ -1208,22 +1687,21 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                           required
                         />
                       </div>
-                      <div>
+                      <div className="healthcoaching-timeslots">
                         <label>Preferred Time *</label>
-                        <select
-                          value={bookingData.time}
-                          onChange={(e) =>
-                            handleBookingChange("time", e.target.value)
-                          }
-                          required
-                        >
-                          <option value="">-- Select Time --</option>
+                        <div className="healthcoaching-slotgrid">
                           {availableTimes.map((time) => (
-                            <option key={time} value={time}>
+                            <div
+                              key={time}
+                              className={`healthcoaching-timeslot ${
+                                bookingData.time === time ? "selected" : ""
+                              }`}
+                              onClick={() => handleBookingChange("time", time)}
+                            >
                               {time}
-                            </option>
+                            </div>
                           ))}
-                        </select>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1469,6 +1947,286 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     );
   };
 
+  const renderLifestyleModal = () => (
+    <AnimatePresence>
+      {showLifestyleForm && (
+        <motion.div
+          className="healthcoaching-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="healthcoaching-modalcontent"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -50, opacity: 0 }}
+          >
+            <button
+              className="healthcoaching-modalclose"
+              onClick={closeLifestyleForm}
+            >
+              ×
+            </button>
+
+            <div className="healthcoaching-bookingheader">
+              <h2>Request Lifestyle Audit</h2>
+            </div>
+
+            <form
+              className="healthcoaching-bookingstep"
+              onSubmit={handleSubmitLifestyleAudit}
+            >
+              <h3>Tell Us About Your Lifestyle</h3>
+
+              <div className="healthcoaching-formgroup">
+                <label>Full Name *</label>
+                <input
+                  type="text"
+                  placeholder="Your full name"
+                  value={lifestyleForm.name}
+                  onChange={(e) =>
+                    handleLifestyleFormChange("name", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Contact Number</label>
+                <input
+                  type="text"
+                  placeholder="Your phone number"
+                  value={lifestyleForm.contact}
+                  onChange={(e) =>
+                    handleLifestyleFormChange("contact", e.target.value)
+                  }
+                />
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Email Address *</label>
+                <input
+                  type="email"
+                  placeholder="Your email address"
+                  value={lifestyleForm.email}
+                  onChange={(e) =>
+                    handleLifestyleFormChange("email", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Reason for Lifestyle Audit</label>
+                <textarea
+                  placeholder="What would you like to achieve with the lifestyle audit?"
+                  rows="3"
+                  value={lifestyleForm.reasonForAudit}
+                  onChange={(e) =>
+                    handleLifestyleFormChange("reasonForAudit", e.target.value)
+                  }
+                ></textarea>
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Current Lifestyle Challenges</label>
+                <textarea
+                  placeholder="Describe any current health or lifestyle challenges you're facing..."
+                  rows="4"
+                  value={lifestyleForm.currentLifestyleChallenges}
+                  onChange={(e) =>
+                    handleLifestyleFormChange(
+                      "currentLifestyleChallenges",
+                      e.target.value
+                    )
+                  }
+                ></textarea>
+              </div>
+
+              <div className="healthcoaching-formactions">
+                <button
+                  type="submit"
+                  className="healthcoaching-cta"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <i className="bi bi-arrow-clockwise spin"></i>{" "}
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-clipboard2-pulse"></i> Submit Request
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  const renderMealPlanModal = () => (
+    <AnimatePresence>
+      {showMealPlanForm && (
+        <motion.div
+          className="healthcoaching-modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="healthcoaching-modalcontent"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -50, opacity: 0 }}
+          >
+            <button
+              className="healthcoaching-modalclose"
+              onClick={closeMealPlanForm}
+            >
+              ×
+            </button>
+
+            <div className="healthcoaching-bookingheader">
+              <h2>Request Personalized Meal Plan</h2>
+            </div>
+
+            <form
+              className="healthcoaching-bookingstep"
+              onSubmit={handleSubmitMealPlan}
+            >
+              <h3>Tell Us About Your Dietary Needs</h3>
+
+              <div className="healthcoaching-formgroup">
+                <label>Full Name *</label>
+                <input
+                  type="text"
+                  placeholder="Your full name"
+                  value={mealPlanForm.name}
+                  onChange={(e) =>
+                    handleMealPlanFormChange("name", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Contact Number</label>
+                <input
+                  type="text"
+                  placeholder="Your phone number"
+                  value={mealPlanForm.contact}
+                  onChange={(e) =>
+                    handleMealPlanFormChange("contact", e.target.value)
+                  }
+                />
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Email Address *</label>
+                <input
+                  type="email"
+                  placeholder="Your email address"
+                  value={mealPlanForm.email}
+                  onChange={(e) =>
+                    handleMealPlanFormChange("email", e.target.value)
+                  }
+                  required
+                />
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Reason for Meal Plan</label>
+                <textarea
+                  placeholder="What are your health goals or dietary needs?"
+                  rows="3"
+                  value={mealPlanForm.reasonForMealPlan}
+                  onChange={(e) =>
+                    handleMealPlanFormChange(
+                      "reasonForMealPlan",
+                      e.target.value
+                    )
+                  }
+                ></textarea>
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label>Preferred Duration</label>
+                <select
+                  value={mealPlanForm.durationOfPlan}
+                  onChange={(e) =>
+                    handleMealPlanFormChange("durationOfPlan", e.target.value)
+                  }
+                >
+                  <option value="">Select duration</option>
+                  <option value="1-week">1 Week</option>
+                  <option value="2-weeks">2 Weeks</option>
+                  <option value="1-month">1 Month</option>
+                  <option value="3-months">3 Months</option>
+                </select>
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label className="healthcoaching-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={mealPlanForm.isAllergicOrIntolerant}
+                    onChange={(e) =>
+                      handleMealPlanFormChange(
+                        "isAllergicOrIntolerant",
+                        e.target.checked
+                      )
+                    }
+                  />
+                  <span>I have food allergies or intolerances</span>
+                </label>
+              </div>
+
+              <div className="healthcoaching-formgroup">
+                <label className="healthcoaching-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={mealPlanForm.requiresHealthCoaching}
+                    onChange={(e) =>
+                      handleMealPlanFormChange(
+                        "requiresHealthCoaching",
+                        e.target.checked
+                      )
+                    }
+                  />
+                  <span>I would like health coaching support</span>
+                </label>
+              </div>
+
+              <div className="healthcoaching-formactions">
+                <button
+                  type="submit"
+                  className="healthcoaching-cta"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <i className="bi bi-arrow-clockwise spin"></i>{" "}
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-egg-fried"></i> Submit Request
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   return (
     <div className="healthcoaching-portal">
       <header className="healthcoaching-header">
@@ -1485,7 +2243,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       </header>
 
       <main className="healthcoaching-main">
-        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "open" : ""}`}>
+        <nav className={`healthcoaching-nav ${mobileMenuOpen ? "active" : ""}`}>
           <ul>
             <li>
               <button
@@ -1509,6 +2267,30 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               >
                 <i className="bi bi-briefcase"></i>
                 Corporate Wellness
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "lifestyle" ? "active" : ""}
+                onClick={() => {
+                  setActiveTab("lifestyle");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <i className="bi bi-clipboard2-pulse"></i>
+                Lifestyle Audit
+              </button>
+            </li>
+            <li>
+              <button
+                className={activeTab === "mealplan" ? "active" : ""}
+                onClick={() => {
+                  setActiveTab("mealplan");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <i className="bi bi-egg-fried"></i>
+                Meal Plans
               </button>
             </li>
             <li>
@@ -1553,14 +2335,19 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div className="healthcoaching-tabcontent">
           {activeTab === "personal" && renderPersonalTab()}
           {activeTab === "corporate" && renderCorporateTab()}
+          {activeTab === "lifestyle" && renderLifestyleTab()}
+          {activeTab === "mealplan" && renderMealPlanTab()}
           {activeTab === "online" && renderOnlineTab()}
           {activeTab === "webinars" && renderWebinarsTab()}
           {activeTab === "support" && renderSupportTab()}
         </div>
       </main>
 
-      {bookingStep >= 0 && renderBookingModal()}
-      {webinarRegistration.step > 0 && renderWebinarRegistrationModal()}
+      {/* Modals */}
+      {renderBookingModal()}
+      {renderWebinarRegistrationModal()}
+      {renderLifestyleModal()}
+      {renderMealPlanModal()}
 
       {/* Error and Success Messages */}
       {(error || success) && (

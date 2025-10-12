@@ -49,205 +49,196 @@ async function connectToDatabase() {
 // 1. Define MongoDB Schemas (UPDATED)
 // =================================================================
 
-const bookingSchema = new mongoose.Schema({
-  name: String, // Requester Name
-  email: String, // Requester Email
-  phone: String,
-  serviceType: {
+const BookingSchema = new mongoose.Schema({
+  clientName: { type: String, required: true },
+  clientEmail: { type: String, required: true },
+  service: {
     type: String,
-    enum: ["personal", "corporate"],
+    enum: ["Initial Consultation", "Follow-up Session", "Group Coaching"],
     required: true,
   },
-  consultationType: String,
-  cluster: String,
-  date: String,
-  time: String,
-  condition: String,
-  notes: String,
-
-  // NEW CORPORATE FIELDS (used when serviceType is 'corporate')
-  corporateName: String,
-  contactDetails: String,
-  sector: String,
-  noOfEmployees: Number, // Stored as a Number
-  employeeHealthStatus: String,
-  reasonsForCoaching: String,
-  expectedOutcomes: String,
-
+  date: { type: Date, required: true },
+  time: { type: String, required: true },
   status: {
     type: String,
-    default: "confirmed",
-    enum: ["confirmed", "cancelled", "completed", "pending"],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const mealPlanRequestSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  contact: String,
-  email: { type: String, required: true },
-  reasonForMealPlan: String,
-  durationOfPlan: String,
-  isAllergicOrTntolerant: { type: Boolean, default: false },
-  requiresHealthCoaching: { type: Boolean, default: false },
-  status: {
-    type: String,
-    default: "pending",
-    enum: ["pending", "processed", "rejected"],
+    enum: ["Pending", "Confirmed", "Cancelled", "Completed"],
+    default: "Pending",
   },
   createdAt: { type: Date, default: Date.now },
 });
 
-const lifestyleAuditRequestSchema = new mongoose.Schema({
+const WebinarSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  speaker: { type: String, required: true },
+  date: { type: Date, required: true },
+  time: { type: String, required: true },
+  link: { type: String, required: true },
+  capacity: { type: Number, default: 100 },
+  registrations: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const MealPlanRequestSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  contact: String,
   email: { type: String, required: true },
-  reasonForAudit: String,
-  currentLifestyleChallenges: String,
+  goal: { type: String },
   status: {
     type: String,
-    default: "pending",
-    enum: ["pending", "processed", "rejected"],
+    enum: ["New", "In Progress", "Completed"],
+    default: "New",
   },
   createdAt: { type: Date, default: Date.now },
 });
 
-const webinarSchema = new mongoose.Schema({
-  title: String,
-  date: String,
-  time: String,
-  duration: String,
-  speaker: String,
-  description: String,
-  currentAttendees: {
-    type: Number,
-    default: 0,
+const LifestyleAuditRequestSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  reason: { type: String },
+  status: {
+    type: String,
+    enum: ["New", "Audit Scheduled", "Completed"],
+    default: "New",
   },
-  maxAttendees: Number,
-  status: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  createdAt: { type: Date, default: Date.now },
 });
 
-const webinarRegistrationSchema = new mongoose.Schema({
-  webinarId: String,
-  name: String,
-  email: String,
-  registeredAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-// =================================================================
-// 2. Define Models (UPDATED)
-// =================================================================
-
-const Booking = mongoose.model("Booking", bookingSchema);
-const Webinar = mongoose.model("Webinar", webinarSchema);
-const WebinarRegistration = mongoose.model(
-  "WebinarRegistration",
-  webinarRegistrationSchema
-);
+const Booking = mongoose.model("Booking", BookingSchema);
+const Webinar = mongoose.model("Webinar", WebinarSchema);
 const MealPlanRequest = mongoose.model(
   "MealPlanRequest",
-  mealPlanRequestSchema
+  MealPlanRequestSchema
 );
 const LifestyleAuditRequest = mongoose.model(
   "LifestyleAuditRequest",
-  lifestyleAuditRequestSchema
+  LifestyleAuditRequestSchema
 );
 
-// =================================================================
-// 3. API Routes (CRITICAL FIXES & NEW ROUTES)
-// =================================================================
-
-// Helper function to handle connection and API logic
-const routeHandler = (handler) => async (req, res) => {
+// Helper function to wrap route handlers for DB connection
+const routeHandler = (handler) => async (req, res, next) => {
   try {
     await connectToDatabase();
-    await handler(req, res);
+    await handler(req, res, next);
   } catch (error) {
-    console.error(`Route error in ${req.method} ${req.path}:`, error.message);
-    // Log the full error for debugging, but send a generic 500 to the client
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", details: error.message });
+    console.error("Route handler error:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-// Bookings Routes (GET, POST, PUT, DELETE)
+// =================================================================
+// 2. Booking Routes (NEWLY IMPLEMENTED)
+// =================================================================
+
+// GET all bookings
 app.get(
   "/api/bookings",
   routeHandler(async (req, res) => {
-    const bookings = await Booking.find().sort({
-      createdAt: -1,
-    });
+    const bookings = await Booking.find().sort({ date: 1, time: 1 });
     res.json(bookings);
   })
 );
 
+// POST a new booking
 app.post(
   "/api/bookings",
   routeHandler(async (req, res) => {
-    // Validation for new corporate fields added in frontend
-    if (req.body.serviceType === "corporate") {
-      const requiredCorporateFields = [
-        "corporateName",
-        "contactDetails",
-        "sector",
-        "noOfEmployees",
-        "employeeHealthStatus",
-        "reasonsForCoaching",
-        "expectedOutcomes",
-      ];
-      for (const field of requiredCorporateFields) {
-        if (!req.body[field]) {
-          return res
-            .status(400)
-            .json({ error: `Missing required corporate field: ${field}` });
-        }
-      }
+    const { clientName, clientEmail, service, date, time } = req.body;
+    if (!clientName || !clientEmail || !service || !date || !time) {
+      return res.status(400).json({ error: "Missing required booking fields" });
     }
-    const booking = new Booking(req.body);
-    const savedBooking = await booking.save();
+    const newBooking = new Booking(req.body);
+    const savedBooking = await newBooking.save();
     res.status(201).json(savedBooking);
   })
 );
 
-// CRITICAL FIX: PUT/UPDATE Route for Admin Dashboard
+// PUT (Update) a booking
 app.put(
   "/api/bookings/:id",
   routeHandler(async (req, res) => {
-    const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedBooking) {
+      return res.status(404).json({ error: "Booking not found" });
     }
-    res.json(booking);
+    res.json(updatedBooking);
   })
 );
 
-// CRITICAL FIX: DELETE Route for Admin Dashboard
+// DELETE a booking
 app.delete(
   "/api/bookings/:id",
   routeHandler(async (req, res) => {
     const result = await Booking.findByIdAndDelete(req.params.id);
     if (!result) {
-      return res.status(404).json({ message: "Booking not found" });
+      return res.status(404).json({ error: "Booking not found" });
     }
-    res.json({ message: "Booking deleted successfully" });
+    res.status(204).send();
   })
 );
 
-// New Routes for Meal Plan Requests
+// =================================================================
+// 3. Webinar Routes (NEWLY IMPLEMENTED)
+// =================================================================
+
+// GET all webinars
+app.get(
+  "/api/webinars",
+  routeHandler(async (req, res) => {
+    const webinars = await Webinar.find().sort({ date: 1, time: 1 });
+    res.json(webinars);
+  })
+);
+
+// POST a new webinar
+app.post(
+  "/api/webinars",
+  routeHandler(async (req, res) => {
+    const { title, speaker, date, time, link } = req.body;
+    if (!title || !speaker || !date || !time || !link) {
+      return res.status(400).json({ error: "Missing required webinar fields" });
+    }
+    const newWebinar = new Webinar(req.body);
+    const savedWebinar = await newWebinar.save();
+    res.status(201).json(savedWebinar);
+  })
+);
+
+// PUT (Update) a webinar
+app.put(
+  "/api/webinars/:id",
+  routeHandler(async (req, res) => {
+    const updatedWebinar = await Webinar.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedWebinar) {
+      return res.status(404).json({ error: "Webinar not found" });
+    }
+    res.json(updatedWebinar);
+  })
+);
+
+// DELETE a webinar
+app.delete(
+  "/api/webinars/:id",
+  routeHandler(async (req, res) => {
+    const result = await Webinar.findByIdAndDelete(req.params.id);
+    if (!result) {
+      return res.status(404).json({ error: "Webinar not found" });
+    }
+    res.status(204).send();
+  })
+);
+
+// =================================================================
+// 4. Meal Plan Request Routes (EXISTING - RETAINED)
+// =================================================================
+
+// GET all meal plan requests
 app.get(
   "/api/mealplans",
   routeHandler(async (req, res) => {
@@ -258,6 +249,7 @@ app.get(
   })
 );
 
+// POST a new meal plan request
 app.post(
   "/api/mealplans",
   routeHandler(async (req, res) => {
@@ -271,7 +263,11 @@ app.post(
   })
 );
 
-// New Routes for Lifestyle Audit Requests
+// =================================================================
+// 5. Lifestyle Audit Request Routes (EXISTING - RETAINED)
+// =================================================================
+
+// GET all lifestyle audit requests
 app.get(
   "/api/lifestylerequests",
   routeHandler(async (req, res) => {
@@ -282,6 +278,7 @@ app.get(
   })
 );
 
+// POST a new lifestyle audit request
 app.post(
   "/api/lifestylerequests",
   routeHandler(async (req, res) => {
@@ -295,20 +292,65 @@ app.post(
   })
 );
 
-// Existing Webinar Routes (omitted PUT/DELETE for brevity, assuming existing logic is retained)
+// =================================================================
+// 6. Stats Route (For Dashboard Overview)
+// =================================================================
+
 app.get(
-  "/api/webinars",
+  "/api/stats",
   routeHandler(async (req, res) => {
-    const webinars = await Webinar.find().sort({
-      createdAt: -1,
+    const totalBookings = await Booking.countDocuments();
+    const pendingBookings = await Booking.countDocuments({
+      status: "Pending",
     });
-    res.json(webinars);
+    const totalWebinars = await Webinar.countDocuments();
+    const activeWebinars = await Webinar.countDocuments({
+      date: { $gte: new Date() },
+    });
+    const totalMealPlans = await MealPlanRequest.countDocuments();
+    const pendingMealPlans = await MealPlanRequest.countDocuments({
+      status: "New",
+    });
+    const totalLifestyleAudits = await LifestyleAuditRequest.countDocuments();
+    const pendingLifestyleAudits = await LifestyleAuditRequest.countDocuments({
+      status: "New",
+    });
+
+    res.json({
+      totalBookings,
+      pendingBookings,
+      totalWebinars,
+      activeWebinars,
+      totalMealPlans,
+      pendingMealPlans,
+      totalLifestyleAudits,
+      pendingLifestyleAudits,
+    });
   })
 );
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+// =================================================================
+// 7. Start Server
+// =================================================================
 
-// Export the app for Vercel's serverless function handler
-export default app;
+// Connect to DB and start server only if not in a serverless environment (optional check)
+if (
+  process.env.NODE_ENV !== "production" ||
+  process.env.IS_SERVERLESS !== "true"
+) {
+  connectToDatabase()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error("Failed to start server:", err);
+      process.exit(1);
+    });
+} else {
+  // Export app for serverless functions (e.g., Vercel)
+  console.log("Serverless mode: App exported.");
+}
+
+export default app; // For Vercel/Serverless deployment

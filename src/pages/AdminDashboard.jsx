@@ -1,1400 +1,842 @@
-// AdminDashboard.jsx
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "../css/AdminDashboard.css";
 
-// Helper components for Icons (using Emojis as placeholders for visual appeal)
-const Icon = ({ name }) => {
-  switch (name) {
-    case "Bookings":
-      return "🗓️";
-    case "Webinars":
-      return "💡";
-    case "Add":
-      return "✨";
-    case "View":
-      return "👁️";
-    case "Edit":
-      return "✏️";
-    case "Delete":
-      return "🗑️";
-    case "Export":
-      return "📤";
-    case "Register":
-      return "👥";
-    case "Attendee":
-      return "🧑‍💻";
-    case "Sessions":
-      return "✅";
-    default:
-      return "";
-  }
-};
-
 const AdminDashboard = ({ apiBaseUrl }) => {
+  // Use a sensible default for the API base URL
   const API_BASE_URL = apiBaseUrl || "https://nutricare-a1g7.vercel.app/api";
-  const [activeTab, setActiveTab] = useState("bookings");
+
+  // State for UI and Data
+  const [activeTab, setActiveTab] = useState("overview");
   const [bookings, setBookings] = useState([]);
   const [webinars, setWebinars] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // Used for initial data fetching only
-  const [isSubmittingWebinar, setIsSubmittingWebinar] = useState(false); // ✅ FIX 1: State for webinar form submission
-  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false); // State for booking form submission
+  const [mealPlanRequests, setMealPlanRequests] = useState([]);
+  const [lifestyleRequests, setLifestyleRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [editingWebinar, setEditingWebinar] = useState(null);
-  const [showWebinarForm, setShowWebinarForm] = useState(false);
-  const [webinarRegistrations, setWebinarRegistrations] = useState({});
-  const [showRegistrations, setShowRegistrations] = useState(null);
-  const [registrationLoading, setRegistrationLoading] = useState({});
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  const [editingBooking, setEditingBooking] = useState(null);
-  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [isAddBookingModalOpen, setIsAddBookingModalOpen] = useState(false); // NEW
+  const [isAddWebinarModalOpen, setIsAddWebinarModalOpen] = useState(false); // NEW
   const [stats, setStats] = useState({
     totalBookings: 0,
-    upcomingWebinars: 0,
-    completedSessions: 0,
-    totalAttendees: 0,
+    pendingBookings: 0,
+    totalWebinars: 0,
+    activeWebinars: 0,
+    totalMealPlans: 0,
+    pendingMealPlans: 0,
+    totalLifestyleAudits: 0,
+    pendingLifestyleAudits: 0,
   });
 
-  // New webinar form state
-  const [webinarForm, setWebinarForm] = useState({
-    title: "",
-    date: "",
-    time: "",
-    duration: "",
-    speaker: "",
-    description: "",
-    maxAttendees: 100,
-    status: "upcoming",
-  });
-
-  // Booking form state
-  const [bookingForm, setBookingForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    serviceType: "personal",
-    consultationType: "virtual",
-    cluster: "nutrition",
-    date: "",
-    time: "",
-    condition: "",
-    notes: "",
-    status: "confirmed",
-  });
-
-  // Mock webinar data for fallback
-  const mockWebinars = [
-    {
-      _id: "1",
-      title: "Managing Diabetes Through Lifestyle Changes",
-      date: "2025-08-15",
-      time: "14:00",
-      duration: "60 mins",
-      speaker: "Dr. Sarah Johnson",
-      description:
-        "Learn how to manage diabetes through proper nutrition and exercise.",
-      currentAttendees: 24,
-      maxAttendees: 100,
-      status: "upcoming",
-      thumbnail: "🌿",
-    },
-    {
-      _id: "2",
-      title: "Workplace Wellness Strategies",
-      date: "2025-08-22",
-      time: "16:00",
-      duration: "45 mins",
-      speaker: "Health Coach Michael Chen",
-      description: "Effective wellness strategies for corporate environments.",
-      currentAttendees: 17,
-      maxAttendees: 50,
-      status: "upcoming",
-      thumbnail: "💼",
-    },
-    {
-      _id: "3",
-      title: "Stress Management Techniques",
-      date: "2025-09-05",
-      time: "11:00",
-      duration: "50 mins",
-      speaker: "Dr. Emily Rodriguez",
-      description: "Practical techniques for managing stress in daily life.",
-      currentAttendees: 42,
-      maxAttendees: 75,
-      status: "upcoming",
-      thumbnail: "🧘",
-    },
-  ];
-
-  useEffect(() => {
-    fetchData();
-    calculateStats();
-  }, [activeTab]);
-
-  useEffect(() => {
-    calculateStats();
-  }, [bookings, webinars]);
-
-  const calculateStats = () => {
-    const totalBookings = bookings.length;
-    // Defensive check applied here as well
-    const upcomingWebinars = webinars.filter(
-      (w) => (w.status || "unknown") === "upcoming"
-    ).length;
-    const completedSessions = bookings.filter(
-      (b) => b.status === "completed"
-    ).length;
-    const totalAttendees = webinars.reduce(
-      (sum, webinar) => sum + (webinar.currentAttendees || 0),
-      0
-    );
-
-    setStats({
-      totalBookings,
-      upcomingWebinars,
-      completedSessions,
-      totalAttendees,
-    });
-  };
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    clearMessages();
-    try {
-      // Fetch Bookings
-      if (activeTab === "bookings" || activeTab === "dashboard") {
-        const bookingsResponse = await fetch(`${API_BASE_URL}/bookings`);
-        if (bookingsResponse.ok) {
-          const data = await bookingsResponse.json();
-          setBookings(data);
-        } else {
-          setError((prev) => prev + " Failed to fetch bookings.");
-          setBookings([]);
-        }
-      }
-
-      // Fetch Webinars
-      if (activeTab === "webinars" || activeTab === "dashboard") {
-        try {
-          const webinarsResponse = await fetch(`${API_BASE_URL}/webinars`);
-          if (webinarsResponse.ok) {
-            const data = await webinarsResponse.json();
-            setWebinars(data);
-          } else {
-            setWebinars(mockWebinars);
-            setError(
-              (prev) => prev + " Using demo data. Webinars API not available."
-            );
-          }
-        } catch (err) {
-          setWebinars(mockWebinars);
-          setError(
-            (prev) => prev + " Using demo data. Webinars API not available."
-          );
-        }
-      }
-    } catch (error) {
-      setError("An unexpected error occurred during data fetch.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchWebinarRegistrations = async (webinarId) => {
-    setRegistrationLoading((prev) => ({ ...prev, [webinarId]: true }));
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/webinars/${webinarId}/registrations`
-      );
-
-      if (response.ok) {
-        const registrations = await response.json();
-        setWebinarRegistrations((prev) => ({
-          ...prev,
-          [webinarId]: registrations,
-        }));
-      } else {
-        const mockRegistrations = [
-          {
-            _id: 1,
-            name: "John Doe",
-            email: "john@example.com",
-            registeredAt: "2025-07-15T10:30:00Z",
-          },
-          {
-            _id: 2,
-            name: "Jane Smith",
-            email: "jane@example.com",
-            registeredAt: "2025-07-14T15:45:00Z",
-          },
-          {
-            _id: 3,
-            name: "Robert Johnson",
-            email: "robert@example.com",
-            registeredAt: "2025-07-13T09:15:00Z",
-          },
-        ];
-
-        setWebinarRegistrations((prev) => ({
-          ...prev,
-          [webinarId]: mockRegistrations,
-        }));
-        setError("Using demo data. Registrations API not available.");
-      }
-    } catch (error) {
-      setError("Failed to fetch registrations");
-      setWebinarRegistrations((prev) => ({
-        ...prev,
-        [webinarId]: [],
-      }));
-    } finally {
-      setRegistrationLoading((prev) => ({ ...prev, [webinarId]: false }));
-    }
-  };
-
-  const handleDeleteBooking = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this booking?"))
-      return;
-    clearMessages();
-    try {
-      const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        setBookings(bookings.filter((booking) => booking._id !== id));
-        setSuccess("Booking deleted successfully");
-      } else {
-        setError("Failed to delete booking");
-      }
-    } catch (error) {
-      setError("Failed to delete booking");
-    }
-  };
-
-  const handleDeleteWebinar = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this webinar?"))
-      return;
-    clearMessages();
-    try {
-      const response = await fetch(`${API_BASE_URL}/webinars/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.ok) {
-        setWebinars(webinars.filter((webinar) => webinar._id !== id));
-        setSuccess("Webinar deleted successfully");
-      } else {
-        setWebinars(webinars.filter((webinar) => webinar._id !== id));
-        setSuccess("Webinar removed from local data (API not available)");
-      }
-    } catch (error) {
-      setWebinars(webinars.filter((webinar) => webinar._id !== id));
-      setSuccess("Webinar removed from local data (API not available)");
-    }
-  };
-
-  const handleStatusChange = async (id, newStatus) => {
-    clearMessages();
-    try {
-      const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        setBookings(
-          bookings.map((booking) =>
-            booking._id === id ? { ...booking, status: newStatus } : booking
-          )
-        );
-        setSuccess("Status updated successfully");
-      } else {
-        setError("Failed to update status");
-      }
-    } catch (error) {
-      setError("Failed to update status");
-    }
-  };
-
-  const handleWebinarStatusChange = async (id, newStatus) => {
-    clearMessages();
-    try {
-      const response = await fetch(`${API_BASE_URL}/webinars/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        const updatedWebinar = await response.json();
-        setWebinars(
-          webinars.map((webinar) =>
-            webinar._id === id ? updatedWebinar : webinar
-          )
-        );
-        setSuccess("Webinar status updated successfully");
-      } else {
-        setWebinars(
-          webinars.map((webinar) =>
-            webinar._id === id ? { ...webinar, status: newStatus } : webinar
-          )
-        );
-        setSuccess("Webinar status updated in local data (API not available)");
-      }
-    } catch (error) {
-      setWebinars(
-        webinars.map((webinar) =>
-          webinar._id === id ? { ...webinar, status: newStatus } : webinar
-        )
-      );
-      setSuccess("Webinar status updated in local data (API not available)");
-    }
-  };
-
-  const handleWebinarFormChange = (e) => {
-    const { name, value } = e.target;
-    setWebinarForm({
-      ...webinarForm,
-      [name]: value,
-    });
-  };
-
-  const handleBookingFormChange = (e) => {
-    const { name, value } = e.target;
-    setBookingForm({
-      ...bookingForm,
-      [name]: value,
-    });
-  };
-
-  // Use isSubmittingWebinar
-  const handleCreateWebinar = async (e) => {
-    e.preventDefault();
-    setIsSubmittingWebinar(true);
-    clearMessages();
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/webinars`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(webinarForm),
-      });
-
-      if (response.ok) {
-        const newWebinar = await response.json();
-        setWebinars([...webinars, newWebinar]);
-        setSuccess("Webinar created successfully");
-      } else {
-        const newWebinar = {
-          _id: Date.now().toString(),
-          ...webinarForm,
-          currentAttendees: 0,
-          thumbnail: "📊",
-        };
-        setWebinars([...webinars, newWebinar]);
-        setSuccess("Webinar added to local data (API not available)");
-      }
-    } catch (error) {
-      const newWebinar = {
-        _id: Date.now().toString(),
-        ...webinarForm,
-        currentAttendees: 0,
-        thumbnail: "📊",
-      };
-      setWebinars([...webinars, newWebinar]);
-      setSuccess("Webinar added to local data (API not available)");
-    } finally {
-      setShowWebinarForm(false);
-      setIsSubmittingWebinar(false);
-      setWebinarForm({
-        title: "",
-        date: "",
-        time: "",
-        duration: "",
-        speaker: "",
-        description: "",
-        maxAttendees: 100,
-        status: "upcoming",
-      });
-    }
-  };
-
-  const handleEditWebinar = (webinar) => {
-    setEditingWebinar(webinar);
-    setWebinarForm({
-      title: webinar.title,
-      date: webinar.date,
-      time: webinar.time,
-      duration: webinar.duration,
-      speaker: webinar.speaker,
-      description: webinar.description || "",
-      maxAttendees: webinar.maxAttendees,
-      status: webinar.status || "upcoming", // Defensive default
-    });
-    setShowWebinarForm(true);
-  };
-
-  const handleEditBooking = (booking) => {
-    setSelectedBooking(booking); // Set selected booking for modal view
-    setEditingBooking(booking);
-    setBookingForm({
-      name: booking.name,
-      email: booking.email,
-      phone: booking.phone || "",
-      serviceType: booking.serviceType,
-      consultationType: booking.consultationType,
-      cluster: booking.cluster,
-      date: booking.date,
-      time: booking.time,
-      condition: booking.condition || "",
-      notes: booking.notes || "",
-      status: booking.status,
-    });
-    setShowBookingForm(true);
-  };
-
-  // Use isSubmittingWebinar
-  const handleUpdateWebinar = async (e) => {
-    e.preventDefault();
-    setIsSubmittingWebinar(true);
-    clearMessages();
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/webinars/${editingWebinar._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(webinarForm),
-        }
-      );
-
-      if (response.ok) {
-        const updatedWebinar = await response.json();
-        setWebinars(
-          webinars.map((w) =>
-            w._id === updatedWebinar._id ? updatedWebinar : w
-          )
-        );
-        setSuccess("Webinar updated successfully");
-      } else {
-        setWebinars(
-          webinars.map((w) =>
-            w._id === editingWebinar._id ? { ...w, ...webinarForm } : w
-          )
-        );
-        setSuccess("Webinar updated in local data (API not available)");
-      }
-    } catch (error) {
-      setWebinars(
-        webinars.map((w) =>
-          w._id === editingWebinar._id ? { ...w, ...webinarForm } : w
-        )
-      );
-      setSuccess("Webinar updated in local data (API not available)");
-    } finally {
-      setShowWebinarForm(false);
-      setEditingWebinar(null);
-      setIsSubmittingWebinar(false);
-      setWebinarForm({
-        title: "",
-        date: "",
-        time: "",
-        duration: "",
-        speaker: "",
-        description: "",
-        maxAttendees: 100,
-        status: "upcoming",
-      });
-    }
-  };
-
-  // Use isSubmittingBooking for update
-  const handleUpdateBooking = async (e) => {
-    e.preventDefault();
-    setIsSubmittingBooking(true);
-    clearMessages();
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/bookings/${editingBooking._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bookingForm),
-        }
-      );
-
-      if (response.ok) {
-        const updatedBooking = await response.json();
-        setBookings(
-          bookings.map((b) =>
-            b._id === updatedBooking.booking._id ? updatedBooking.booking : b
-          )
-        );
-        setSuccess("Booking updated successfully");
-      } else {
-        setBookings(
-          bookings.map((b) =>
-            b._id === editingBooking._id ? { ...b, ...bookingForm } : b
-          )
-        );
-        setSuccess("Booking updated in local data (API not available)");
-      }
-    } catch (error) {
-      setBookings(
-        bookings.map((b) =>
-          b._id === editingBooking._id ? { ...b, ...bookingForm } : b
-        )
-      );
-      setSuccess("Booking updated in local data (API not available)");
-    } finally {
-      setShowBookingForm(false);
-      setEditingBooking(null);
-      setIsSubmittingBooking(false);
-      setBookingForm({
-        name: "",
-        email: "",
-        phone: "",
-        serviceType: "personal",
-        consultationType: "virtual",
-        cluster: "nutrition",
-        date: "",
-        time: "",
-        condition: "",
-        notes: "",
-        status: "confirmed",
-      });
-    }
-  };
-
-  const cancelWebinarForm = () => {
-    setShowWebinarForm(false);
-    setEditingWebinar(null);
-    setWebinarForm({
-      title: "",
-      date: "",
-      time: "",
-      duration: "",
-      speaker: "",
-      description: "",
-      maxAttendees: 100,
-      status: "upcoming",
-    });
-  };
-
-  const cancelBookingForm = () => {
-    setShowBookingForm(false);
-    setEditingBooking(null);
-    setSelectedBooking(null);
-    setBookingForm({
-      name: "",
-      email: "",
-      phone: "",
-      serviceType: "personal",
-      consultationType: "virtual",
-      cluster: "nutrition",
-      date: "",
-      time: "",
-      condition: "",
-      notes: "",
-      status: "confirmed",
-    });
-  };
-
-  const viewBookingDetails = (booking) => {
-    setSelectedBooking(booking);
-    setShowBookingModal(true);
-  };
-
-  const exportRegistrations = (webinarId) => {
-    const registrations = webinarRegistrations[webinarId] || [];
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      [
-        "Name,Email,Registration Date",
-        ...registrations.map(
-          (r) =>
-            `"${r.name}","${r.email}","${new Date(
-              r.registeredAt
-            ).toLocaleDateString()}"`
-        ),
-      ].join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `webinar-registrations-${webinarId}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
+  // Utility function for clearing messages
   const clearMessages = () => {
     setError("");
     setSuccess("");
   };
 
-  const toggleRegistrations = (webinarId) => {
-    if (showRegistrations === webinarId) {
-      setShowRegistrations(null);
-    } else {
-      setShowRegistrations(webinarId);
-      if (!webinarRegistrations[webinarId]) {
-        fetchWebinarRegistrations(webinarId);
+  // =================================================================
+  // API Calls (Data Fetching & Management)
+  // =================================================================
+
+  const fetchAllData = async () => {
+    setIsLoading(true);
+    clearMessages();
+    try {
+      await Promise.all([
+        fetchStats(),
+        fetchBookings(),
+        fetchWebinars(),
+        fetchMealPlans(),
+        fetchLifestyleRequests(),
+      ]);
+    } catch (err) {
+      setError("Failed to fetch all dashboard data.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchData = async (endpoint, setDataState) => {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${endpoint}`);
+    }
+    const data = await response.json();
+    setDataState(data);
+  };
+
+  const fetchStats = () => fetchData("/stats", setStats);
+  const fetchBookings = () => fetchData("/bookings", setBookings);
+  const fetchWebinars = () => fetchData("/webinars", setWebinars);
+  const fetchMealPlans = () => fetchData("/mealplans", setMealPlanRequests);
+  const fetchLifestyleRequests = () =>
+    fetchData("/lifestylerequests", setLifestyleRequests);
+
+  // General function for API management actions (POST, PUT, DELETE)
+  const handleManagementAction = async (
+    endpoint,
+    method,
+    data = null,
+    successMessage,
+    onSuccessCallback
+  ) => {
+    clearMessages();
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: data ? JSON.stringify(data) : null,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || `HTTP error! Status: ${response.status}`
+        );
       }
+
+      setSuccess(successMessage);
+      // Re-fetch all relevant data to update the UI
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      } else {
+        fetchAllData();
+      }
+    } catch (err) {
+      setError(`Operation failed: ${err.message}`);
+      console.error(`Error during ${method} on ${endpoint}:`, err);
     }
   };
 
-  const StatCard = ({ icon, title, value, color }) => (
-    <div className={`stat-card stat-${color}`}>
-      <div className="stat-icon">{icon}</div>
-      <div className="stat-content">
-        <h3>{value.toLocaleString()}</h3>
-        <p>{title}</p>
+  // =================================================================
+  // NEW Implementations for Add Booking/Webinar
+  // =================================================================
+
+  const addBooking = async (newBookingData) => {
+    await handleManagementAction(
+      "/bookings",
+      "POST",
+      newBookingData,
+      "New Booking added successfully!",
+      () => {
+        setIsAddBookingModalOpen(false);
+        fetchBookings(); // Only fetch bookings for a faster update
+        fetchStats();
+      }
+    );
+  };
+
+  const addWebinar = async (newWebinarData) => {
+    await handleManagementAction(
+      "/webinars",
+      "POST",
+      newWebinarData,
+      "New Webinar created successfully!",
+      () => {
+        setIsAddWebinarModalOpen(false);
+        fetchWebinars(); // Only fetch webinars for a faster update
+        fetchStats();
+      }
+    );
+  };
+
+  // Placeholder functions for future actions
+  const deleteBooking = (id) =>
+    handleManagementAction(
+      `/bookings/${id}`,
+      "DELETE",
+      null,
+      "Booking deleted.",
+      fetchBookings
+    );
+  const deleteWebinar = (id) =>
+    handleManagementAction(
+      `/webinars/${id}`,
+      "DELETE",
+      null,
+      "Webinar deleted.",
+      fetchWebinars
+    );
+  const updateRequestStatus = (endpoint, id, status) =>
+    handleManagementAction(
+      `${endpoint}/${id}`,
+      "PUT",
+      { status },
+      "Request status updated.",
+      fetchAllData
+    );
+
+  // =================================================================
+  // Effect Hook
+  // =================================================================
+
+  useEffect(() => {
+    fetchAllData();
+  }, []);
+
+  // =================================================================
+  // UI Rendering Helpers (Modals - NEW)
+  // =================================================================
+
+  const AddBookingModal = ({ isOpen, onClose, onSubmit }) => {
+    const [formData, setFormData] = useState({
+      clientName: "",
+      clientEmail: "",
+      service: "Initial Consultation",
+      date: "",
+      time: "09:00",
+    });
+
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      onSubmit(formData);
+    };
+
+    if (!isOpen) return null;
+
+    return (
+      <div className="admindashboard-modal-backdrop">
+        <motion.div
+          className="admindashboard-modal-content"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
+        >
+          <h3>Add New Booking</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="admindashboard-form-group">
+              <label htmlFor="clientName">Client Name</label>
+              <input
+                type="text"
+                id="clientName"
+                name="clientName"
+                value={formData.clientName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="clientEmail">Client Email</label>
+              <input
+                type="email"
+                id="clientEmail"
+                name="clientEmail"
+                value={formData.clientEmail}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="service">Service</label>
+              <select
+                id="service"
+                name="service"
+                value={formData.service}
+                onChange={handleChange}
+                required
+              >
+                <option value="Initial Consultation">
+                  Initial Consultation
+                </option>
+                <option value="Follow-up Session">Follow-up Session</option>
+                <option value="Group Coaching">Group Coaching</option>
+              </select>
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="date">Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="time">Time</label>
+              <input
+                type="time"
+                id="time"
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-actions">
+              <button type="button" className="btn-secondary" onClick={onClose}>
+                Cancel
+              </button>
+              <button type="submit" className="btn-primary">
+                Add Booking
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </div>
+    );
+  };
+
+  const AddWebinarModal = ({ isOpen, onClose, onSubmit }) => {
+    const [formData, setFormData] = useState({
+      title: "",
+      speaker: "",
+      date: "",
+      time: "18:00",
+      link: "",
+      capacity: 100,
+    });
+
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      onSubmit(formData);
+    };
+
+    if (!isOpen) return null;
+
+    return (
+      <div className="admindashboard-modal-backdrop">
+        <motion.div
+          className="admindashboard-modal-content"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
+        >
+          <h3>Schedule New Webinar</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="admindashboard-form-group">
+              <label htmlFor="title">Title</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="speaker">Speaker/Host</label>
+              <input
+                type="text"
+                id="speaker"
+                name="speaker"
+                value={formData.speaker}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="link">Join Link (URL)</label>
+              <input
+                type="url"
+                id="link"
+                name="link"
+                value={formData.link}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="date">Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="time">Time</label>
+              <input
+                type="time"
+                id="time"
+                name="time"
+                value={formData.time}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="admindashboard-form-group">
+              <label htmlFor="capacity">Capacity</label>
+              <input
+                type="number"
+                id="capacity"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChange}
+                min="10"
+                required
+              />
+            </div>
+            <div className="admindashboard-form-actions">
+              <button type="button" className="btn-secondary" onClick={onClose}>
+                Cancel
+              </button>
+              <button type="submit" className="btn-primary">
+                Schedule Webinar
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </div>
+    );
+  };
+
+  // =================================================================
+  // UI Rendering Helpers (Tabs)
+  // =================================================================
+
+  const renderOverviewTab = () => (
+    <div className="admindashboard-content">
+      <h2>Dashboard Overview</h2>
+      <div className="admindashboard-stats">
+        <motion.div
+          className="admindashboard-stat-card"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <h3>Total Bookings</h3>
+          <p className="value">{stats.totalBookings}</p>
+          <p className="subtext">{stats.pendingBookings} Pending</p>
+        </motion.div>
+        <motion.div
+          className="admindashboard-stat-card"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h3>Total Webinars</h3>
+          <p className="value">{stats.totalWebinars}</p>
+          <p className="subtext">{stats.activeWebinars} Active</p>
+        </motion.div>
+        <motion.div
+          className="admindashboard-stat-card"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <h3>Meal Plan Requests</h3>
+          <p className="value">{stats.totalMealPlans}</p>
+          <p className="subtext">{stats.pendingMealPlans} New Requests</p>
+        </motion.div>
+        <motion.div
+          className="admindashboard-stat-card"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <h3>Lifestyle Audits</h3>
+          <p className="value">{stats.totalLifestyleAudits}</p>
+          <p className="subtext">{stats.pendingLifestyleAudits} New Requests</p>
+        </motion.div>
       </div>
     </div>
   );
 
-  const getStatusBadgeClass = (status) => {
-    switch (status) {
-      case "pending":
-        return "status-badge pending";
-      case "confirmed":
-        return "status-badge confirmed";
-      case "completed":
-        return "status-badge completed";
-      case "cancelled":
-        return "status-badge cancelled";
-      case "upcoming":
-        return "status-badge upcoming";
-      case "live":
-        return "status-badge live";
-      default:
-        return "status-badge";
-    }
-  };
-
-  const renderBookings = () => (
-    <div className="admin-section">
-      <div className="section-header">
-        <div className="section-title">
-          <h2>Client Bookings</h2>
-          <p>
-            Manage and view all client consultation bookings ({bookings.length}{" "}
-            Total)
-          </p>
-        </div>
+  const renderBookingsTab = () => (
+    <div className="admindashboard-content admindashboard-data-section">
+      <div className="admindashboard-data-header">
+        <h2>Client Bookings ({bookings.length})</h2>
         <button
-          className="admin-btn primary"
-          onClick={() => {
-            setEditingBooking(null);
-            cancelBookingForm();
-            setShowBookingForm(true);
-          }}
+          className="admindashboard-add-btn"
+          onClick={() => setIsAddBookingModalOpen(true)}
         >
-          <Icon name="Add" /> New Booking
+          <i className="bi bi-plus-circle"></i> Add New Booking
         </button>
       </div>
 
-      {isLoading ? (
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Fetching bookings data...</p>
-        </div>
-      ) : bookings.length === 0 ? (
-        <div className="empty-state">
-          <Icon name="Bookings" />
-          <p>No bookings found.</p>
-        </div>
-      ) : (
-        <div className="table-container stunning-table">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Client</th>
-                <th>Service/Cluster</th>
-                <th>Date & Time</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking._id}>
-                  <td>
-                    <div className="client-info">
-                      <div className="client-avatar">
-                        {booking.name ? booking.name[0] : "C"}
-                      </div>
-                      <div className="client-details">
-                        <strong>{booking.name}</strong>
-                        <span>{booking.email}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className={`service-badge ${booking.serviceType}`}>
-                      {booking.serviceType}
-                    </span>
-                    <span className="cluster-badge">{booking.cluster}</span>
-                  </td>
-                  <td>
-                    {new Date(booking.date).toLocaleDateString()} at{" "}
-                    {booking.time}
-                  </td>
-                  <td>
-                    <select
-                      value={booking.status}
-                      className={getStatusBadgeClass(booking.status)}
-                      onChange={(e) =>
-                        handleStatusChange(booking._id, e.target.value)
-                      }
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
-                  </td>
-                  <td className="actions-cell">
-                    <button
-                      className="admin-btn view small"
-                      onClick={() => viewBookingDetails(booking)}
-                      title="View Details"
-                    >
-                      <Icon name="View" />
-                    </button>
-                    <button
-                      className="admin-btn edit small"
-                      onClick={() => handleEditBooking(booking)}
-                      title="Edit Booking"
-                    >
-                      <Icon name="Edit" />
-                    </button>
-                    <button
-                      className="admin-btn delete small"
-                      onClick={() => handleDeleteBooking(booking._id)}
-                      title="Delete Booking"
-                    >
-                      <Icon name="Delete" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <table className="admindashboard-table">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Service</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {bookings.map((booking) => (
+            <tr key={booking._id}>
+              <td>
+                {booking.clientName}
+                <br />
+                <small style={{ color: "#777" }}>{booking.clientEmail}</small>
+              </td>
+              <td>{booking.service}</td>
+              <td>{new Date(booking.date).toLocaleDateString()}</td>
+              <td>{booking.time}</td>
+              <td>
+                <span
+                  className={`admindashboard-status-tag ${booking.status.toLowerCase()}`}
+                >
+                  {booking.status}
+                </span>
+              </td>
+              <td>
+                <button
+                  className="admindashboard-action-btn"
+                  title="Confirm Booking"
+                  onClick={() =>
+                    updateRequestStatus("/bookings", booking._id, "Confirmed")
+                  }
+                >
+                  <i className="bi bi-check-circle"></i>
+                </button>
+                <button
+                  className="admindashboard-action-btn"
+                  title="Delete Booking"
+                  onClick={() => deleteBooking(booking._id)}
+                >
+                  <i className="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 
-  const renderWebinars = () => (
-    <div className="admin-section">
-      <div className="section-header">
-        <div className="section-title">
-          <h2>Webinar Management</h2>
-          <p>Schedule and manage upcoming and past webinars.</p>
-        </div>
+  const renderWebinarsTab = () => (
+    <div className="admindashboard-content admindashboard-data-section">
+      <div className="admindashboard-data-header">
+        <h2>Scheduled Webinars ({webinars.length})</h2>
         <button
-          className="admin-btn primary"
-          onClick={() => {
-            setEditingWebinar(null);
-            cancelWebinarForm();
-            setShowWebinarForm(true);
-          }}
+          className="admindashboard-add-btn"
+          onClick={() => setIsAddWebinarModalOpen(true)}
         >
-          <Icon name="Add" /> Schedule Webinar
+          <i className="bi bi-plus-circle"></i> Schedule New Webinar
         </button>
       </div>
 
-      {isLoading ? (
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Fetching webinars data...</p>
-        </div>
-      ) : webinars.length === 0 ? (
-        <div className="empty-state">
-          <Icon name="Webinars" />
-          <p>No webinars scheduled.</p>
-        </div>
-      ) : (
-        <div className="webinar-cards-container stunning-cards">
-          {webinars.map((webinar) => {
-            // ✅ FIX 1: Defensive status check to prevent TypeError
-            const currentStatus = webinar.status || "unknown";
+      <table className="admindashboard-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Speaker</th>
+            <th>Date & Time</th>
+            <th>Registrations</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {webinars.map((webinar) => (
+            <tr key={webinar._id}>
+              <td>
+                {webinar.title}
+                <br />
+                <small>
+                  <a
+                    href={webinar.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#4caf50" }}
+                  >
+                    Join Link
+                  </a>
+                </small>
+              </td>
+              <td>{webinar.speaker}</td>
+              <td>
+                {new Date(webinar.date).toLocaleDateString()} at {webinar.time}
+              </td>
+              <td>
+                {webinar.registrations}/{webinar.capacity}
+              </td>
+              <td>
+                <button
+                  className="admindashboard-action-btn"
+                  title="Edit Webinar"
+                  onClick={() => {
+                    /* Placeholder for Edit functionality */
+                    setSuccess("Edit functionality coming soon!");
+                  }}
+                >
+                  <i className="bi bi-pencil-square"></i>
+                </button>
+                <button
+                  className="admindashboard-action-btn"
+                  title="Delete Webinar"
+                  onClick={() => deleteWebinar(webinar._id)}
+                >
+                  <i className="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
-            return (
-              <div key={webinar._id} className="webinar-card">
-                <div className="webinar-header">
-                  <span className={`webinar-status ${currentStatus}`}>
-                    {currentStatus.toUpperCase()}
-                  </span>
-                  <select
-                    value={currentStatus}
-                    className="status-dropdown"
-                    onChange={(e) =>
-                      handleWebinarStatusChange(webinar._id, e.target.value)
-                    }
-                  >
-                    <option value="upcoming">Upcoming</option>
-                    <option value="live">Live</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-                <h3 className="webinar-title">{webinar.title}</h3>
-                <p className="webinar-speaker">
-                  Speaker: <strong>{webinar.speaker}</strong>
-                </p>
-                <div className="webinar-info">
-                  <span>🗓️ {new Date(webinar.date).toLocaleDateString()}</span>
-                  <span>
-                    🕒 {webinar.time} ({webinar.duration})
-                  </span>
-                  <span>
-                    👥{" "}
-                    <strong>
-                      {webinar.currentAttendees}/{webinar.maxAttendees}
-                    </strong>{" "}
-                    Attendees
-                  </span>
-                </div>
-                <p className="webinar-description">{webinar.description}</p>
-                <div className="webinar-actions">
-                  <button
-                    className="admin-btn view small"
-                    onClick={() => toggleRegistrations(webinar._id)}
-                  >
-                    <Icon name="Register" />{" "}
-                    {showRegistrations === webinar._id ? "Hide" : "View"}{" "}
-                    Attendees
-                  </button>
-                  <button
-                    className="admin-btn edit small"
-                    onClick={() => handleEditWebinar(webinar)}
-                  >
-                    <Icon name="Edit" /> Edit
-                  </button>
-                  <button
-                    className="admin-btn delete small"
-                    onClick={() => handleDeleteWebinar(webinar._id)}
-                  >
-                    <Icon name="Delete" /> Delete
-                  </button>
-                </div>
+  const renderMealPlansTab = () => (
+    <div className="admindashboard-content admindashboard-data-section">
+      <h2>Meal Plan Requests ({mealPlanRequests.length})</h2>
+      <table className="admindashboard-table">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Goal</th>
+            <th>Date Requested</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {mealPlanRequests.map((request) => (
+            <tr key={request._id}>
+              <td>
+                {request.name}
+                <br />
+                <small style={{ color: "#777" }}>{request.email}</small>
+              </td>
+              <td>{request.goal || "N/A"}</td>
+              <td>{new Date(request.createdAt).toLocaleDateString()}</td>
+              <td>
+                <span
+                  className={`admindashboard-status-tag ${request.status
+                    .toLowerCase()
+                    .replace(" ", "-")}`}
+                >
+                  {request.status}
+                </span>
+              </td>
+              <td>
+                <button
+                  className="admindashboard-action-btn"
+                  title="Mark In Progress"
+                  onClick={() =>
+                    updateRequestStatus(
+                      "/mealplans",
+                      request._id,
+                      "In Progress"
+                    )
+                  }
+                >
+                  <i className="bi bi-hourglass-split"></i>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
-                {/* Registrations List */}
-                {showRegistrations === webinar._id && (
-                  <div className="registration-list">
-                    <h4>Registrations:</h4>
-                    {registrationLoading[webinar._id] ? (
-                      <p>Loading registrations...</p>
-                    ) : webinarRegistrations[webinar._id]?.length > 0 ? (
-                      <>
-                        <button
-                          className="admin-btn secondary small"
-                          onClick={() => exportRegistrations(webinar._id)}
-                        >
-                          <Icon name="Export" /> Export CSV
-                        </button>
-                        <ul>
-                          {webinarRegistrations[webinar._id].map((r) => (
-                            <li key={r._id}>
-                              {r.name} - {r.email}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    ) : (
-                      <p className="no-registrations">No registrations yet.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+  const renderLifestyleTab = () => (
+    <div className="admindashboard-content admindashboard-data-section">
+      <h2>Lifestyle Audit Requests ({lifestyleRequests.length})</h2>
+      <table className="admindashboard-table">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Reason</th>
+            <th>Date Requested</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lifestyleRequests.map((request) => (
+            <tr key={request._id}>
+              <td>
+                {request.name}
+                <br />
+                <small style={{ color: "#777" }}>{request.email}</small>
+              </td>
+              <td>
+                {request.reason
+                  ? request.reason.substring(0, 30) + "..."
+                  : "N/A"}
+              </td>
+              <td>{new Date(request.createdAt).toLocaleDateString()}</td>
+              <td>
+                <span
+                  className={`admindashboard-status-tag ${request.status
+                    .toLowerCase()
+                    .replace(" ", "-")}`}
+                >
+                  {request.status}
+                </span>
+              </td>
+              <td>
+                <button
+                  className="admindashboard-action-btn"
+                  title="Mark Audit Scheduled"
+                  onClick={() =>
+                    updateRequestStatus(
+                      "/lifestylerequests",
+                      request._id,
+                      "Audit Scheduled"
+                    )
+                  }
+                >
+                  <i className="bi bi-calendar-check"></i>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 
   return (
-    <div className="admin-dashboard">
-      <header className="admin-header">
-        <div className="header-content">
-          <div className="header-title">
-            <h1>
-              Admin Dashboard <Icon name="Add" />
-            </h1>
-            <p>
-              Welcome back! Manage your client bookings and webinars
-              efficiently.
-            </p>
-          </div>
-          <div className="header-stats">
-            <StatCard
-              icon="📅"
-              title="Total Bookings"
-              value={stats.totalBookings}
-              color="blue"
-            />
-            <StatCard
-              icon="💡"
-              title="Upcoming Webinars"
-              value={stats.upcomingWebinars}
-              color="green"
-            />
-            <StatCard
-              icon="✅"
-              title="Completed Sessions"
-              value={stats.completedSessions}
-              color="yellow"
-            />
-            <StatCard
-              icon="🧑‍💻"
-              title="Total Attendees"
-              value={stats.totalAttendees}
-              color="red"
-            />
-          </div>
+    <div className="admindashboard-container">
+      <header className="admindashboard-header">
+        <div className="admindashboard-header-content">
+          <h1>NutriCare Admin Panel</h1>
+          <p>Welcome back! Manage clients, bookings, and content here.</p>
         </div>
-        <nav className="admin-nav">
-          <button
-            className={activeTab === "bookings" ? "active" : ""}
-            onClick={() => setActiveTab("bookings")}
-          >
-            <Icon name="Bookings" /> Bookings
-          </button>
-          <button
-            className={activeTab === "webinars" ? "active" : ""}
-            onClick={() => setActiveTab("webinars")}
-          >
-            <Icon name="Webinars" /> Webinars
-          </button>
-        </nav>
       </header>
 
-      <main className="admin-content">
-        {error && (
-          <div className="message error" onClick={clearMessages}>
-            ⚠️ {error}
-          </div>
-        )}
-        {success && (
-          <div className="message success" onClick={clearMessages}>
-            ✅ {success}
-          </div>
-        )}
-
-        {activeTab === "bookings" && renderBookings()}
-        {activeTab === "webinars" && renderWebinars()}
-
-        {/* Webinar Form Modal */}
-        {(showWebinarForm || editingWebinar) && (
-          <div className="modal-overlay">
-            <div className="modal-content large-modal">
-              <div className="modal-header">
-                <h3>
-                  {editingWebinar ? "Edit Webinar" : "Schedule New Webinar"}
-                </h3>
-                <button className="close-modal" onClick={cancelWebinarForm}>
-                  ×
-                </button>
-              </div>
-              <form
-                onSubmit={
-                  editingWebinar ? handleUpdateWebinar : handleCreateWebinar
-                }
+      <div className="admindashboard-main">
+        {/* Sidebar */}
+        <aside className="admindashboard-sidebar">
+          <h3>Navigation</h3>
+          <ul className="admindashboard-nav-list">
+            <li>
+              <button
+                className={`admindashboard-nav-btn ${
+                  activeTab === "overview" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("overview")}
               >
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="title">Title</label>
-                    <input
-                      type="text"
-                      id="title"
-                      name="title"
-                      value={webinarForm.title}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="speaker">Speaker</label>
-                    <input
-                      type="text"
-                      id="speaker"
-                      name="speaker"
-                      value={webinarForm.speaker}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="date">Date</label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={webinarForm.date}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="time">Time</label>
-                    <input
-                      type="time"
-                      id="time"
-                      name="time"
-                      value={webinarForm.time}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="duration">Duration (e.g., 60 mins)</label>
-                    <input
-                      type="text"
-                      id="duration"
-                      name="duration"
-                      value={webinarForm.duration}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="maxAttendees">Max Attendees</label>
-                    <input
-                      type="number"
-                      id="maxAttendees"
-                      name="maxAttendees"
-                      value={webinarForm.maxAttendees}
-                      onChange={handleWebinarFormChange}
-                      min="1"
-                      required
-                    />
-                  </div>
-                  <div className="form-group full-width">
-                    <label htmlFor="description">Description</label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      value={webinarForm.description}
-                      onChange={handleWebinarFormChange}
-                      rows="3"
-                    ></textarea>
-                  </div>
-                  {editingWebinar && (
-                    <div className="form-group">
-                      <label htmlFor="status">Status</label>
-                      <select
-                        id="status"
-                        name="status"
-                        value={webinarForm.status}
-                        onChange={handleWebinarFormChange}
-                      >
-                        <option value="upcoming">Upcoming</option>
-                        <option value="live">Live</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                      </select>
-                    </div>
-                  )}
-                </div>
+                <i className="bi bi-grid-fill"></i> Overview
+              </button>
+            </li>
+            <li>
+              <button
+                className={`admindashboard-nav-btn ${
+                  activeTab === "bookings" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("bookings")}
+              >
+                <i className="bi bi-calendar-check"></i> Bookings
+              </button>
+            </li>
+            <li>
+              <button
+                className={`admindashboard-nav-btn ${
+                  activeTab === "webinars" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("webinars")}
+              >
+                <i className="bi bi-person-video2"></i> Webinars
+              </button>
+            </li>
+            <li>
+              <button
+                className={`admindashboard-nav-btn ${
+                  activeTab === "mealplans" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("mealplans")}
+              >
+                <i className="bi bi-basket-fill"></i> Meal Plans
+              </button>
+            </li>
+            <li>
+              <button
+                className={`admindashboard-nav-btn ${
+                  activeTab === "lifestyle" ? "active" : ""
+                }`}
+                onClick={() => setActiveTab("lifestyle")}
+              >
+                <i className="bi bi-heart-pulse-fill"></i> Lifestyle Audits
+              </button>
+            </li>
+          </ul>
+        </aside>
 
-                <div className="form-actions">
-                  <button
-                    type="button"
-                    className="admin-btn secondary"
-                    onClick={cancelWebinarForm}
-                    disabled={isSubmittingWebinar}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="admin-btn primary"
-                    disabled={isSubmittingWebinar}
-                  >
-                    {isSubmittingWebinar
-                      ? "⏳ Processing..."
-                      : editingWebinar
-                      ? "Update Webinar"
-                      : "Create Webinar"}
-                  </button>
-                </div>
-              </form>
+        {/* Content */}
+        <div className="admindashboard-content-wrapper">
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                className="admindashboard-message admindashboard-error"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                onClick={clearMessages}
+              >
+                <i className="bi bi-exclamation-triangle"></i>
+                {error}
+              </motion.div>
+            )}
+
+            {success && (
+              <motion.div
+                className="admindashboard-message admindashboard-success"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                onClick={clearMessages}
+              >
+                <i className="bi bi-check-circle"></i>
+                {success}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {isLoading && (
+            <div className="admindashboard-loading">
+              <div className="admindashboard-loading-spinner"></div>
+              <p>Loading dashboard data...</p>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Booking Form Modal (for editing/creating) */}
-        {(showBookingForm || editingBooking) && (
-          <div className="modal-overlay">
-            <div className="modal-content large-modal">
-              <div className="modal-header">
-                <h3>
-                  {editingBooking ? "Edit Booking" : "Create New Booking"}
-                </h3>
-                <button className="close-modal" onClick={cancelBookingForm}>
-                  ×
-                </button>
-              </div>
-              <form onSubmit={handleUpdateBooking}>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">Client Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={bookingForm.name}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={bookingForm.email}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone (Optional)</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={bookingForm.phone}
-                      onChange={handleBookingFormChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="serviceType">Service Type</label>
-                    <select
-                      id="serviceType"
-                      name="serviceType"
-                      value={bookingForm.serviceType}
-                      onChange={handleBookingFormChange}
-                      required
-                    >
-                      <option value="personal">Personal</option>
-                      <option value="corporate">Corporate</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="consultationType">Consultation Type</label>
-                    <select
-                      id="consultationType"
-                      name="consultationType"
-                      value={bookingForm.consultationType}
-                      onChange={handleBookingFormChange}
-                      required
-                    >
-                      <option value="virtual">Virtual</option>
-                      <option value="in-person">In-Person</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="cluster">Cluster</label>
-                    <select
-                      id="cluster"
-                      name="cluster"
-                      value={bookingForm.cluster}
-                      onChange={handleBookingFormChange}
-                      required
-                    >
-                      <option value="nutrition">Nutrition</option>
-                      <option value="fitness">Fitness</option>
-                      <option value="mental health">Mental Health</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="date">Date</label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={bookingForm.date}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="time">Time</label>
-                    <input
-                      type="time"
-                      id="time"
-                      name="time"
-                      value={bookingForm.time}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="status">Status</label>
-                    <select
-                      id="status"
-                      name="status"
-                      value={bookingForm.status}
-                      onChange={handleBookingFormChange}
-                      required
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
-                  </div>
-                  <div className="form-group full-width">
-                    <label htmlFor="condition">Condition/Reason</label>
-                    <input
-                      type="text"
-                      id="condition"
-                      name="condition"
-                      value={bookingForm.condition}
-                      onChange={handleBookingFormChange}
-                    />
-                  </div>
-                  <div className="form-group full-width">
-                    <label htmlFor="notes">Admin Notes</label>
-                    <textarea
-                      id="notes"
-                      name="notes"
-                      value={bookingForm.notes}
-                      onChange={handleBookingFormChange}
-                      rows="3"
-                    ></textarea>
-                  </div>
-                </div>
+          {!isLoading && (
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {activeTab === "overview" && renderOverviewTab()}
+              {activeTab === "bookings" && renderBookingsTab()}
+              {activeTab === "webinars" && renderWebinarsTab()}
+              {activeTab === "mealplans" && renderMealPlansTab()}
+              {activeTab === "lifestyle" && renderLifestyleTab()}
+            </motion.div>
+          )}
+        </div>
+      </div>
 
-                <div className="form-actions">
-                  <button
-                    type="button"
-                    className="admin-btn secondary"
-                    onClick={cancelBookingForm}
-                    disabled={isSubmittingBooking}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="admin-btn primary"
-                    disabled={isSubmittingBooking}
-                  >
-                    {isSubmittingBooking
-                      ? "⏳ Processing..."
-                      : editingBooking
-                      ? "Update Booking"
-                      : "Create Booking"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Booking Details Modal (View only) */}
-        {showBookingModal && selectedBooking && (
-          <div className="modal-overlay">
-            <div className="modal-content small-modal">
-              <div className="modal-header">
-                <h3>Booking Details</h3>
-                <button
-                  className="close-modal"
-                  onClick={() => setShowBookingModal(false)}
-                >
-                  ×
-                </button>
-              </div>
-              <div className="booking-details-view">
-                <p>
-                  <strong>Client:</strong> {selectedBooking.name} (
-                  {selectedBooking.email})
-                </p>
-                <p>
-                  <strong>Phone:</strong> {selectedBooking.phone || "N/A"}
-                </p>
-                <p>
-                  <strong>Service:</strong>{" "}
-                  <span
-                    className={`service-badge ${selectedBooking.serviceType}`}
-                  >
-                    {selectedBooking.serviceType}
-                  </span>{" "}
-                  /{" "}
-                  <span className="cluster-badge">
-                    {selectedBooking.cluster}
-                  </span>
-                </p>
-                <p>
-                  <strong>Consult Type:</strong>{" "}
-                  {selectedBooking.consultationType}
-                </p>
-                <p>
-                  <strong>Date & Time:</strong>{" "}
-                  {new Date(selectedBooking.date).toLocaleDateString()} at{" "}
-                  {selectedBooking.time}
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  <span className={getStatusBadgeClass(selectedBooking.status)}>
-                    {selectedBooking.status.toUpperCase()}
-                  </span>
-                </p>
-                <p>
-                  <strong>Condition:</strong>{" "}
-                  {selectedBooking.condition || "None specified"}
-                </p>
-                <p>
-                  <strong>Notes:</strong> {selectedBooking.notes || "No notes"}
-                </p>
-              </div>
-              <div className="form-actions view-actions">
-                <button
-                  className="admin-btn edit"
-                  onClick={() => {
-                    setShowBookingModal(false);
-                    handleEditBooking(selectedBooking);
-                  }}
-                >
-                  <Icon name="Edit" /> Edit
-                </button>
-                <button
-                  className="admin-btn delete"
-                  onClick={() => {
-                    setShowBookingModal(false);
-                    handleDeleteBooking(selectedBooking._id);
-                  }}
-                >
-                  <Icon name="Delete" /> Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+      {/* Modals */}
+      <AnimatePresence>
+        <AddBookingModal
+          isOpen={isAddBookingModalOpen}
+          onClose={() => setIsAddBookingModalOpen(false)}
+          onSubmit={addBooking}
+        />
+        <AddWebinarModal
+          isOpen={isAddWebinarModalOpen}
+          onClose={() => setIsAddWebinarModalOpen(false)}
+          onSubmit={addWebinar}
+        />
+      </AnimatePresence>
     </div>
   );
 };

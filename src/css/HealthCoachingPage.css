@@ -1,5 +1,5 @@
 /* HealthCoachingPage.css - Modern Green Theme */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500;600;700&display=swap");
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
 :root {
@@ -38,7 +38,7 @@
 }
 
 body {
-  font-family: "Roboto Slab";
+  font-family: "Roboto Slab", serif;
   color: var(--dark);
   line-height: 1.6;
   background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
@@ -504,7 +504,7 @@ body {
   border-radius: var(--radius-lg);
   padding: 0;
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow-hover);
@@ -535,7 +535,7 @@ body {
   transform: rotate(90deg);
 }
 
-/* Booking Steps */
+/* Updated Booking Form - Single Form */
 .healthcoaching-bookingheader {
   padding: 2.5rem 2.5rem 1.5rem;
   border-bottom: 1px solid var(--border);
@@ -550,52 +550,11 @@ body {
   text-align: center;
 }
 
-.healthcoaching-progress {
-  height: 8px;
-  background: var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-}
-
-.healthcoaching-progressbar {
-  height: 100%;
-  background: var(--primary-gradient);
-  border-radius: 4px;
-  transition: width 0.5s ease;
-  position: relative;
-}
-
-.healthcoaching-progressbar::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.healthcoaching-bookingstep {
+.healthcoaching-bookingform {
   padding: 2.5rem;
 }
 
-.healthcoaching-bookingstep h3 {
+.healthcoaching-bookingform h3 {
   color: var(--darker);
   margin-bottom: 2rem;
   text-align: center;
@@ -763,57 +722,54 @@ body {
   box-shadow: 0 4px 15px rgba(44, 119, 68, 0.3);
 }
 
-/* Navigation Buttons */
-.healthcoaching-bookingnav {
+/* Form Submit Button */
+.healthcoaching-formsubmit {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 2.5rem;
-  gap: 1rem;
 }
 
-.healthcoaching-navbtn {
-  padding: 1rem 2rem;
+.healthcoaching-submitbtn {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 1.25rem 3rem;
   border-radius: 50px;
   font-weight: 600;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: var(--transition);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  border: 2px solid transparent;
+  gap: 0.75rem;
+  box-shadow: 0 10px 30px rgba(44, 119, 68, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
-.healthcoaching-navbtn.prev {
-  background: var(--light);
-  color: var(--gray);
-  border-color: var(--border);
+.healthcoaching-submitbtn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
 }
 
-.healthcoaching-navbtn.prev:hover {
-  background: var(--border);
-  color: var(--darker);
-  transform: translateX(-4px);
+.healthcoaching-submitbtn:hover::before {
+  left: 100%;
 }
 
-.healthcoaching-navbtn.next,
-.healthcoaching-navbtn.submit {
-  background: var(--primary-gradient);
-  color: white;
-  border: none;
-  box-shadow: 0 6px 20px rgba(44, 119, 68, 0.3);
-}
-
-.healthcoaching-navbtn.next:hover,
-.healthcoaching-navbtn.submit:hover {
+.healthcoaching-submitbtn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(44, 119, 68, 0.4);
-}
-
-.healthcoaching-navbtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
+  box-shadow: 0 15px 40px rgba(44, 119, 68, 0.4);
 }
 
 /* Confirmation Step */
@@ -958,146 +914,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* Responsive Design */
-@media (max-width: 1200px) {
-  .healthcoaching-main {
-    flex-direction: column;
-  }
-
-  .healthcoaching-nav {
-    width: 100%;
-    margin-bottom: 2rem;
-    position: static;
-  }
-}
-
-@media (max-width: 992px) {
-  .healthcoaching-header {
-    padding: 1rem 1.5rem;
-  }
-
-  .healthcoaching-menubtn {
-    display: flex;
-  }
-
-  .healthcoaching-nav {
-    position: fixed;
-    top: 80px;
-    left: -100%;
-    width: 300px;
-    height: calc(100vh - 80px);
-    z-index: 1000;
-    transition: left 0.3s ease;
-    border-radius: 0;
-    padding: 1rem 0;
-  }
-
-  .healthcoaching-nav.active {
-    left: 0;
-  }
-
-  .healthcoaching-main {
-    padding: 1rem;
-  }
-
-  .healthcoaching-tabcontent {
-    padding: 2rem 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .healthcoaching-headercontent h1 {
-    font-size: 1.8rem;
-  }
-
-  .healthcoaching-headercontent p {
-    font-size: 1rem;
-  }
-
-  .healthcoaching-content h2 {
-    font-size: 2rem;
-  }
-
-  .healthcoaching-formgrid {
-    grid-template-columns: 1fr;
-  }
-
-  .healthcoaching-datetime {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .healthcoaching-bookingnav {
-    flex-direction: column;
-  }
-
-  .healthcoaching-modal {
-    padding: 1rem;
-  }
-
-  .healthcoaching-message {
-    margin: 1rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .healthcoaching-featuregrid,
-  .healthcoaching-optiongrid,
-  .healthcoaching-roomgrid,
-  .healthcoaching-supportgrid {
-    grid-template-columns: 1fr;
-  }
-
-  .healthcoaching-bookingstep {
-    padding: 1.5rem;
-  }
-
-  .healthcoaching-nav button {
-    padding: 1rem 1.5rem;
-    font-size: 0.9rem;
-  }
-
-  .healthcoaching-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .healthcoaching-menubtn {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
-.healthcoaching-modalcontent::-webkit-scrollbar {
-  width: 8px;
-}
-
-.healthcoaching-modalcontent::-webkit-scrollbar-track {
-  background: var(--light);
-  border-radius: 4px;
-}
-
-.healthcoaching-modalcontent::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-
-.healthcoaching-modalcontent::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-dark);
-}
-
-/* Add these styles to your HealthCoachingPage.css file */
-
+/* Read More Styles */
 .healthcoaching-readmore {
   background: var(--primary-gradient);
   color: white;
@@ -1222,7 +1039,7 @@ html {
 /* Focus states for accessibility */
 .healthcoaching-nav button:focus,
 .healthcoaching-cta:focus,
-.healthcoaching-navbtn:focus,
+.healthcoaching-submitbtn:focus,
 .healthcoaching-modalclose:focus {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
@@ -1255,4 +1072,142 @@ html {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .healthcoaching-main {
+    flex-direction: column;
+  }
+
+  .healthcoaching-nav {
+    width: 100%;
+    margin-bottom: 2rem;
+    position: static;
+  }
+}
+
+@media (max-width: 992px) {
+  .healthcoaching-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .healthcoaching-menubtn {
+    display: flex;
+  }
+
+  .healthcoaching-nav {
+    position: fixed;
+    top: 80px;
+    left: -100%;
+    width: 300px;
+    height: calc(100vh - 80px);
+    z-index: 1000;
+    transition: left 0.3s ease;
+    border-radius: 0;
+    padding: 1rem 0;
+  }
+
+  .healthcoaching-nav.active {
+    left: 0;
+  }
+
+  .healthcoaching-main {
+    padding: 1rem;
+  }
+
+  .healthcoaching-tabcontent {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .healthcoaching-headercontent h1 {
+    font-size: 1.8rem;
+  }
+
+  .healthcoaching-headercontent p {
+    font-size: 1rem;
+  }
+
+  .healthcoaching-content h2 {
+    font-size: 2rem;
+  }
+
+  .healthcoaching-formgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .healthcoaching-datetime {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .healthcoaching-bookingform {
+    padding: 1.5rem;
+  }
+
+  .healthcoaching-modal {
+    padding: 1rem;
+  }
+
+  .healthcoaching-message {
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .healthcoaching-featuregrid,
+  .healthcoaching-optiongrid,
+  .healthcoaching-roomgrid,
+  .healthcoaching-supportgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .healthcoaching-bookingform {
+    padding: 1.5rem;
+  }
+
+  .healthcoaching-nav button {
+    padding: 1rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .healthcoaching-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .healthcoaching-menubtn {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+.healthcoaching-modalcontent::-webkit-scrollbar {
+  width: 8px;
+}
+
+.healthcoaching-modalcontent::-webkit-scrollbar-track {
+  background: var(--light);
+  border-radius: 4px;
+}
+
+.healthcoaching-modalcontent::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+.healthcoaching-modalcontent::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
 }
