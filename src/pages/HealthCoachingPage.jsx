@@ -2231,7 +2231,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     <div className="healthcoaching-portal">
       <header className="healthcoaching-header">
         <div className="healthcoaching-headercontent">
-          <h1>HealthCoaching Hub</h1>
+          <h1>Health Coaching Portal</h1>
           <p>Your path to sustainable wellness and vitality</p>
         </div>
         <button
@@ -2254,7 +2254,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 }}
               >
                 <i className="bi bi-person-heart"></i>
-                Personal Coaching
+                Personal Health Coaching
               </button>
             </li>
             <li>
@@ -2266,7 +2266,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 }}
               >
                 <i className="bi bi-briefcase"></i>
-                Corporate Wellness
+                Corporate Health Coaching
               </button>
             </li>
             <li>
@@ -2315,18 +2315,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               >
                 <i className="bi bi-play-btn"></i>
                 Webinars
-              </button>
-            </li>
-            <li>
-              <button
-                className={activeTab === "support" ? "active" : ""}
-                onClick={() => {
-                  setActiveTab("support");
-                  setMobileMenuOpen(false);
-                }}
-              >
-                <i className="bi bi-headset"></i>
-                Customer Care
               </button>
             </li>
           </ul>

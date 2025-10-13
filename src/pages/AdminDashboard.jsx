@@ -28,6 +28,14 @@ const Icon = ({ name }) => {
       return "🧑‍💻";
     case "Sessions":
       return "✅";
+    case "MealPlan":
+      return "🍽️";
+    case "Lifestyle":
+      return "🏃‍♂️";
+    case "Process":
+      return "⚡";
+    case "Reject":
+      return "❌";
     default:
       return "";
   }
@@ -38,9 +46,11 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   const [activeTab, setActiveTab] = useState("bookings");
   const [bookings, setBookings] = useState([]);
   const [webinars, setWebinars] = useState([]);
-  const [isLoading, setIsLoading] = useState(false); // Used for initial data fetching only
-  const [isSubmittingWebinar, setIsSubmittingWebinar] = useState(false); // ✅ FIX 1: State for webinar form submission
-  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false); // State for booking form submission
+  const [mealPlans, setMealPlans] = useState([]);
+  const [lifestyleAudits, setLifestyleAudits] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmittingWebinar, setIsSubmittingWebinar] = useState(false);
+  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [editingWebinar, setEditingWebinar] = useState(null);
@@ -57,6 +67,8 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     upcomingWebinars: 0,
     completedSessions: 0,
     totalAttendees: 0,
+    pendingMealPlans: 0,
+    pendingLifestyleAudits: 0,
   });
 
   // New webinar form state
@@ -137,11 +149,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
 
   useEffect(() => {
     calculateStats();
-  }, [bookings, webinars]);
+  }, [bookings, webinars, mealPlans, lifestyleAudits]);
 
   const calculateStats = () => {
     const totalBookings = bookings.length;
-    // Defensive check applied here as well
     const upcomingWebinars = webinars.filter(
       (w) => (w.status || "unknown") === "upcoming"
     ).length;
@@ -152,12 +163,20 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       (sum, webinar) => sum + (webinar.currentAttendees || 0),
       0
     );
+    const pendingMealPlans = mealPlans.filter(
+      (mp) => mp.status === "pending"
+    ).length;
+    const pendingLifestyleAudits = lifestyleAudits.filter(
+      (la) => la.status === "pending"
+    ).length;
 
     setStats({
       totalBookings,
       upcomingWebinars,
       completedSessions,
       totalAttendees,
+      pendingMealPlans,
+      pendingLifestyleAudits,
     });
   };
 
@@ -195,6 +214,42 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           setError(
             (prev) => prev + " Using demo data. Webinars API not available."
           );
+        }
+      }
+
+      // Fetch Meal Plans
+      if (activeTab === "mealplans" || activeTab === "dashboard") {
+        try {
+          const mealPlansResponse = await fetch(`${API_BASE_URL}/mealplans`);
+          if (mealPlansResponse.ok) {
+            const data = await mealPlansResponse.json();
+            setMealPlans(data);
+          } else {
+            setError((prev) => prev + " Failed to fetch meal plans.");
+            setMealPlans([]);
+          }
+        } catch (err) {
+          setError((prev) => prev + " Failed to fetch meal plans.");
+          setMealPlans([]);
+        }
+      }
+
+      // Fetch Lifestyle Audits
+      if (activeTab === "lifestyle" || activeTab === "dashboard") {
+        try {
+          const lifestyleResponse = await fetch(
+            `${API_BASE_URL}/lifestylerequests`
+          );
+          if (lifestyleResponse.ok) {
+            const data = await lifestyleResponse.json();
+            setLifestyleAudits(data);
+          } else {
+            setError((prev) => prev + " Failed to fetch lifestyle audits.");
+            setLifestyleAudits([]);
+          }
+        } catch (err) {
+          setError((prev) => prev + " Failed to fetch lifestyle audits.");
+          setLifestyleAudits([]);
         }
       }
     } catch (error) {
@@ -253,6 +308,114 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       }));
     } finally {
       setRegistrationLoading((prev) => ({ ...prev, [webinarId]: false }));
+    }
+  };
+
+  // Meal Plan Functions
+  const handleMealPlanStatusChange = async (id, newStatus) => {
+    clearMessages();
+    try {
+      const response = await fetch(`${API_BASE_URL}/mealplans/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        const updatedMealPlan = await response.json();
+        setMealPlans(
+          mealPlans.map((mp) => (mp._id === id ? updatedMealPlan : mp))
+        );
+        setSuccess("Meal plan status updated successfully");
+      } else {
+        setMealPlans(
+          mealPlans.map((mp) =>
+            mp._id === id ? { ...mp, status: newStatus } : mp
+          )
+        );
+        setSuccess("Meal plan status updated in local data");
+      }
+    } catch (error) {
+      setError("Failed to update meal plan status");
+    }
+  };
+
+  const handleDeleteMealPlan = async (id) => {
+    if (
+      !window.confirm("Are you sure you want to delete this meal plan request?")
+    )
+      return;
+    clearMessages();
+    try {
+      const response = await fetch(`${API_BASE_URL}/mealplans/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setMealPlans(mealPlans.filter((mp) => mp._id !== id));
+        setSuccess("Meal plan request deleted successfully");
+      } else {
+        setError("Failed to delete meal plan request");
+      }
+    } catch (error) {
+      setError("Failed to delete meal plan request");
+    }
+  };
+
+  // Lifestyle Audit Functions
+  const handleLifestyleAuditStatusChange = async (id, newStatus) => {
+    clearMessages();
+    try {
+      const response = await fetch(`${API_BASE_URL}/lifestylerequests/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        const updatedAudit = await response.json();
+        setLifestyleAudits(
+          lifestyleAudits.map((la) => (la._id === id ? updatedAudit : la))
+        );
+        setSuccess("Lifestyle audit status updated successfully");
+      } else {
+        setLifestyleAudits(
+          lifestyleAudits.map((la) =>
+            la._id === id ? { ...la, status: newStatus } : la
+          )
+        );
+        setSuccess("Lifestyle audit status updated in local data");
+      }
+    } catch (error) {
+      setError("Failed to update lifestyle audit status");
+    }
+  };
+
+  const handleDeleteLifestyleAudit = async (id) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this lifestyle audit request?"
+      )
+    )
+      return;
+    clearMessages();
+    try {
+      const response = await fetch(`${API_BASE_URL}/lifestylerequests/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        setLifestyleAudits(lifestyleAudits.filter((la) => la._id !== id));
+        setSuccess("Lifestyle audit request deleted successfully");
+      } else {
+        setError("Failed to delete lifestyle audit request");
+      }
+    } catch (error) {
+      setError("Failed to delete lifestyle audit request");
     }
   };
 
@@ -377,7 +540,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     });
   };
 
-  // Use isSubmittingWebinar
   const handleCreateWebinar = async (e) => {
     e.preventDefault();
     setIsSubmittingWebinar(true);
@@ -441,13 +603,13 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       speaker: webinar.speaker,
       description: webinar.description || "",
       maxAttendees: webinar.maxAttendees,
-      status: webinar.status || "upcoming", // Defensive default
+      status: webinar.status || "upcoming",
     });
     setShowWebinarForm(true);
   };
 
   const handleEditBooking = (booking) => {
-    setSelectedBooking(booking); // Set selected booking for modal view
+    setSelectedBooking(booking);
     setEditingBooking(booking);
     setBookingForm({
       name: booking.name,
@@ -465,7 +627,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     setShowBookingForm(true);
   };
 
-  // Use isSubmittingWebinar
   const handleUpdateWebinar = async (e) => {
     e.preventDefault();
     setIsSubmittingWebinar(true);
@@ -523,7 +684,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     }
   };
 
-  // Use isSubmittingBooking for update
   const handleUpdateBooking = async (e) => {
     e.preventDefault();
     setIsSubmittingBooking(true);
@@ -685,6 +845,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         return "status-badge upcoming";
       case "live":
         return "status-badge live";
+      case "processed":
+        return "status-badge completed";
+      case "rejected":
+        return "status-badge cancelled";
       default:
         return "status-badge";
     }
@@ -836,7 +1000,6 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       ) : (
         <div className="webinar-cards-container stunning-cards">
           {webinars.map((webinar) => {
-            // ✅ FIX 1: Defensive status check to prevent TypeError
             const currentStatus = webinar.status || "unknown";
 
             return (
@@ -934,467 +1097,729 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     </div>
   );
 
-  return (
-    <div className="admin-dashboard">
-      <header className="admin-header">
-        <div className="header-content">
-          <div className="header-title">
-            <h1>
-              Admin Dashboard <Icon name="Add" />
-            </h1>
-            <p>
-              Welcome back! Manage your client bookings and webinars
-              efficiently.
-            </p>
-          </div>
-          <div className="header-stats">
-            <StatCard
-              icon="📅"
-              title="Total Bookings"
-              value={stats.totalBookings}
-              color="blue"
-            />
-            <StatCard
-              icon="💡"
-              title="Upcoming Webinars"
-              value={stats.upcomingWebinars}
-              color="green"
-            />
-            <StatCard
-              icon="✅"
-              title="Completed Sessions"
-              value={stats.completedSessions}
-              color="yellow"
-            />
-            <StatCard
-              icon="🧑‍💻"
-              title="Total Attendees"
-              value={stats.totalAttendees}
-              color="red"
-            />
-          </div>
+  const renderMealPlans = () => (
+    <div className="admin-section">
+      <div className="section-header">
+        <div className="section-title">
+          <h2>Meal Plan Requests</h2>
+          <p>
+            Manage meal plan requests from clients ({mealPlans.length} Total)
+          </p>
         </div>
-        <nav className="admin-nav">
-          <button
-            className={activeTab === "bookings" ? "active" : ""}
-            onClick={() => setActiveTab("bookings")}
-          >
-            <Icon name="Bookings" /> Bookings
-          </button>
-          <button
-            className={activeTab === "webinars" ? "active" : ""}
-            onClick={() => setActiveTab("webinars")}
-          >
-            <Icon name="Webinars" /> Webinars
-          </button>
-        </nav>
-      </header>
+      </div>
 
-      <main className="admin-content">
-        {error && (
-          <div className="message error" onClick={clearMessages}>
-            ⚠️ {error}
-          </div>
-        )}
-        {success && (
-          <div className="message success" onClick={clearMessages}>
-            ✅ {success}
-          </div>
-        )}
-
-        {activeTab === "bookings" && renderBookings()}
-        {activeTab === "webinars" && renderWebinars()}
-
-        {/* Webinar Form Modal */}
-        {(showWebinarForm || editingWebinar) && (
-          <div className="modal-overlay">
-            <div className="modal-content large-modal">
-              <div className="modal-header">
-                <h3>
-                  {editingWebinar ? "Edit Webinar" : "Schedule New Webinar"}
-                </h3>
-                <button className="close-modal" onClick={cancelWebinarForm}>
-                  ×
-                </button>
-              </div>
-              <form
-                onSubmit={
-                  editingWebinar ? handleUpdateWebinar : handleCreateWebinar
-                }
-              >
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="title">Title</label>
-                    <input
-                      type="text"
-                      id="title"
-                      name="title"
-                      value={webinarForm.title}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="speaker">Speaker</label>
-                    <input
-                      type="text"
-                      id="speaker"
-                      name="speaker"
-                      value={webinarForm.speaker}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="date">Date</label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={webinarForm.date}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="time">Time</label>
-                    <input
-                      type="time"
-                      id="time"
-                      name="time"
-                      value={webinarForm.time}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="duration">Duration (e.g., 60 mins)</label>
-                    <input
-                      type="text"
-                      id="duration"
-                      name="duration"
-                      value={webinarForm.duration}
-                      onChange={handleWebinarFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="maxAttendees">Max Attendees</label>
-                    <input
-                      type="number"
-                      id="maxAttendees"
-                      name="maxAttendees"
-                      value={webinarForm.maxAttendees}
-                      onChange={handleWebinarFormChange}
-                      min="1"
-                      required
-                    />
-                  </div>
-                  <div className="form-group full-width">
-                    <label htmlFor="description">Description</label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      value={webinarForm.description}
-                      onChange={handleWebinarFormChange}
-                      rows="3"
-                    ></textarea>
-                  </div>
-                  {editingWebinar && (
-                    <div className="form-group">
-                      <label htmlFor="status">Status</label>
-                      <select
-                        id="status"
-                        name="status"
-                        value={webinarForm.status}
-                        onChange={handleWebinarFormChange}
-                      >
-                        <option value="upcoming">Upcoming</option>
-                        <option value="live">Live</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
-                      </select>
+      {isLoading ? (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Fetching meal plan requests...</p>
+        </div>
+      ) : mealPlans.length === 0 ? (
+        <div className="empty-state">
+          <Icon name="MealPlan" />
+          <p>No meal plan requests found.</p>
+        </div>
+      ) : (
+        <div className="table-container stunning-table">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Reason</th>
+                <th>Duration</th>
+                <th>Allergies/Intolerance</th>
+                <th>Health Coaching</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mealPlans.map((mealPlan) => (
+                <tr key={mealPlan._id}>
+                  <td>
+                    <div className="client-info">
+                      <div className="client-avatar">
+                        {mealPlan.name ? mealPlan.name[0] : "C"}
+                      </div>
+                      <div className="client-details">
+                        <strong>{mealPlan.name}</strong>
+                        <span>{mealPlan.email}</span>
+                      </div>
                     </div>
-                  )}
-                </div>
-
-                <div className="form-actions">
-                  <button
-                    type="button"
-                    className="admin-btn secondary"
-                    onClick={cancelWebinarForm}
-                    disabled={isSubmittingWebinar}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="admin-btn primary"
-                    disabled={isSubmittingWebinar}
-                  >
-                    {isSubmittingWebinar
-                      ? "⏳ Processing..."
-                      : editingWebinar
-                      ? "Update Webinar"
-                      : "Create Webinar"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Booking Form Modal (for editing/creating) */}
-        {(showBookingForm || editingBooking) && (
-          <div className="modal-overlay">
-            <div className="modal-content large-modal">
-              <div className="modal-header">
-                <h3>
-                  {editingBooking ? "Edit Booking" : "Create New Booking"}
-                </h3>
-                <button className="close-modal" onClick={cancelBookingForm}>
-                  ×
-                </button>
-              </div>
-              <form onSubmit={handleUpdateBooking}>
-                <div className="form-grid">
-                  <div className="form-group">
-                    <label htmlFor="name">Client Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={bookingForm.name}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={bookingForm.email}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone (Optional)</label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={bookingForm.phone}
-                      onChange={handleBookingFormChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="serviceType">Service Type</label>
-                    <select
-                      id="serviceType"
-                      name="serviceType"
-                      value={bookingForm.serviceType}
-                      onChange={handleBookingFormChange}
-                      required
+                  </td>
+                  <td>{mealPlan.contact || "N/A"}</td>
+                  <td>{mealPlan.reasonForMealPlan || "Not specified"}</td>
+                  <td>{mealPlan.durationOfPlan || "Not specified"}</td>
+                  <td>
+                    <span
+                      className={`status-badge ${
+                        mealPlan.isAllergicOrTntolerant
+                          ? "cancelled"
+                          : "completed"
+                      }`}
                     >
-                      <option value="personal">Personal</option>
-                      <option value="corporate">Corporate</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="consultationType">Consultation Type</label>
-                    <select
-                      id="consultationType"
-                      name="consultationType"
-                      value={bookingForm.consultationType}
-                      onChange={handleBookingFormChange}
-                      required
+                      {mealPlan.isAllergicOrTntolerant ? "Yes" : "No"}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={`status-badge ${
+                        mealPlan.requiresHealthCoaching
+                          ? "confirmed"
+                          : "cancelled"
+                      }`}
                     >
-                      <option value="virtual">Virtual</option>
-                      <option value="in-person">In-Person</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="cluster">Cluster</label>
+                      {mealPlan.requiresHealthCoaching ? "Yes" : "No"}
+                    </span>
+                  </td>
+                  <td>
                     <select
-                      id="cluster"
-                      name="cluster"
-                      value={bookingForm.cluster}
-                      onChange={handleBookingFormChange}
-                      required
-                    >
-                      <option value="nutrition">Nutrition</option>
-                      <option value="fitness">Fitness</option>
-                      <option value="mental health">Mental Health</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="date">Date</label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={bookingForm.date}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="time">Time</label>
-                    <input
-                      type="time"
-                      id="time"
-                      name="time"
-                      value={bookingForm.time}
-                      onChange={handleBookingFormChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="status">Status</label>
-                    <select
-                      id="status"
-                      name="status"
-                      value={bookingForm.status}
-                      onChange={handleBookingFormChange}
-                      required
+                      value={mealPlan.status}
+                      className={getStatusBadgeClass(mealPlan.status)}
+                      onChange={(e) =>
+                        handleMealPlanStatusChange(mealPlan._id, e.target.value)
+                      }
                     >
                       <option value="pending">Pending</option>
-                      <option value="confirmed">Confirmed</option>
-                      <option value="completed">Completed</option>
-                      <option value="cancelled">Cancelled</option>
+                      <option value="processed">Processed</option>
+                      <option value="rejected">Rejected</option>
                     </select>
-                  </div>
-                  <div className="form-group full-width">
-                    <label htmlFor="condition">Condition/Reason</label>
-                    <input
-                      type="text"
-                      id="condition"
-                      name="condition"
-                      value={bookingForm.condition}
-                      onChange={handleBookingFormChange}
-                    />
-                  </div>
-                  <div className="form-group full-width">
-                    <label htmlFor="notes">Admin Notes</label>
-                    <textarea
-                      id="notes"
-                      name="notes"
-                      value={bookingForm.notes}
-                      onChange={handleBookingFormChange}
-                      rows="3"
-                    ></textarea>
-                  </div>
-                </div>
+                  </td>
+                  <td className="actions-cell">
+                    <button
+                      className="admin-btn process small"
+                      onClick={() =>
+                        handleMealPlanStatusChange(mealPlan._id, "processed")
+                      }
+                      title="Mark as Processed"
+                    >
+                      <Icon name="Process" />
+                    </button>
+                    <button
+                      className="admin-btn delete small"
+                      onClick={() => handleDeleteMealPlan(mealPlan._id)}
+                      title="Delete Request"
+                    >
+                      <Icon name="Delete" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
 
-                <div className="form-actions">
-                  <button
-                    type="button"
-                    className="admin-btn secondary"
-                    onClick={cancelBookingForm}
-                    disabled={isSubmittingBooking}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="admin-btn primary"
-                    disabled={isSubmittingBooking}
-                  >
-                    {isSubmittingBooking
-                      ? "⏳ Processing..."
-                      : editingBooking
-                      ? "Update Booking"
-                      : "Create Booking"}
-                  </button>
-                </div>
-              </form>
+  const renderLifestyleAudits = () => (
+    <div className="admin-section">
+      <div className="section-header">
+        <div className="section-title">
+          <h2>Lifestyle Audit Requests</h2>
+          <p>
+            Manage lifestyle audit requests from clients (
+            {lifestyleAudits.length} Total)
+          </p>
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Fetching lifestyle audit requests...</p>
+        </div>
+      ) : lifestyleAudits.length === 0 ? (
+        <div className="empty-state">
+          <Icon name="Lifestyle" />
+          <p>No lifestyle audit requests found.</p>
+        </div>
+      ) : (
+        <div className="table-container stunning-table">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Contact</th>
+                <th>Reason for Audit</th>
+                <th>Current Challenges</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lifestyleAudits.map((audit) => (
+                <tr key={audit._id}>
+                  <td>
+                    <div className="client-info">
+                      <div className="client-avatar">
+                        {audit.name ? audit.name[0] : "C"}
+                      </div>
+                      <div className="client-details">
+                        <strong>{audit.name}</strong>
+                        <span>{audit.email}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{audit.contact || "N/A"}</td>
+                  <td>{audit.reasonForAudit || "Not specified"}</td>
+                  <td>{audit.currentLifestyleChallenges || "Not specified"}</td>
+                  <td>
+                    <select
+                      value={audit.status}
+                      className={getStatusBadgeClass(audit.status)}
+                      onChange={(e) =>
+                        handleLifestyleAuditStatusChange(
+                          audit._id,
+                          e.target.value
+                        )
+                      }
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="processed">Processed</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </td>
+                  <td className="actions-cell">
+                    <button
+                      className="admin-btn process small"
+                      onClick={() =>
+                        handleLifestyleAuditStatusChange(audit._id, "processed")
+                      }
+                      title="Mark as Processed"
+                    >
+                      <Icon name="Process" />
+                    </button>
+                    <button
+                      className="admin-btn delete small"
+                      onClick={() => handleDeleteLifestyleAudit(audit._id)}
+                      title="Delete Request"
+                    >
+                      <Icon name="Delete" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderDashboard = () => (
+    <div className="admin-section">
+      <div className="section-header">
+        <div className="section-title">
+          <h2>Dashboard Overview</h2>
+          <p>Welcome to your admin dashboard. Here&apos;s what&apos;s happening today.</p>
+        </div>
+      </div>
+
+      <div className="stats-grid">
+        <StatCard
+          icon={<Icon name="Bookings" />}
+          title="Total Bookings"
+          value={stats.totalBookings}
+          color="primary"
+        />
+        <StatCard
+          icon={<Icon name="Webinars" />}
+          title="Upcoming Webinars"
+          value={stats.upcomingWebinars}
+          color="secondary"
+        />
+        <StatCard
+          icon={<Icon name="Sessions" />}
+          title="Completed Sessions"
+          value={stats.completedSessions}
+          color="success"
+        />
+        <StatCard
+          icon={<Icon name="Attendee" />}
+          title="Total Attendees"
+          value={stats.totalAttendees}
+          color="info"
+        />
+        <StatCard
+          icon={<Icon name="MealPlan" />}
+          title="Pending Meal Plans"
+          value={stats.pendingMealPlans}
+          color="warning"
+        />
+        <StatCard
+          icon={<Icon name="Lifestyle" />}
+          title="Pending Lifestyle Audits"
+          value={stats.pendingLifestyleAudits}
+          color="danger"
+        />
+      </div>
+
+      <div className="dashboard-actions">
+        <h3>Quick Actions</h3>
+        <div className="action-buttons">
+          <button
+            className="admin-btn primary"
+            onClick={() => setActiveTab("bookings")}
+          >
+            <Icon name="Bookings" /> Manage Bookings
+          </button>
+          <button
+            className="admin-btn secondary"
+            onClick={() => {
+              setEditingWebinar(null);
+              cancelWebinarForm();
+              setShowWebinarForm(true);
+            }}
+          >
+            <Icon name="Add" /> Schedule Webinar
+          </button>
+          <button
+            className="admin-btn success"
+            onClick={() => setActiveTab("mealplans")}
+          >
+            <Icon name="MealPlan" /> View Meal Plans
+          </button>
+          <button
+            className="admin-btn info"
+            onClick={() => setActiveTab("lifestyle")}
+          >
+            <Icon name="Lifestyle" /> View Lifestyle Audits
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="admin-dashboard">
+      <div className="admin-header">
+        <h1>Admin Dashboard</h1>
+        <p>Manage bookings, webinars, and client requests</p>
+      </div>
+
+      {/* Alert Messages */}
+      {error && (
+        <div className="alert alert-error">
+          <span>{error}</span>
+          <button onClick={clearMessages} className="alert-close">
+            ×
+          </button>
+        </div>
+      )}
+      {success && (
+        <div className="alert alert-success">
+          <span>{success}</span>
+          <button onClick={clearMessages} className="alert-close">
+            ×
+          </button>
+        </div>
+      )}
+
+      {/* Navigation Tabs */}
+      <div className="admin-tabs">
+        <button
+          className={`tab ${activeTab === "dashboard" ? "active" : ""}`}
+          onClick={() => setActiveTab("dashboard")}
+        >
+          📊 Dashboard
+        </button>
+        <button
+          className={`tab ${activeTab === "bookings" ? "active" : ""}`}
+          onClick={() => setActiveTab("bookings")}
+        >
+          <Icon name="Bookings" /> Bookings
+        </button>
+        <button
+          className={`tab ${activeTab === "webinars" ? "active" : ""}`}
+          onClick={() => setActiveTab("webinars")}
+        >
+          <Icon name="Webinars" /> Webinars
+        </button>
+        <button
+          className={`tab ${activeTab === "mealplans" ? "active" : ""}`}
+          onClick={() => setActiveTab("mealplans")}
+        >
+          <Icon name="MealPlan" /> Meal Plans
+        </button>
+        <button
+          className={`tab ${activeTab === "lifestyle" ? "active" : ""}`}
+          onClick={() => setActiveTab("lifestyle")}
+        >
+          <Icon name="Lifestyle" /> Lifestyle Audits
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="admin-content">
+        {activeTab === "dashboard" && renderDashboard()}
+        {activeTab === "bookings" && renderBookings()}
+        {activeTab === "webinars" && renderWebinars()}
+        {activeTab === "mealplans" && renderMealPlans()}
+        {activeTab === "lifestyle" && renderLifestyleAudits()}
+      </div>
+
+      {/* Webinar Form Modal */}
+      {showWebinarForm && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>
+                {editingWebinar ? "Edit Webinar" : "Schedule New Webinar"}
+              </h2>
+              <button onClick={cancelWebinarForm} className="modal-close">
+                ×
+              </button>
             </div>
-          </div>
-        )}
-
-        {/* Booking Details Modal (View only) */}
-        {showBookingModal && selectedBooking && (
-          <div className="modal-overlay">
-            <div className="modal-content small-modal">
-              <div className="modal-header">
-                <h3>Booking Details</h3>
+            <form
+              onSubmit={
+                editingWebinar ? handleUpdateWebinar : handleCreateWebinar
+              }
+            >
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Webinar Title *</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={webinarForm.title}
+                    onChange={handleWebinarFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Speaker *</label>
+                  <input
+                    type="text"
+                    name="speaker"
+                    value={webinarForm.speaker}
+                    onChange={handleWebinarFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Date *</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={webinarForm.date}
+                    onChange={handleWebinarFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Time *</label>
+                  <input
+                    type="time"
+                    name="time"
+                    value={webinarForm.time}
+                    onChange={handleWebinarFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Duration *</label>
+                  <input
+                    type="text"
+                    name="duration"
+                    value={webinarForm.duration}
+                    onChange={handleWebinarFormChange}
+                    placeholder="e.g., 60 mins"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Max Attendees *</label>
+                  <input
+                    type="number"
+                    name="maxAttendees"
+                    value={webinarForm.maxAttendees}
+                    onChange={handleWebinarFormChange}
+                    min="1"
+                    required
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Description</label>
+                  <textarea
+                    name="description"
+                    value={webinarForm.description}
+                    onChange={handleWebinarFormChange}
+                    rows="3"
+                  />
+                </div>
+              </div>
+              <div className="modal-actions">
                 <button
-                  className="close-modal"
-                  onClick={() => setShowBookingModal(false)}
+                  type="button"
+                  onClick={cancelWebinarForm}
+                  className="admin-btn secondary"
                 >
-                  ×
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="admin-btn primary"
+                  disabled={isSubmittingWebinar}
+                >
+                  {isSubmittingWebinar
+                    ? "Saving..."
+                    : editingWebinar
+                    ? "Update Webinar"
+                    : "Create Webinar"}
                 </button>
               </div>
-              <div className="booking-details-view">
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Booking Form Modal */}
+      {showBookingForm && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>{editingBooking ? "Edit Booking" : "Create New Booking"}</h2>
+              <button onClick={cancelBookingForm} className="modal-close">
+                ×
+              </button>
+            </div>
+            <form
+              onSubmit={
+                editingBooking ? handleUpdateBooking : handleCreateWebinar
+              }
+            >
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Client Name *</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={bookingForm.name}
+                    onChange={handleBookingFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email *</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={bookingForm.email}
+                    onChange={handleBookingFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={bookingForm.phone}
+                    onChange={handleBookingFormChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Service Type *</label>
+                  <select
+                    name="serviceType"
+                    value={bookingForm.serviceType}
+                    onChange={handleBookingFormChange}
+                    required
+                  >
+                    <option value="personal">Personal</option>
+                    <option value="corporate">Corporate</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Consultation Type *</label>
+                  <select
+                    name="consultationType"
+                    value={bookingForm.consultationType}
+                    onChange={handleBookingFormChange}
+                    required
+                  >
+                    <option value="virtual">Virtual</option>
+                    <option value="in-person">In-Person</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Cluster *</label>
+                  <select
+                    name="cluster"
+                    value={bookingForm.cluster}
+                    onChange={handleBookingFormChange}
+                    required
+                  >
+                    <option value="nutrition">Nutrition</option>
+                    <option value="fitness">Fitness</option>
+                    <option value="wellness">Wellness</option>
+                    <option value="mental-health">Mental Health</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Date *</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={bookingForm.date}
+                    onChange={handleBookingFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Time *</label>
+                  <input
+                    type="time"
+                    name="time"
+                    value={bookingForm.time}
+                    onChange={handleBookingFormChange}
+                    required
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Medical Condition/Notes</label>
+                  <textarea
+                    name="condition"
+                    value={bookingForm.condition}
+                    onChange={handleBookingFormChange}
+                    rows="3"
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Additional Notes</label>
+                  <textarea
+                    name="notes"
+                    value={bookingForm.notes}
+                    onChange={handleBookingFormChange}
+                    rows="2"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Status *</label>
+                  <select
+                    name="status"
+                    value={bookingForm.status}
+                    onChange={handleBookingFormChange}
+                    required
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+              </div>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  onClick={cancelBookingForm}
+                  className="admin-btn secondary"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="admin-btn primary"
+                  disabled={isSubmittingBooking}
+                >
+                  {isSubmittingBooking
+                    ? "Saving..."
+                    : editingBooking
+                    ? "Update Booking"
+                    : "Create Booking"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Booking Details Modal */}
+      {showBookingModal && selectedBooking && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>Booking Details</h2>
+              <button
+                onClick={() => setShowBookingModal(false)}
+                className="modal-close"
+              >
+                ×
+              </button>
+            </div>
+            <div className="booking-details">
+              <div className="detail-group">
+                <h3>Client Information</h3>
                 <p>
-                  <strong>Client:</strong> {selectedBooking.name} (
-                  {selectedBooking.email})
+                  <strong>Name:</strong> {selectedBooking.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedBooking.email}
                 </p>
                 <p>
                   <strong>Phone:</strong> {selectedBooking.phone || "N/A"}
                 </p>
+              </div>
+              <div className="detail-group">
+                <h3>Booking Information</h3>
                 <p>
-                  <strong>Service:</strong>{" "}
-                  <span
-                    className={`service-badge ${selectedBooking.serviceType}`}
-                  >
-                    {selectedBooking.serviceType}
-                  </span>{" "}
-                  /{" "}
-                  <span className="cluster-badge">
-                    {selectedBooking.cluster}
-                  </span>
+                  <strong>Service Type:</strong> {selectedBooking.serviceType}
                 </p>
                 <p>
-                  <strong>Consult Type:</strong>{" "}
+                  <strong>Consultation Type:</strong>{" "}
                   {selectedBooking.consultationType}
                 </p>
                 <p>
-                  <strong>Date & Time:</strong>{" "}
-                  {new Date(selectedBooking.date).toLocaleDateString()} at{" "}
-                  {selectedBooking.time}
+                  <strong>Cluster:</strong> {selectedBooking.cluster}
+                </p>
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(selectedBooking.date).toLocaleDateString()}
+                </p>
+                <p>
+                  <strong>Time:</strong> {selectedBooking.time}
                 </p>
                 <p>
                   <strong>Status:</strong>{" "}
                   <span className={getStatusBadgeClass(selectedBooking.status)}>
-                    {selectedBooking.status.toUpperCase()}
+                    {selectedBooking.status}
                   </span>
                 </p>
-                <p>
-                  <strong>Condition:</strong>{" "}
-                  {selectedBooking.condition || "None specified"}
-                </p>
-                <p>
-                  <strong>Notes:</strong> {selectedBooking.notes || "No notes"}
-                </p>
               </div>
-              <div className="form-actions view-actions">
-                <button
-                  className="admin-btn edit"
-                  onClick={() => {
-                    setShowBookingModal(false);
-                    handleEditBooking(selectedBooking);
-                  }}
-                >
-                  <Icon name="Edit" /> Edit
-                </button>
-                <button
-                  className="admin-btn delete"
-                  onClick={() => {
-                    setShowBookingModal(false);
-                    handleDeleteBooking(selectedBooking._id);
-                  }}
-                >
-                  <Icon name="Delete" /> Delete
-                </button>
-              </div>
+              {selectedBooking.condition && (
+                <div className="detail-group">
+                  <h3>Medical Condition</h3>
+                  <p>{selectedBooking.condition}</p>
+                </div>
+              )}
+              {selectedBooking.notes && (
+                <div className="detail-group">
+                  <h3>Additional Notes</h3>
+                  <p>{selectedBooking.notes}</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-actions">
+              <button
+                onClick={() => setShowBookingModal(false)}
+                className="admin-btn secondary"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowBookingModal(false);
+                  handleEditBooking(selectedBooking);
+                }}
+                className="admin-btn primary"
+              >
+                Edit Booking
+              </button>
             </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </div>
   );
 };

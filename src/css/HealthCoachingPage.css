@@ -628,9 +628,10 @@ body {
   line-height: 1.4;
 }
 
-/* Form Styles */
+/* Form Styles - IMPROVED SPACING */
 .healthcoaching-formgroup {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  width: 100%;
 }
 
 .healthcoaching-formgroup label {
@@ -638,20 +639,21 @@ body {
   margin-bottom: 0.75rem;
   color: var(--darker);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .healthcoaching-formgroup input,
 .healthcoaching-formgroup select,
 .healthcoaching-formgroup textarea {
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 1rem;
   transition: var(--transition);
   background: var(--lighter);
   font-family: inherit;
+  line-height: 1.5;
 }
 
 .healthcoaching-formgroup input:focus,
@@ -669,6 +671,45 @@ body {
   gap: 1.5rem;
 }
 
+/* Radio Group Styles */
+.healthcoaching-radiogroup {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.healthcoaching-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--lighter);
+  flex: 1;
+  min-width: 150px;
+}
+
+.healthcoaching-radio-label:hover {
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.healthcoaching-radio-label input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
+.healthcoaching-radio-label
+  input[type="radio"]:checked
+  + .healthcoaching-radio-label {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+}
+
 /* Date & Time Picker */
 .healthcoaching-datetime {
   display: grid;
@@ -679,7 +720,7 @@ body {
 
 .healthcoaching-calendar input {
   width: 100%;
-  padding: 1rem;
+  padding: 1.25rem;
   border: 2px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 1rem;
@@ -694,7 +735,7 @@ body {
 
 .healthcoaching-slotgrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   gap: 0.75rem;
 }
 
@@ -1074,6 +1115,56 @@ body {
   }
 }
 
+/* NEW: Improved form spacing and layout */
+.healthcoaching-bookingstep {
+  padding: 2.5rem;
+}
+
+.healthcoaching-bookingstep h3 {
+  color: var(--darker);
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.healthcoaching-formactions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.healthcoaching-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.75rem 0;
+}
+
+.healthcoaching-checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.healthcoaching-checkbox span {
+  color: var(--darker);
+  font-weight: 500;
+}
+
+/* Contact information grid layout */
+.healthcoaching-contact-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.healthcoaching-contact-grid input {
+  margin-bottom: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .healthcoaching-main {
@@ -1143,71 +1234,89 @@ body {
     gap: 1.5rem;
   }
 
-  .healthcoaching-bookingform {
-    padding: 1.5rem;
+  .healthcoaching-optiongrid {
+    grid-template-columns: 1fr;
+  }
+
+  .healthcoaching-featuregrid {
+    grid-template-columns: 1fr;
+  }
+
+  .healthcoaching-roomgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .healthcoaching-supportgrid {
+    grid-template-columns: 1fr;
   }
 
   .healthcoaching-modal {
     padding: 1rem;
   }
 
-  .healthcoaching-message {
-    margin: 1rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .healthcoaching-featuregrid,
-  .healthcoaching-optiongrid,
-  .healthcoaching-roomgrid,
-  .healthcoaching-supportgrid {
-    grid-template-columns: 1fr;
+  .healthcoaching-modalcontent {
+    max-height: 95vh;
   }
 
   .healthcoaching-bookingform {
     padding: 1.5rem;
   }
 
-  .healthcoaching-nav button {
-    padding: 1rem 1.5rem;
-    font-size: 0.9rem;
+  .healthcoaching-bookingstep {
+    padding: 1.5rem;
   }
 
-  .healthcoaching-header {
+  .healthcoaching-bookingheader {
+    padding: 2rem 1.5rem 1rem;
+  }
+
+  .healthcoaching-radiogroup {
     flex-direction: column;
-    text-align: center;
     gap: 1rem;
+  }
+
+  .healthcoaching-radio-label {
+    min-width: auto;
+  }
+
+  .healthcoaching-slotgrid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .healthcoaching-header {
     padding: 1rem;
   }
 
-  .healthcoaching-menubtn {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
+  .healthcoaching-headercontent h1 {
+    font-size: 1.5rem;
   }
-}
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
+  .healthcoaching-tabcontent {
+    padding: 1.5rem 1rem;
+  }
 
-/* Custom scrollbar */
-.healthcoaching-modalcontent::-webkit-scrollbar {
-  width: 8px;
-}
+  .healthcoaching-content h2 {
+    font-size: 1.8rem;
+  }
 
-.healthcoaching-modalcontent::-webkit-scrollbar-track {
-  background: var(--light);
-  border-radius: 4px;
-}
+  .healthcoaching-cta {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
 
-.healthcoaching-modalcontent::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
+  .healthcoaching-bookingform {
+    padding: 1rem;
+  }
 
-.healthcoaching-modalcontent::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-dark);
+  .healthcoaching-bookingstep {
+    padding: 1rem;
+  }
+
+  .healthcoaching-formgroup input,
+  .healthcoaching-formgroup select,
+  .healthcoaching-formgroup textarea {
+    padding: 1rem 1.25rem;
+  }
 }
