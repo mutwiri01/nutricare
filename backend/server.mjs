@@ -271,6 +271,18 @@ app.post(
   })
 );
 
+// CRITICAL FIX: DELETE Route for Meal Plan Requests
+app.delete(
+  "/api/mealplans/:id",
+  routeHandler(async (req, res) => {
+    const result = await MealPlanRequest.findByIdAndDelete(req.params.id);
+    if (!result) {
+      return res.status(404).json({ message: "Meal Plan Request not found" });
+    }
+    res.json({ message: "Meal Plan Request deleted successfully" });
+  })
+);
+
 // New Routes for Lifestyle Audit Requests
 app.get(
   "/api/lifestylerequests",
@@ -292,6 +304,20 @@ app.post(
     const lifestyleRequest = new LifestyleAuditRequest(req.body);
     const savedRequest = await lifestyleRequest.save();
     res.status(201).json(savedRequest);
+  })
+);
+
+// CRITICAL FIX: DELETE Route for Lifestyle Audit Requests
+app.delete(
+  "/api/lifestylerequests/:id",
+  routeHandler(async (req, res) => {
+    const result = await LifestyleAuditRequest.findByIdAndDelete(req.params.id);
+    if (!result) {
+      return res
+        .status(404)
+        .json({ message: "Lifestyle Audit Request not found" });
+    }
+    res.json({ message: "Lifestyle Audit Request deleted successfully" });
   })
 );
 
