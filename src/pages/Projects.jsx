@@ -10,7 +10,7 @@ import {
 const Projects = () => {
   return (
     <div className="projects-container">
-      <h1 className="projects-title">Coming Soon Projects and Programs</h1>
+      <h1 className="projects-title">Research & Development</h1>
 
       {/* NEW: Image added directly below the title */}
       <div className="projects-hero-image-wrapper">

@@ -92,7 +92,7 @@ const Navbar = () => {
                     className="dropdown-link"
                     onClick={closeMenu}
                   >
-                    Projects
+                    Research & Development
                   </Link>
                 </li>
               </ul>

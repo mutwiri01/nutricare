@@ -8,21 +8,24 @@
 
 /* Typography */
 .fj-compact-title {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
   color: #0d552c;
   margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .fj-compact-quote {
-  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   font-weight: 500;
   font-style: italic;
   color: #2e7d32;
   margin: 0 0 1.5rem 0;
-  padding-left: 1rem;
-  border-left: 3px solid #81c784;
+  padding-left: 1.5rem;
+  border-left: 4px solid #81c784;
+  line-height: 1.6;
 }
 
 .fj-compact-section-title {
@@ -39,8 +42,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   align-items: center;
-  padding: 2rem 5vw;
-  background: #f8faf7;
+  padding: 3rem 5vw;
+  background: linear-gradient(135deg, #f8faf7 0%, #e8f5e9 100%);
 }
 
 .fj-compact-hero-content {
@@ -57,15 +60,16 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(13, 85, 44, 0.1);
 }
 
 /* Tight Content Grid */
 .fj-compact-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 2rem 5vw;
+  gap: 3rem;
+  padding: 3rem 5vw;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -76,74 +80,136 @@
 
 .fj-compact-text-block p {
   font-size: 1.2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: #333;
-  line-height: 1.6;
+  line-height: 1.7;
+}
+
+/* Chemical Impact Section */
+.fj-compact-chemical-impact {
+  padding: 3rem 5vw;
+  background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+  margin: 2rem 0;
+}
+
+.fj-compact-chemical-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.fj-compact-chemical-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.fj-compact-chemical-text p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #5d4037;
+  line-height: 1.7;
+  font-weight: 500;
 }
 
 /* Dense Importance Cards */
 .fj-compact-importance {
-  padding: 2rem 5vw;
+  padding: 3rem 5vw;
   background: #f5f7f5;
 }
 
 .fj-compact-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .fj-compact-card {
   background: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid #4caf50;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fj-compact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .fj-compact-card h3 {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #0d552c;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
 }
 
 .fj-compact-card p {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #555;
+  line-height: 1.6;
+}
+
+/* Call to Action Section */
+.fj-compact-callout {
+  padding: 3rem 5vw;
+  background: linear-gradient(135deg, #0d552c 0%, #2e7d32 100%);
+  color: white;
+  text-align: center;
+}
+
+.fj-compact-callout-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.fj-compact-callout-content h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+.fj-compact-callout-content p {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  opacity: 0.95;
 }
 
 /* Compact Topic Cards */
 .fj-compact-topics {
-  padding: 2rem 5vw;
+  padding: 3rem 5vw;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .fj-compact-topics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 .fj-compact-topic {
   display: flex;
   flex-direction: column;
   background: white;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 4px solid #81c784;
 }
 
 .fj-compact-topic:hover {
-  transform: translateY(-3px);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
 .fj-compact-topic-image {
-  height: 160px;
+  height: 180px;
   overflow: hidden;
 }
 
@@ -151,28 +217,36 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.fj-compact-topic:hover .fj-compact-topic-image img {
+  transform: scale(1.05);
 }
 
 .fj-compact-topic-content {
-  padding: 1.25rem;
+  padding: 1.5rem;
 }
 
 .fj-compact-topic-content h3 {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #0d552c;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
 }
 
 .fj-compact-topic-content p {
-  font-size: 1.2rem;
-  color: #555;
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.5;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 900px) {
   .fj-compact-hero {
     grid-template-columns: 1fr;
-    padding: 1.5rem 5vw;
+    padding: 2rem 5vw;
+    text-align: center;
   }
 
   .fj-compact-hero-image {
@@ -182,16 +256,34 @@
 
   .fj-compact-content {
     grid-template-columns: 1fr;
-    padding: 1.5rem 5vw;
+    padding: 2rem 5vw;
+    gap: 2rem;
+  }
+
+  .fj-compact-card-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
 @media (max-width: 600px) {
-  .fj-compact-card-grid {
-    grid-template-columns: 1fr;
+  .fj-compact-hero {
+    padding: 1.5rem 5vw;
   }
 
   .fj-compact-hero-image {
     min-height: 200px;
+  }
+
+  .fj-compact-content,
+  .fj-compact-importance,
+  .fj-compact-topics,
+  .fj-compact-chemical-impact,
+  .fj-compact-callout {
+    padding: 2rem 5vw;
+  }
+
+  .fj-compact-topics-grid {
+    grid-template-columns: 1fr;
   }
 }
