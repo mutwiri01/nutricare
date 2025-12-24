@@ -51,70 +51,122 @@ body {
   background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
 }
 
-/* Header Styles */
+/* Header Styles - UPDATED with large but contained logo */
 .healthcoaching-header {
-  background: rgba(44, 119, 68, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--border);
   padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
-  z-index: 1000;
-  box-shadow: 0 4px 20px rgba(44, 119, 68, 0.2);
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(44, 119, 68, 0.1);
+  min-height: 140px; /* Taller to accommodate large logo */
+  width: 100%;
 }
 
-.healthcoaching-headercontent h1 {
-  margin: 0;
-  font-size: 2.2rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Logo container */
+.healthcoaching-logo-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
 }
 
-.healthcoaching-headercontent p {
-  margin: 0.5rem 0 0 0;
-  opacity: 0.9;
-  font-size: 1.1rem;
-  color: var(--light);
-  font-weight: 300;
+/* Large but contained logo */
+.healthcoaching-logo-large {
+  width: 100%;
+  max-width: 800px; /* Limit maximum width */
+  height: 100px; /* Fixed height */
+  object-fit: contain; /* Keep aspect ratio */
+  object-position: center;
+  transition: var(--transition);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(44, 119, 68, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border: 3px solid var(--primary-light);
+}
+
+.healthcoaching-logo-large:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(44, 119, 68, 0.2);
+  border-color: var(--primary);
+}
+
+.healthcoaching-logo-large-fallback {
+  width: 100%;
+  max-width: 800px;
+  height: 100px;
+  font-size: 3.5rem;
+  color: white;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(44, 119, 68, 0.15);
+  border: 3px solid var(--primary-light);
+  transition: var(--transition);
+}
+
+.healthcoaching-logo-large-fallback:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(44, 119, 68, 0.2);
+  border-color: var(--primary);
+}
+
+/* Update existing header content styles */
+.healthcoaching-headercontent {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Mobile menu button */
 .healthcoaching-menubtn {
   display: none;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: var(--primary);
+  border: 2px solid var(--primary);
   color: white;
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
   cursor: pointer;
   transition: var(--transition);
   font-weight: 600;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
+  font-size: 1.2rem;
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 101;
 }
 
 .healthcoaching-menubtn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  transform: translateY(-50%) scale(1.05);
 }
 
 /* Main Content */
 .healthcoaching-main {
   display: flex;
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh - 160px); /* Adjusted for taller header */
   padding: 2rem;
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* Navigation */
+/* Navigation - Ensure proper z-index and adjust top position */
 .healthcoaching-nav {
   width: 320px;
   background: var(--card-bg);
@@ -124,8 +176,9 @@ body {
   border: 1px solid var(--border);
   height: fit-content;
   position: sticky;
-  top: 120px;
+  top: 180px; /* Increased to account for taller header */
   transition: var(--transition);
+  z-index: 50;
 }
 
 .healthcoaching-nav ul {
@@ -1165,7 +1218,7 @@ body {
   margin-bottom: 0;
 }
 
-/* Responsive Design */
+/* Responsive Design - UPDATED for large contained logo */
 @media (max-width: 1200px) {
   .healthcoaching-main {
     flex-direction: column;
@@ -1175,24 +1228,42 @@ body {
     width: 100%;
     margin-bottom: 2rem;
     position: static;
+    top: auto;
+  }
+
+  .healthcoaching-logo-large {
+    max-width: 700px;
   }
 }
 
 @media (max-width: 992px) {
   .healthcoaching-header {
     padding: 1rem 1.5rem;
+    min-height: 120px;
+  }
+
+  .healthcoaching-logo-large {
+    max-width: 600px;
+    height: 90px;
+  }
+
+  .healthcoaching-logo-large-fallback {
+    max-width: 600px;
+    height: 90px;
+    font-size: 3rem;
   }
 
   .healthcoaching-menubtn {
     display: flex;
+    right: 1rem;
   }
 
   .healthcoaching-nav {
     position: fixed;
-    top: 80px;
+    top: 150px; /* Increased for taller header */
     left: -100%;
     width: 300px;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 150px);
     z-index: 1000;
     transition: left 0.3s ease;
     border-radius: 0;
@@ -1205,6 +1276,7 @@ body {
 
   .healthcoaching-main {
     padding: 1rem;
+    min-height: calc(100vh - 150px);
   }
 
   .healthcoaching-tabcontent {
@@ -1213,12 +1285,19 @@ body {
 }
 
 @media (max-width: 768px) {
-  .healthcoaching-headercontent h1 {
-    font-size: 1.8rem;
+  .healthcoaching-header {
+    min-height: 110px;
   }
 
-  .healthcoaching-headercontent p {
-    font-size: 1rem;
+  .healthcoaching-logo-large {
+    max-width: 500px;
+    height: 80px;
+  }
+
+  .healthcoaching-logo-large-fallback {
+    max-width: 500px;
+    height: 80px;
+    font-size: 2.5rem;
   }
 
   .healthcoaching-content h2 {
@@ -1286,11 +1365,21 @@ body {
 
 @media (max-width: 480px) {
   .healthcoaching-header {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
+    min-height: 100px;
   }
 
-  .healthcoaching-headercontent h1 {
-    font-size: 1.5rem;
+  .healthcoaching-logo-large {
+    max-width: 400px;
+    height: 70px;
+    border-width: 2px;
+  }
+
+  .healthcoaching-logo-large-fallback {
+    max-width: 400px;
+    height: 70px;
+    font-size: 2rem;
+    border-width: 2px;
   }
 
   .healthcoaching-tabcontent {

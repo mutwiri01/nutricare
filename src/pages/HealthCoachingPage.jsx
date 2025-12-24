@@ -6,6 +6,10 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import "../css/HealthCoachingPage.css";
 
+// Import logo image (assuming you have it in your assets)
+// If you don't have one yet, you can use a placeholder or icon
+import healthCoachLogo from "/hlo1.jpg"; // Adjust path as needed
+
 const HealthCoachingPage = ({ apiBaseUrl }) => {
   const API_BASE_URL = apiBaseUrl || "https://nutricare-a1g7.vercel.app/api";
   const [activeTab, setActiveTab] = useState("personal");
@@ -68,6 +72,22 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   });
   const [showLifestyleForm, setShowLifestyleForm] = useState(false);
   const [showMealPlanForm, setShowMealPlanForm] = useState(false);
+
+  useEffect(() => {
+    // Check if we have state passed from the homepage promotional link
+    const locationState = window.history.state?.usr;
+    if (locationState?.activeTab === "lifestyle") {
+      setActiveTab("lifestyle");
+    }
+  }, []);
+
+  // NEW: Scroll to top when activeTab changes
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [activeTab]);
 
   useEffect(() => {
     fetchWebinars();
@@ -823,46 +843,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               preventive approach to employee wellness that benefits both the
               workforce and organizations.
             </p>
-
-            <h4>The corporate wellness process</h4>
-            <p>
-              An effective way to start health coaching in your workplace is to
-              first identify the health status of your population and pinpoint
-              higher-risk individuals.
-            </p>
-
-            <p>
-              A health risk assessment (HRA) can help your company determine who
-              is at highest risk for chronic illness and get an overall sense of
-              the health of your employees. After this baseline is established,
-              health coaches can reach out to individuals and begin working to
-              improve lifestyle factors to prevent or delay illness (American
-              Journal of Lifestyle Medicine).
-            </p>
-
-            <p>Health assessments usually consist of the following:</p>
-            <ol className="healthcoaching-list">
-              <li>
-                <strong>
-                  {" "}
-                  HRA questionnaire about lifestyle and health behavior{" "}
-                </strong>{" "}
-                <br />A health risk assessment (HRA) is a process used to
-                identify, evaluate, and mitigate potential health hazards. It's
-                a systematic approach to understanding how factors like
-                lifestyle, environment, and medical history can impact an
-                individual's or community's health. HRAs are used in various
-                settings, from individual healthcare to public health planning,
-                to help prioritize interventions and promote well-being.
-              </li>
-              <li>
-                <strong>Biometric screening</strong> including a blood draw,
-                usually done with a finger prick, to determine total
-                cholesterol, HDL, LDL, triglycerides, blood pressure, and blood
-                glucose; and additional measurements including heart rate,
-                height, weight, BMI, and abdominal girth
-              </li>
-            </ol>
           </motion.div>
         )}
 
@@ -2231,8 +2211,22 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     <div className="healthcoaching-portal">
       <header className="healthcoaching-header">
         <div className="healthcoaching-headercontent">
-          <h1>Health Coaching Portal</h1>
-          <p>Your path to sustainable wellness and vitality</p>
+          <div className="healthcoaching-logo-container">
+            {/* Logo Image - Large but contained */}
+            <img
+              src={healthCoachLogo}
+              alt="Health Coaching Logo"
+              className="healthcoaching-logo-large"
+              onError={(e) => {
+                // Fallback to icon if image fails to load
+                e.target.style.display = "none";
+                const icon = document.createElement("i");
+                icon.className =
+                  "bi bi-heart-pulse healthcoaching-logo-large-fallback";
+                e.target.parentNode.insertBefore(icon, e.target);
+              }}
+            />
+          </div>
         </div>
         <button
           className="healthcoaching-menubtn"

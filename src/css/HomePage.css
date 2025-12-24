@@ -196,6 +196,108 @@ body {
   transform: scale(1.2);
 }
 
+/* Promotional Section - Added below hero section */
+.homepage-promotional-section {
+  padding: 0 2rem 2rem 2rem;
+  background: linear-gradient(135deg, #f8fdf9 0%, #f0f9f3 100%);
+}
+
+.homepage-promotional-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.homepage-promotional-badge {
+  background: linear-gradient(135deg, var(--primary-light) 0%, white 100%);
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--primary);
+  position: relative;
+}
+
+.homepage-promotional-label {
+  display: block;
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.4rem 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.homepage-promotional-content {
+  padding: 1.2rem 1.5rem 1.5rem;
+  text-align: center;
+}
+
+.homepage-promotional-title {
+  font-size: 1.3rem;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-weight: 600;
+}
+
+.homepage-promotional-title i {
+  color: var(--accent);
+  font-size: 1.4rem;
+}
+
+.homepage-promotional-description {
+  color: var(--gray);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.homepage-promotional-expiry {
+  display: block;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.homepage-promotional-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.95rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 3px 10px rgba(17, 108, 62, 0.2);
+}
+
+.homepage-promotional-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(17, 108, 62, 0.3);
+  background: #0d5a34;
+  gap: 0.8rem;
+}
+
+.homepage-promotional-button i {
+  font-size: 1.1rem;
+  transition: var(--transition);
+}
+
+.homepage-promotional-button:hover i {
+  transform: translateX(3px);
+}
+
 /* Hero Lead Section */
 .homepage-hero-lead-section {
   padding: 4rem 2rem;
@@ -324,6 +426,23 @@ body {
     font-size: 1rem;
     padding: 0.6rem 0 0.6rem 1.8rem;
   }
+
+  .homepage-promotional-section {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+
+  .homepage-promotional-content {
+    padding: 1rem 1.2rem 1.2rem;
+  }
+
+  .homepage-promotional-title {
+    font-size: 1.1rem;
+  }
+
+  .homepage-promotional-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -341,6 +460,33 @@ body {
 
   .homepage-benefits-list li {
     font-size: 0.95rem;
+  }
+
+  .homepage-promotional-section {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .homepage-promotional-label {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+  }
+
+  .homepage-promotional-content {
+    padding: 0.8rem 1rem 1rem;
+  }
+
+  .homepage-promotional-title {
+    font-size: 1rem;
+    flex-direction: row;
+  }
+
+  .homepage-promotional-description {
+    font-size: 0.85rem;
+  }
+
+  .homepage-promotional-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
   }
 }
 /* Stats Section */

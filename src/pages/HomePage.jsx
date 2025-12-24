@@ -6,9 +6,7 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const heroImages = [
-    "/h1.jpg",
-  ];
+  const heroImages = ["/h1.jpg"];
   const [heroRef, heroInView] = useInView({ triggerOnce: true });
   const [statsRef, statsInView] = useInView({ triggerOnce: true });
   const [counts, setCounts] = useState({
@@ -78,6 +76,36 @@ const HomePage = () => {
                   />
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Promotional Section - Added below hero section */}
+      <section className="homepage-promotional-section">
+        <div className="homepage-promotional-container">
+          <div className="homepage-promotional-badge">
+            <span className="homepage-promotional-label">
+              LIMITED TIME OFFER
+            </span>
+            <div className="homepage-promotional-content">
+              <h3 className="homepage-promotional-title">
+                <i className="bi bi-gift-fill"></i> FREE Lifestyle Audit
+              </h3>
+              <p className="homepage-promotional-description">
+                Get a comprehensive analysis of your daily habits and routines.
+                <span className="homepage-promotional-expiry">
+                  Offer expires soon!
+                </span>
+              </p>
+              <Link
+                to="/coaching"
+                state={{ activeTab: "lifestyle" }}
+                className="homepage-promotional-button"
+              >
+                <i className="bi bi-arrow-right-circle"></i>
+                Claim Your Free Audit
+              </Link>
             </div>
           </div>
         </div>
