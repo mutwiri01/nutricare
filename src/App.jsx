@@ -32,6 +32,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import HealthPrevention from "./pages/HealthPrevention";
+import Footer from "./components/Footer";
 
 // API base URL - using a direct value instead of process.env for frontend
 const API_BASE_URL =
@@ -78,13 +79,14 @@ function AppContent() {
         <Route path="/advocacy" element={<Advocacy />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/health-prevention" element={<HealthPrevention/>}/>
+        <Route path="/health-prevention" element={<HealthPrevention />} />
         <Route
           path="/me$n&jer"
           element={<AdminDashboard apiBaseUrl={API_BASE_URL} />}
         />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <Footer />
     </div>
   );
 }
