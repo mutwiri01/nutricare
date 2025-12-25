@@ -236,7 +236,7 @@ body {
 
 .homepage-promotional-title {
   font-size: 1.3rem;
-  color: var(--primary);
+  color: black;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -251,7 +251,7 @@ body {
 }
 
 .homepage-promotional-description {
-  color: var(--gray);
+  color:black;
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -260,7 +260,7 @@ body {
 .homepage-promotional-expiry {
   display: block;
   font-weight: 600;
-  color: var(--accent);
+  color: red;
   margin-top: 0.4rem;
   font-size: 0.9rem;
 }
@@ -597,7 +597,7 @@ body {
 .homepage-problem-text h2 {
   font-family: "Roboto Slab";
   font-size: 2.8rem;
-  color: var(--primary);
+  color: black;
   margin-bottom: 1.5rem;
   text-align: left;
   position: relative;
@@ -617,7 +617,7 @@ body {
 
 .homepage-problem-text p {
   font-size: 1.3rem;
-  color: var(--dark);
+  color: black;
   max-width: 100%;
   text-align: left;
   line-height: 1.8;

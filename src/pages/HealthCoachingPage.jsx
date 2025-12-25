@@ -73,6 +73,9 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   const [showLifestyleForm, setShowLifestyleForm] = useState(false);
   const [showMealPlanForm, setShowMealPlanForm] = useState(false);
 
+  // NEW: Track which form is being opened (personal or corporate)
+  const [formSource, setFormSource] = useState(""); // "personal" or "corporate"
+
   useEffect(() => {
     // Check if we have state passed from the homepage promotional link
     const locationState = window.history.state?.usr;
@@ -281,10 +284,11 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   const handleSubmitBooking = async (e) => {
     e.preventDefault();
 
-    const isPersonalBooking = bookingData.serviceType === "personal";
+    const isPersonalBooking =
+      formSource === "personal" || bookingData.serviceType === "personal";
 
     // Validation
-    if (!bookingData.serviceType) {
+    if (!formSource && !bookingData.serviceType) {
       setError("Please select a Service Type.");
       return;
     }
@@ -312,6 +316,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         },
         body: JSON.stringify({
           ...bookingData,
+          serviceType: formSource || bookingData.serviceType,
           status: "pending", // Set initial status
         }),
       });
@@ -333,6 +338,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           condition: "",
           notes: "",
         });
+        setFormSource("");
       } else {
         const errorData = await response.json();
         setError(
@@ -480,7 +486,22 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       condition: "",
       notes: "",
     });
+    setFormSource("");
     clearMessages();
+  };
+
+  // NEW: Function to open personal booking form
+  const openPersonalBooking = () => {
+    setFormSource("personal");
+    setBookingData({ ...bookingData, serviceType: "personal" });
+    setBookingStep(0);
+  };
+
+  // NEW: Function to open corporate booking form
+  const openCorporateBooking = () => {
+    setFormSource("corporate");
+    setBookingData({ ...bookingData, serviceType: "corporate" });
+    setBookingStep(0);
   };
 
   const renderPersonalTab = () => (
@@ -499,10 +520,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <button
             className="healthcoaching-cta"
-            onClick={() => {
-              setBookingData({ ...bookingData, serviceType: "personal" });
-              setBookingStep(0);
-            }}
+            onClick={openPersonalBooking}
             style={{ marginRight: "1rem" }}
           >
             <i className="bi bi-calendar2-check"></i>
@@ -727,10 +745,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <button
             className="healthcoaching-cta"
-            onClick={() => {
-              setBookingData({ ...bookingData, serviceType: "corporate" });
-              setBookingStep(0);
-            }}
+            onClick={openCorporateBooking}
             style={{ marginRight: "1rem" }}
           >
             <i className="bi bi-info-circle"></i>
@@ -1270,14 +1285,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           <p>Secure sessions with your health coach to achieve your goals</p>
           <button
             className="healthcoaching-roombtn"
-            onClick={() => {
-              setBookingData({
-                ...bookingData,
-                serviceType: "personal",
-                consultationType: "virtual",
-              });
-              setBookingStep(0);
-            }}
+            onClick={openPersonalBooking}
           >
             <i className="bi bi-camera-video"></i> Book Session
           </button>
@@ -1462,11 +1470,11 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   );
 
   const renderBookingModal = () => {
-    const isPersonalBooking = bookingData.serviceType === "personal";
-    const modalTitle =
-      bookingData.serviceType === "corporate"
-        ? "Corporate Wellness Request"
-        : "Book Your Health Coaching Session";
+    const isPersonalBooking =
+      formSource === "personal" || bookingData.serviceType === "personal";
+    const modalTitle = isPersonalBooking
+      ? "Book Your Personal Health Coaching Session"
+      : "Corporate Wellness Information Request";
 
     return (
       <AnimatePresence>
@@ -1536,47 +1544,51 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                   </motion.div>
                 </div>
               ) : (
-                // FULL BOOKING FORM
+                // FULL BOOKING FORM - UPDATED: Only show relevant options based on formSource
                 <form
                   className="healthcoaching-bookingstep"
                   onSubmit={handleSubmitBooking}
                 >
                   <h3>Complete Your Details</h3>
 
-                  {/* 1. Service Type Selection */}
-                  <div className="healthcoaching-formgroup">
-                    <label>1. Service Type *</label>
-                    <div className="healthcoaching-optiongrid">
-                      <div
-                        className={`healthcoaching-optioncard ${
-                          bookingData.serviceType === "personal" ? "active" : ""
-                        }`}
-                        onClick={() =>
-                          handleBookingChange("serviceType", "personal")
-                        }
-                      >
-                        <div className="healthcoaching-optionicon">
-                          <i className="bi bi-person-heart"></i>
+                  {/* Service Type Selection - Only show if no formSource */}
+                  {!formSource && (
+                    <div className="healthcoaching-formgroup">
+                      <label>1. Service Type *</label>
+                      <div className="healthcoaching-optiongrid">
+                        <div
+                          className={`healthcoaching-optioncard ${
+                            bookingData.serviceType === "personal"
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleBookingChange("serviceType", "personal")
+                          }
+                        >
+                          <div className="healthcoaching-optionicon">
+                            <i className="bi bi-person-heart"></i>
+                          </div>
+                          <h4>Personal Coaching</h4>
                         </div>
-                        <h4>Personal Coaching</h4>
-                      </div>
-                      <div
-                        className={`healthcoaching-optioncard ${
-                          bookingData.serviceType === "corporate"
-                            ? "active"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          handleBookingChange("serviceType", "corporate")
-                        }
-                      >
-                        <div className="healthcoaching-optionicon">
-                          <i className="bi bi-briefcase"></i>
+                        <div
+                          className={`healthcoaching-optioncard ${
+                            bookingData.serviceType === "corporate"
+                              ? "active"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleBookingChange("serviceType", "corporate")
+                          }
+                        >
+                          <div className="healthcoaching-optionicon">
+                            <i className="bi bi-briefcase"></i>
+                          </div>
+                          <h4>Corporate Wellness</h4>
                         </div>
-                        <h4>Corporate Wellness</h4>
                       </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Consultation Type Selection (Only for Personal Booking) */}
                   {isPersonalBooking && (
@@ -1993,7 +2005,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                   onChange={(e) =>
                     handleLifestyleFormChange("email", e.target.value)
                   }
-                  required
                 />
               </div>
 
@@ -2115,7 +2126,6 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                   onChange={(e) =>
                     handleMealPlanFormChange("email", e.target.value)
                   }
-                  required
                 />
               </div>
 
@@ -2209,6 +2219,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
   return (
     <div className="healthcoaching-portal">
+      {/* Header - Now relative positioned, not fixed */}
       <header className="healthcoaching-header">
         <div className="healthcoaching-headercontent">
           <div className="healthcoaching-logo-container">
