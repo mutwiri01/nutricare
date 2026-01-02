@@ -175,12 +175,12 @@ const HomePage = () => {
           </div>
           <div className="homepage-stat-card">
             <h2>{counts.admissions}%</h2>
-            <p>Hospital admissions in Kenya</p>
+            <p>of Hospital admissions in Kenya</p>
             <div className="homepage-stat-bar"></div>
           </div>
           <div className="homepage-stat-card">
             <h2>{counts.ncds}%</h2>
-            <p>Deaths in developing countries</p>
+            <p>of Deaths in developing countries</p>
             <div className="homepage-stat-bar"></div>
           </div>
         </div>

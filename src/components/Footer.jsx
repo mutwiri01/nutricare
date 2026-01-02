@@ -123,19 +123,23 @@ const Footer = () => {
               </li>
               <li>
                 <i className="bi bi-check-circle"></i>
-                Corporate Wellness Programs
+                Corporate Wellness
               </li>
               <li>
                 <i className="bi bi-check-circle"></i>
-                Lifestyle Audits
+                Lifestyle Analysis
               </li>
               <li>
                 <i className="bi bi-check-circle"></i>
-                Nutritional Counseling
+                Advocacy For Healthier Lives
               </li>
               <li>
                 <i className="bi bi-check-circle"></i>
-                Wellness Workshops
+                Knowledge for Better Health
+              </li>
+              <li>
+                <i className="bi bi-check-circle"></i>
+                Rebuilding Ecosystems
               </li>
             </ul>
           </div>
@@ -148,7 +152,7 @@ const Footer = () => {
         <div className="footer-bottom">
           <div className="footer-bottom-content">
             <p className="footer-copyright">
-              &copy; {currentYear} Centre for Lifestyle and Natural Health
+              &copy; {currentYear} Centre for Lifechange and Nutritonal Healthcare.
               (CLINH). All rights reserved.
             </p>
             <div className="footer-legal">
