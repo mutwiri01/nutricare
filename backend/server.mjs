@@ -124,6 +124,23 @@ const webinarSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+// NEW: Webinar Registration Schema
+const webinarRegistrationSchema = new mongoose.Schema({
+  webinarId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Webinar",
+    required: true,
+  },
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  registrationDate: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    default: "registered",
+    enum: ["registered", "attended", "cancelled"],
+  },
+});
+
 // =================================================================
 // 2. Define Models
 // =================================================================
@@ -137,6 +154,11 @@ const MealPlanRequest = mongoose.model(
 const LifestyleAuditRequest = mongoose.model(
   "LifestyleAuditRequest",
   lifestyleAuditRequestSchema
+);
+// NEW: Webinar Registration Model
+const WebinarRegistration = mongoose.model(
+  "WebinarRegistration",
+  webinarRegistrationSchema
 );
 
 // =================================================================
@@ -212,6 +234,15 @@ app.get(
   })
 );
 
+app.post(
+  "/api/mealplans",
+  routeHandler(async (req, res) => {
+    const mealPlan = new MealPlanRequest(req.body);
+    const savedMealPlan = await mealPlan.save();
+    res.status(201).json(savedMealPlan);
+  })
+);
+
 app.delete(
   "/api/mealplans/:id",
   routeHandler(async (req, res) => {
@@ -226,6 +257,15 @@ app.get(
   routeHandler(async (req, res) => {
     const requests = await LifestyleAuditRequest.find().sort({ createdAt: -1 });
     res.json(requests);
+  })
+);
+
+app.post(
+  "/api/lifestylerequests",
+  routeHandler(async (req, res) => {
+    const lifestyleRequest = new LifestyleAuditRequest(req.body);
+    const savedRequest = await lifestyleRequest.save();
+    res.status(201).json(savedRequest);
   })
 );
 
@@ -270,6 +310,66 @@ app.delete(
   routeHandler(async (req, res) => {
     await Webinar.findByIdAndDelete(req.params.id);
     res.json({ message: "Webinar deleted" });
+  })
+);
+
+// NEW: Webinar Registration Route
+app.post(
+  "/api/webinar-registrations",
+  routeHandler(async (req, res) => {
+    try {
+      const { webinarId, name, email } = req.body;
+
+      // Validate webinar exists
+      const webinar = await Webinar.findById(webinarId);
+      if (!webinar) {
+        return res.status(404).json({ error: "Webinar not found" });
+      }
+
+      // Check if webinar is full
+      if (webinar.currentAttendees >= webinar.maxAttendees) {
+        return res.status(400).json({ error: "Webinar is full" });
+      }
+
+      // Check if user already registered
+      const existingRegistration = await WebinarRegistration.findOne({
+        webinarId,
+        email,
+      });
+      if (existingRegistration) {
+        return res
+          .status(400)
+          .json({ error: "You are already registered for this webinar" });
+      }
+
+      // Create registration
+      const registration = new WebinarRegistration({
+        webinarId,
+        name,
+        email,
+      });
+
+      const savedRegistration = await registration.save();
+
+      // Update webinar attendee count
+      webinar.currentAttendees += 1;
+      await webinar.save();
+
+      res.status(201).json({
+        message: "Successfully registered for webinar",
+        registration: savedRegistration,
+        webinar: {
+          title: webinar.title,
+          date: webinar.date,
+          time: webinar.time,
+          currentAttendees: webinar.currentAttendees,
+          maxAttendees: webinar.maxAttendees,
+        },
+      });
+    } catch (error) {
+      console.error("Webinar registration error:", error);
+      res.status(500).json({ error: "Failed to register for webinar" });
+    }
   })
 );
 

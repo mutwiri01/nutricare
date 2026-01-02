@@ -402,16 +402,19 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/webinars/${webinarId}/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name, email }),
-        }
-      );
+      // FIXED: Changed API endpoint from /webinars/{id}/register to /webinar-registrations
+      const response = await fetch(`${API_BASE_URL}/webinar-registrations`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          webinarId,
+          name,
+          email,
+          registrationDate: new Date().toISOString(),
+        }),
+      });
 
       if (response.ok) {
         const result = await response.json();
@@ -424,6 +427,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         setError(errorData.error || "Failed to register for webinar");
       }
     } catch (error) {
+      console.error("Webinar registration error:", error);
       setError("Failed to register for webinar. Please try again.");
     } finally {
       setIsLoading(false);
