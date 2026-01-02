@@ -81,36 +81,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Promotional Section - Added below hero section */}
-      <section className="homepage-promotional-section">
-        <div className="homepage-promotional-container">
-          <div className="homepage-promotional-badge">
-            <span className="homepage-promotional-label">
-              LIMITED TIME OFFER
-            </span>
-            <div className="homepage-promotional-content">
-              <h3 className="homepage-promotional-title">
-                <i className="bi bi-gift-fill"></i> FREE Lifestyle Audit
-              </h3>
-              <p className="homepage-promotional-description">
-                Get a comprehensive analysis of your daily habits and routines.
-                <span className="homepage-promotional-expiry">
-                  Offer expires soon!
-                </span>
-              </p>
-              <Link
-                to="/coaching"
-                state={{ activeTab: "lifestyle" }}
-                className="homepage-promotional-button"
-              >
-                <i className="bi bi-arrow-right-circle"></i>
-                Claim Your Free Audit
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Hero Lead Section */}
       <section className="homepage-hero-lead-section">
         <div className="homepage-hero-lead-content">
@@ -160,6 +130,38 @@ const HomePage = () => {
                 These and many more are our key guarantees for sustainable
                 healthy living that promises to transform your life.
               </p>
+            </div>
+
+            {/* Promotional Section - Moved below homepage lead conclusion */}
+            <div className="homepage-promotional-section">
+              <div className="homepage-promotional-container">
+                <div className="homepage-promotional-badge">
+                  <span className="homepage-promotional-label">
+                    LIMITED TIME OFFER
+                  </span>
+                  <div className="homepage-promotional-content">
+                    <h3 className="homepage-promotional-title">
+                      <i className="bi bi-gift-fill"></i> FREE Lifestyle Analysis
+                    </h3>
+                    <p className="homepage-promotional-description">
+                      Know how your lifestyle affects your health.
+                      <span className="homepage-promotional-expiry">
+                        <span className="homepage-flashing-star">★</span> Offer
+                        expires soon!{" "}
+                        <span className="homepage-flashing-star">★</span>
+                      </span>
+                    </p>
+                    <Link
+                      to="/coaching"
+                      state={{ activeTab: "lifestyle" }}
+                      className="homepage-promotional-button"
+                    >
+                      <i className="bi bi-arrow-right-circle"></i>
+                      Claim Your Free Lifestyle Analysis
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -227,6 +229,37 @@ const HomePage = () => {
             We address lifestyle diseases through multiple innovative channels
           </p>
         </div>
+
+        {/* Promotional Section - Added to What We Do Section */}
+        <div className="homepage-promotional-section homepage-services-promotional">
+          <div className="homepage-promotional-container">
+            <div className="homepage-promotional-badge">
+              <span className="homepage-promotional-label">SPECIAL OFFER</span>
+              <div className="homepage-promotional-content">
+                <h3 className="homepage-promotional-title">
+                  <i className="bi bi-gift-fill"></i> FREE Lifestyle Analysis
+                </h3>
+                <p className="homepage-promotional-description">
+                  Know How your lifestyle affects your health.{" "}
+                  <span className="homepage-promotional-expiry">
+                    <span className="homepage-flashing-star">★</span> Offer
+                    expires soon!{" "}
+                    <span className="homepage-flashing-star">★</span>
+                  </span>
+                </p>
+                <Link
+                  to="/coaching"
+                  state={{ activeTab: "lifestyle" }}
+                  className="homepage-promotional-button"
+                >
+                  <i className="bi bi-arrow-right-circle"></i>
+                  Claim Your Free Audit
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="homepage-services-grid">
           {[
             {
