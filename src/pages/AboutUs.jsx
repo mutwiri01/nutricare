@@ -36,16 +36,16 @@ const AboutUs = () => {
           <h2 className="section-title">Values</h2>
           <ul className="values-list">
             <p className="section-text">
-              Restorative : Renewing balance and vitality
+              Restoration : Renewing balance and vitality
             </p>
             <p className="section-text">
-              Transformational : Inspiring lasting change
+              Transformation : Inspiring lasting change
             </p>
             <p className="section-text">
-              Sustainable : Building wellness that endures
+              Sustainability : Building wellness that endures
             </p>
             <p className="section-text">
-              Empowering : Equipping people to thrive
+              Empowerment : Equipping people to thrive
             </p>
           </ul>
         </div>
