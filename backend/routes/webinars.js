@@ -72,26 +72,4 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// Register for a webinar
-router.post("/:id/register", async (req, res) => {
-  try {
-    const webinar = await Webinar.findById(req.params.id);
-    if (!webinar) {
-      return res.status(404).json({ message: "Webinar not found" });
-    }
-
-    if (webinar.currentAttendees >= webinar.maxAttendees) {
-      return res.status(400).json({ message: "Webinar is full" });
-    }
-
-    webinar.currentAttendees += 1;
-    await webinar.save();
-
-    res.json({ message: "Registered successfully", webinar });
-  } catch (error) {
-    console.error("Error registering for webinar:", error);
-    res.status(500).json({ message: error.message });
-  }
-});
-
 export default router;
