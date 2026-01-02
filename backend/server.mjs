@@ -23,7 +23,6 @@ async function connectToDatabase() {
   }
 
   try {
-    // Check if MONGODB_URI is defined
     if (!process.env.MONGODB_URI) {
       throw new Error("MONGODB_URI environment variable is not defined");
     }
@@ -46,7 +45,7 @@ async function connectToDatabase() {
 }
 
 // =================================================================
-// 1. Define MongoDB Schemas (UPDATED)
+// 1. Define MongoDB Schemas
 // =================================================================
 
 const bookingSchema = new mongoose.Schema({
@@ -119,38 +118,18 @@ const webinarSchema = new mongoose.Schema({
   duration: String,
   speaker: String,
   description: String,
-  currentAttendees: {
-    type: Number,
-    default: 0,
-  },
+  currentAttendees: { type: Number, default: 0 },
   maxAttendees: Number,
   status: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const webinarRegistrationSchema = new mongoose.Schema({
-  webinarId: String,
-  name: String,
-  email: String,
-  registeredAt: {
-    type: Date,
-    default: Date.now,
-  },
+  createdAt: { type: Date, default: Date.now },
 });
 
 // =================================================================
-// 2. Define Models (UPDATED)
+// 2. Define Models
 // =================================================================
 
 const Booking = mongoose.model("Booking", bookingSchema);
 const Webinar = mongoose.model("Webinar", webinarSchema);
-const WebinarRegistration = mongoose.model(
-  "WebinarRegistration",
-  webinarRegistrationSchema
-);
 const MealPlanRequest = mongoose.model(
   "MealPlanRequest",
   mealPlanRequestSchema
@@ -161,7 +140,7 @@ const LifestyleAuditRequest = mongoose.model(
 );
 
 // =================================================================
-// 3. API Routes (CRITICAL FIXES & NEW ROUTES)
+// 3. API Routes Helper
 // =================================================================
 
 const routeHandler = (handler) => async (req, res) => {
@@ -176,7 +155,19 @@ const routeHandler = (handler) => async (req, res) => {
   }
 };
 
-// Bookings Routes
+// =================================================================
+// 4. Routes
+// =================================================================
+
+// NEW: Root route to prevent 404 on deployment URL
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "NutriCare API is running successfully",
+    status: "online",
+  });
+});
+
+// Bookings
 app.get(
   "/api/bookings",
   routeHandler(async (req, res) => {
@@ -188,23 +179,6 @@ app.get(
 app.post(
   "/api/bookings",
   routeHandler(async (req, res) => {
-    if (req.body.serviceType === "corporate") {
-      const requiredFields = [
-        "corporateName",
-        "contactDetails",
-        "sector",
-        "noOfEmployees",
-        "employeeHealthStatus",
-        "reasonsForCoaching",
-        "expectedOutcomes",
-      ];
-      for (const field of requiredFields) {
-        if (!req.body[field])
-          return res
-            .status(400)
-            .json({ error: `Missing required corporate field: ${field}` });
-      }
-    }
     const booking = new Booking(req.body);
     const savedBooking = await booking.save();
     res.status(201).json(savedBooking);
@@ -217,7 +191,6 @@ app.put(
     const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    if (!booking) return res.status(404).json({ message: "Booking not found" });
     res.json(booking);
   })
 );
@@ -225,13 +198,12 @@ app.put(
 app.delete(
   "/api/bookings/:id",
   routeHandler(async (req, res) => {
-    const result = await Booking.findByIdAndDelete(req.params.id);
-    if (!result) return res.status(404).json({ message: "Booking not found" });
-    res.json({ message: "Booking deleted successfully" });
+    await Booking.findByIdAndDelete(req.params.id);
+    res.json({ message: "Booking deleted" });
   })
 );
 
-// Meal Plan Routes
+// Meal Plans
 app.get(
   "/api/mealplans",
   routeHandler(async (req, res) => {
@@ -240,46 +212,20 @@ app.get(
   })
 );
 
-app.put(
-  "/api/mealplans/:id",
-  routeHandler(async (req, res) => {
-    const mealPlan = await MealPlanRequest.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(mealPlan);
-  })
-);
-
 app.delete(
   "/api/mealplans/:id",
   routeHandler(async (req, res) => {
     await MealPlanRequest.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted successfully" });
+    res.json({ message: "Meal Plan deleted" });
   })
 );
 
-// Lifestyle Audit Routes
+// Lifestyle Requests
 app.get(
   "/api/lifestylerequests",
   routeHandler(async (req, res) => {
-    const lifestyleRequests = await LifestyleAuditRequest.find().sort({
-      createdAt: -1,
-    });
-    res.json(lifestyleRequests);
-  })
-);
-
-app.put(
-  "/api/lifestylerequests/:id",
-  routeHandler(async (req, res) => {
-    const audit = await LifestyleAuditRequest.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    res.json(audit);
+    const requests = await LifestyleAuditRequest.find().sort({ createdAt: -1 });
+    res.json(requests);
   })
 );
 
@@ -287,11 +233,11 @@ app.delete(
   "/api/lifestylerequests/:id",
   routeHandler(async (req, res) => {
     await LifestyleAuditRequest.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted successfully" });
+    res.json({ message: "Lifestyle Request deleted" });
   })
 );
 
-// WEBINAR ROUTES (FIXED FOR 404)
+// Webinars
 app.get(
   "/api/webinars",
   routeHandler(async (req, res) => {
@@ -315,7 +261,6 @@ app.put(
     const webinar = await Webinar.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    if (!webinar) return res.status(404).json({ message: "Webinar not found" });
     res.json(webinar);
   })
 );
@@ -323,23 +268,12 @@ app.put(
 app.delete(
   "/api/webinars/:id",
   routeHandler(async (req, res) => {
-    const webinar = await Webinar.findByIdAndDelete(req.params.id);
-    if (!webinar) return res.status(404).json({ message: "Webinar not found" });
-    res.json({ message: "Webinar deleted successfully" });
+    await Webinar.findByIdAndDelete(req.params.id);
+    res.json({ message: "Webinar deleted" });
   })
 );
 
-app.get(
-  "/api/webinars/:id/registrations",
-  routeHandler(async (req, res) => {
-    const registrations = await WebinarRegistration.find({
-      webinarId: req.params.id,
-    });
-    res.json(registrations);
-  })
-);
-
-// Start server
+// Start server for local development
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
