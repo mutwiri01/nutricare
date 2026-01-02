@@ -50,8 +50,8 @@ async function connectToDatabase() {
 // =================================================================
 
 const bookingSchema = new mongoose.Schema({
-  name: String, // Requester Name
-  email: String, // Requester Email
+  name: String,
+  email: String,
   phone: String,
   serviceType: {
     type: String,
@@ -64,16 +64,13 @@ const bookingSchema = new mongoose.Schema({
   time: String,
   condition: String,
   notes: String,
-
-  // NEW CORPORATE FIELDS (used when serviceType is 'corporate')
   corporateName: String,
   contactDetails: String,
   sector: String,
-  noOfEmployees: Number, // Stored as a Number
+  noOfEmployees: Number,
   employeeHealthStatus: String,
   reasonsForCoaching: String,
   expectedOutcomes: String,
-
   status: {
     type: String,
     default: "confirmed",
@@ -167,27 +164,23 @@ const LifestyleAuditRequest = mongoose.model(
 // 3. API Routes (CRITICAL FIXES & NEW ROUTES)
 // =================================================================
 
-// Helper function to handle connection and API logic
 const routeHandler = (handler) => async (req, res) => {
   try {
     await connectToDatabase();
     await handler(req, res);
   } catch (error) {
     console.error(`Route error in ${req.method} ${req.path}:`, error.message);
-    // Log the full error for debugging, but send a generic 500 to the client
     res
       .status(500)
       .json({ error: "Internal Server Error", details: error.message });
   }
 };
 
-// Bookings Routes (GET, POST, PUT, DELETE)
+// Bookings Routes
 app.get(
   "/api/bookings",
   routeHandler(async (req, res) => {
-    const bookings = await Booking.find().sort({
-      createdAt: -1,
-    });
+    const bookings = await Booking.find().sort({ createdAt: -1 });
     res.json(bookings);
   })
 );
@@ -195,9 +188,8 @@ app.get(
 app.post(
   "/api/bookings",
   routeHandler(async (req, res) => {
-    // Validation for new corporate fields added in frontend
     if (req.body.serviceType === "corporate") {
-      const requiredCorporateFields = [
+      const requiredFields = [
         "corporateName",
         "contactDetails",
         "sector",
@@ -206,12 +198,11 @@ app.post(
         "reasonsForCoaching",
         "expectedOutcomes",
       ];
-      for (const field of requiredCorporateFields) {
-        if (!req.body[field]) {
+      for (const field of requiredFields) {
+        if (!req.body[field])
           return res
             .status(400)
             .json({ error: `Missing required corporate field: ${field}` });
-        }
       }
     }
     const booking = new Booking(req.body);
@@ -220,70 +211,56 @@ app.post(
   })
 );
 
-// CRITICAL FIX: PUT/UPDATE Route for Admin Dashboard
 app.put(
   "/api/bookings/:id",
   routeHandler(async (req, res) => {
     const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true,
     });
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
-    }
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
     res.json(booking);
   })
 );
 
-// CRITICAL FIX: DELETE Route for Admin Dashboard
 app.delete(
   "/api/bookings/:id",
   routeHandler(async (req, res) => {
     const result = await Booking.findByIdAndDelete(req.params.id);
-    if (!result) {
-      return res.status(404).json({ message: "Booking not found" });
-    }
+    if (!result) return res.status(404).json({ message: "Booking not found" });
     res.json({ message: "Booking deleted successfully" });
   })
 );
 
-// New Routes for Meal Plan Requests
+// Meal Plan Routes
 app.get(
   "/api/mealplans",
   routeHandler(async (req, res) => {
-    const mealPlanRequests = await MealPlanRequest.find().sort({
-      createdAt: -1,
-    });
-    res.json(mealPlanRequests);
+    const mealPlans = await MealPlanRequest.find().sort({ createdAt: -1 });
+    res.json(mealPlans);
   })
 );
 
-app.post(
-  "/api/mealplans",
+app.put(
+  "/api/mealplans/:id",
   routeHandler(async (req, res) => {
-    const { name, email } = req.body;
-    if (!name || !email) {
-      return res.status(400).json({ error: "Name and email are required" });
-    }
-    const mealPlanRequest = new MealPlanRequest(req.body);
-    const savedRequest = await mealPlanRequest.save();
-    res.status(201).json(savedRequest);
+    const mealPlan = await MealPlanRequest.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(mealPlan);
   })
 );
 
-// CRITICAL FIX: DELETE Route for Meal Plan Requests
 app.delete(
   "/api/mealplans/:id",
   routeHandler(async (req, res) => {
-    const result = await MealPlanRequest.findByIdAndDelete(req.params.id);
-    if (!result) {
-      return res.status(404).json({ message: "Meal Plan Request not found" });
-    }
-    res.json({ message: "Meal Plan Request deleted successfully" });
+    await MealPlanRequest.findByIdAndDelete(req.params.id);
+    res.json({ message: "Deleted successfully" });
   })
 );
 
-// New Routes for Lifestyle Audit Requests
+// Lifestyle Audit Routes
 app.get(
   "/api/lifestylerequests",
   routeHandler(async (req, res) => {
@@ -294,47 +271,77 @@ app.get(
   })
 );
 
-app.post(
-  "/api/lifestylerequests",
+app.put(
+  "/api/lifestylerequests/:id",
   routeHandler(async (req, res) => {
-    const { name, email } = req.body;
-    if (!name || !email) {
-      return res.status(400).json({ error: "Name and email are required" });
-    }
-    const lifestyleRequest = new LifestyleAuditRequest(req.body);
-    const savedRequest = await lifestyleRequest.save();
-    res.status(201).json(savedRequest);
+    const audit = await LifestyleAuditRequest.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.json(audit);
   })
 );
 
-// CRITICAL FIX: DELETE Route for Lifestyle Audit Requests
 app.delete(
   "/api/lifestylerequests/:id",
   routeHandler(async (req, res) => {
-    const result = await LifestyleAuditRequest.findByIdAndDelete(req.params.id);
-    if (!result) {
-      return res
-        .status(404)
-        .json({ message: "Lifestyle Audit Request not found" });
-    }
-    res.json({ message: "Lifestyle Audit Request deleted successfully" });
+    await LifestyleAuditRequest.findByIdAndDelete(req.params.id);
+    res.json({ message: "Deleted successfully" });
   })
 );
 
-// Existing Webinar Routes (omitted PUT/DELETE for brevity, assuming existing logic is retained)
+// WEBINAR ROUTES (FIXED FOR 404)
 app.get(
   "/api/webinars",
   routeHandler(async (req, res) => {
-    const webinars = await Webinar.find().sort({
-      createdAt: -1,
-    });
+    const webinars = await Webinar.find().sort({ date: 1 });
     res.json(webinars);
   })
 );
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+app.post(
+  "/api/webinars",
+  routeHandler(async (req, res) => {
+    const webinar = new Webinar(req.body);
+    const savedWebinar = await webinar.save();
+    res.status(201).json(savedWebinar);
+  })
+);
 
-// Export the app for Vercel's serverless function handler
+app.put(
+  "/api/webinars/:id",
+  routeHandler(async (req, res) => {
+    const webinar = await Webinar.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!webinar) return res.status(404).json({ message: "Webinar not found" });
+    res.json(webinar);
+  })
+);
+
+app.delete(
+  "/api/webinars/:id",
+  routeHandler(async (req, res) => {
+    const webinar = await Webinar.findByIdAndDelete(req.params.id);
+    if (!webinar) return res.status(404).json({ message: "Webinar not found" });
+    res.json({ message: "Webinar deleted successfully" });
+  })
+);
+
+app.get(
+  "/api/webinars/:id/registrations",
+  routeHandler(async (req, res) => {
+    const registrations = await WebinarRegistration.find({
+      webinarId: req.params.id,
+    });
+    res.json(registrations);
+  })
+);
+
+// Start server
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
 export default app;
