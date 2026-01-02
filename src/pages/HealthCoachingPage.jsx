@@ -402,7 +402,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
     setIsLoading(true);
     try {
-      // FIXED: Changed API endpoint from /webinars/{id}/register to /webinar-registrations
+      // FIXED: Updated to use correct endpoint
       const response = await fetch(`${API_BASE_URL}/webinar-registrations`, {
         method: "POST",
         headers: {

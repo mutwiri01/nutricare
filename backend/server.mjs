@@ -313,12 +313,73 @@ app.delete(
   })
 );
 
-// NEW: Webinar Registration Route
+// NEW: Webinar Registration Route - FIXED: This was missing!
 app.post(
   "/api/webinar-registrations",
   routeHandler(async (req, res) => {
     try {
       const { webinarId, name, email } = req.body;
+
+      // Validate webinar exists
+      const webinar = await Webinar.findById(webinarId);
+      if (!webinar) {
+        return res.status(404).json({ error: "Webinar not found" });
+      }
+
+      // Check if webinar is full
+      if (webinar.currentAttendees >= webinar.maxAttendees) {
+        return res.status(400).json({ error: "Webinar is full" });
+      }
+
+      // Check if user already registered
+      const existingRegistration = await WebinarRegistration.findOne({
+        webinarId,
+        email,
+      });
+      if (existingRegistration) {
+        return res
+          .status(400)
+          .json({ error: "You are already registered for this webinar" });
+      }
+
+      // Create registration
+      const registration = new WebinarRegistration({
+        webinarId,
+        name,
+        email,
+      });
+
+      const savedRegistration = await registration.save();
+
+      // Update webinar attendee count
+      webinar.currentAttendees += 1;
+      await webinar.save();
+
+      res.status(201).json({
+        message: "Successfully registered for webinar",
+        registration: savedRegistration,
+        webinar: {
+          title: webinar.title,
+          date: webinar.date,
+          time: webinar.time,
+          currentAttendees: webinar.currentAttendees,
+          maxAttendees: webinar.maxAttendees,
+        },
+      });
+    } catch (error) {
+      console.error("Webinar registration error:", error);
+      res.status(500).json({ error: "Failed to register for webinar" });
+    }
+  })
+);
+
+// NEW: Webinar Registration Endpoint for Individual Webinar
+app.post(
+  "/api/webinars/:id/register",
+  routeHandler(async (req, res) => {
+    try {
+      const webinarId = req.params.id;
+      const { name, email } = req.body;
 
       // Validate webinar exists
       const webinar = await Webinar.findById(webinarId);
