@@ -97,18 +97,132 @@ const mealPlanRequestSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+// UPDATED: New comprehensive lifestyle analysis form schema
 const lifestyleAuditRequestSchema = new mongoose.Schema({
+  // Basic Information
   name: { type: String, required: true },
+  age: String,
+  gender: String,
   contact: String,
   email: { type: String, required: true },
-  reasonForAudit: String,
-  currentLifestyleChallenges: String,
+  occupation: String,
+
+  // 1. Nutrition
+  nutrition: {
+    fruits: String,
+    vegetables: String,
+    grainsLegumes: String,
+    beef: String,
+    dairy: String,
+    nuts: String,
+    processedFoods: String,
+  },
+
+  drinks: {
+    water: String,
+    teaCoffee: String,
+    juices: String,
+  },
+
+  habits: {
+    alcohol: { type: String, enum: ["Y", "N"], default: "N" },
+    smoking: { type: String, enum: ["Y", "N"], default: "N" },
+    substances: String,
+  },
+
+  dietaryIssues: {
+    allergies: String,
+    sensitivities: String,
+    intolerances: String,
+  },
+
+  // 2. Physical Activity
+  physicalActivity: {
+    exercise: String,
+    walking: String,
+    jogging: String,
+    heavyWork: String,
+  },
+
+  // 3. Sleep
+  sleep: {
+    hours: String,
+    wakesAtNight: { type: String, enum: ["Y", "N"], default: "N" },
+    wakeReason: String,
+    wakesTired: { type: String, enum: ["Y", "N"], default: "N" },
+  },
+
+  // 4. Occupation
+  occupationDetails: {
+    isEmployed: { type: String, enum: ["Y", "N"], default: "N" },
+    workHours: String,
+    enjoysWork: { type: String, enum: ["Y", "N"], default: "N" },
+    workEnjoymentReason: String,
+    leaveDays: String,
+    relaxationActivities: String,
+  },
+
+  // 5. Socialization
+  socialization: {
+    activity1: {
+      name: String,
+      weekly: String,
+      monthly: String,
+    },
+    activity2: {
+      name: String,
+      weekly: String,
+      monthly: String,
+    },
+    activity3: {
+      name: String,
+      weekly: String,
+      monthly: String,
+    },
+  },
+
+  // 6. Spirituality
+  spirituality: String,
+
+  // 7. Entertainment & Hobbies
+  entertainment: {
+    forms: String,
+    hobbies: String,
+  },
+
+  // 8. Electronic Use
+  electronicUse: {
+    mobilePhone: String,
+    computer: String,
+    radio: String,
+    tv: String,
+    videoGames: String,
+    music: String,
+    movies: String,
+  },
+
+  // 9. Environmental
+  environmental: String,
+
+  // 10. Purpose
+  purpose: {
+    readinessScore: String,
+    understandsHealthFactors: { type: String, enum: ["Y", "N"], default: "N" },
+  },
+
+  // Additional comments
+  additionalComments: String,
+
+  // Status and timestamps
   status: {
     type: String,
     default: "pending",
-    enum: ["pending", "processed", "rejected"],
+    enum: ["pending", "reviewed", "in-progress", "completed", "rejected"],
   },
   createdAt: { type: Date, default: Date.now },
+  reviewedAt: Date,
+  reviewedBy: String,
+  notes: String,
 });
 
 const webinarSchema = new mongoose.Schema({
@@ -260,7 +374,7 @@ app.delete(
   })
 );
 
-// Lifestyle Requests
+// Lifestyle Requests (UPDATED for new form structure)
 app.get(
   "/api/lifestylerequests",
   routeHandler(async (req, res) => {
@@ -272,9 +386,24 @@ app.get(
 app.post(
   "/api/lifestylerequests",
   routeHandler(async (req, res) => {
-    const lifestyleRequest = new LifestyleAuditRequest(req.body);
-    const savedRequest = await lifestyleRequest.save();
-    res.status(201).json(savedRequest);
+    try {
+      // Validate required fields
+      if (!req.body.name || !req.body.email) {
+        return res.status(400).json({ error: "Name and email are required" });
+      }
+
+      const lifestyleRequest = new LifestyleAuditRequest(req.body);
+      const savedRequest = await lifestyleRequest.save();
+      res.status(201).json(savedRequest);
+    } catch (error) {
+      console.error("Error saving lifestyle request:", error);
+      res
+        .status(500)
+        .json({
+          error: "Failed to save lifestyle request",
+          details: error.message,
+        });
+    }
   })
 );
 
