@@ -192,6 +192,30 @@
   font-size: 1rem;
 }
 
+/* Webinar Search and Filter */
+.section-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-box input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 200px;
+  background: white;
+}
+
+.filter-dropdown {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
 /* Message Styles (Success/Error) */
 .message {
   padding: 1rem 1.5rem;
@@ -392,6 +416,18 @@
   font-weight: 600;
   font-size: 1.1rem;
   flex-shrink: 0;
+}
+
+.client-info.small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-avatar.small {
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
 }
 
 .client-details {
@@ -606,10 +642,83 @@
   border: 1px solid #e2e8f0;
 }
 
-.registration-list h4 {
+.registration-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.registration-header h4 {
   font-size: 1rem;
   margin-bottom: 0.5rem;
   color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.registration-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.registrations-table {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e1e5e9;
+  margin-top: 15px;
+}
+
+.registrations-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.registrations-table th {
+  background: #f8f9fa;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #e1e5e9;
+}
+
+.registrations-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e1e5e9;
+}
+
+.registrations-table tr:last-child td {
+  border-bottom: none;
+}
+
+.registration-stats {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f8f9fa;
+  border-top: 1px solid #e1e5e9;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.loading-small {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.spinner.small {
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--border-light);
+  border-top: 3px solid var(--primary-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 .registration-list ul {
@@ -633,6 +742,12 @@
   color: var(--text-light);
   font-style: italic;
   margin-top: 0.5rem;
+}
+
+.registration-list .subtext {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-top: 5px;
 }
 
 /* Dashboard Styles */
@@ -984,6 +1099,17 @@
     align-items: flex-start;
   }
 
+  .section-controls {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .search-box input,
+  .filter-dropdown {
+    width: 100%;
+  }
+
   .admin-btn {
     width: 100%;
     justify-content: center;
@@ -1014,6 +1140,17 @@
   .form-grid {
     grid-template-columns: 1fr;
   }
+
+  .registration-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .registration-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1037,5 +1174,14 @@
   .admin-btn.small {
     padding: 0.4rem;
     font-size: 0.7rem;
+  }
+
+  .webinar-actions {
+    flex-direction: column;
+  }
+
+  .webinar-actions .admin-btn {
+    width: 100%;
+    justify-content: center;
   }
 }

@@ -36,6 +36,10 @@ const Icon = ({ name }) => {
       return "⚡";
     case "Reject":
       return "❌";
+    case "Duplicate":
+      return "⎘";
+    case "Refresh":
+      return "↻";
     default:
       return "";
   }
@@ -43,7 +47,7 @@ const Icon = ({ name }) => {
 
 const AdminDashboard = ({ apiBaseUrl }) => {
   const API_BASE_URL = apiBaseUrl || "https://nutricare-a1g7.vercel.app/api";
-  const [activeTab, setActiveTab] = useState("bookings");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [bookings, setBookings] = useState([]);
   const [webinars, setWebinars] = useState([]);
   const [mealPlans, setMealPlans] = useState([]);
@@ -62,6 +66,8 @@ const AdminDashboard = ({ apiBaseUrl }) => {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [editingBooking, setEditingBooking] = useState(null);
   const [showBookingForm, setShowBookingForm] = useState(false);
+  const [webinarSearch, setWebinarSearch] = useState("");
+  const [webinarFilter, setWebinarFilter] = useState("all");
   const [stats, setStats] = useState({
     totalBookings: 0,
     upcomingWebinars: 0,
@@ -308,6 +314,120 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       }));
     } finally {
       setRegistrationLoading((prev) => ({ ...prev, [webinarId]: false }));
+    }
+  };
+
+  // Send reminder to webinar attendees
+  const sendWebinarReminder = async (webinarId) => {
+    clearMessages();
+    if (!window.confirm("Send reminder email to all registered attendees?"))
+      return;
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/webinars/${webinarId}/remind`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        setSuccess("Reminder emails sent successfully");
+      } else {
+        setSuccess("Reminder feature not available (demo mode)");
+      }
+    } catch (error) {
+      setSuccess("Reminder feature not available (demo mode)");
+    }
+  };
+
+  // Remove attendee from webinar
+  const removeAttendee = async (webinarId, attendeeId) => {
+    if (!window.confirm("Remove this attendee from the webinar?")) return;
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/webinars/${webinarId}/registrations/${attendeeId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        // Update local state
+        setWebinarRegistrations((prev) => ({
+          ...prev,
+          [webinarId]: prev[webinarId].filter((r) => r._id !== attendeeId),
+        }));
+
+        // Decrement attendee count
+        setWebinars(
+          webinars.map((w) =>
+            w._id === webinarId
+              ? {
+                  ...w,
+                  currentAttendees: Math.max(0, (w.currentAttendees || 0) - 1),
+                }
+              : w
+          )
+        );
+
+        setSuccess("Attendee removed successfully");
+      } else {
+        setError("Failed to remove attendee");
+      }
+    } catch (error) {
+      setError("Failed to remove attendee");
+    }
+  };
+
+  // Duplicate webinar
+  const duplicateWebinar = async (webinar) => {
+    const duplicatedWebinar = {
+      ...webinar,
+      title: `${webinar.title} (Copy)`,
+      date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0], // One week from now
+      _id: undefined,
+      currentAttendees: 0,
+    };
+
+    delete duplicatedWebinar._id;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/webinars`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(duplicatedWebinar),
+      });
+
+      if (response.ok) {
+        const newWebinar = await response.json();
+        setWebinars([...webinars, newWebinar]);
+        setSuccess("Webinar duplicated successfully");
+      } else {
+        const newWebinar = {
+          _id: Date.now().toString(),
+          ...duplicatedWebinar,
+          thumbnail: "📊",
+        };
+        setWebinars([...webinars, newWebinar]);
+        setSuccess("Webinar duplicated in local data");
+      }
+    } catch (error) {
+      const newWebinar = {
+        _id: Date.now().toString(),
+        ...duplicatedWebinar,
+        thumbnail: "📊",
+      };
+      setWebinars([...webinars, newWebinar]);
+      setSuccess("Webinar duplicated in local data");
     }
   };
 
@@ -589,6 +709,61 @@ const AdminDashboard = ({ apiBaseUrl }) => {
         description: "",
         maxAttendees: 100,
         status: "upcoming",
+      });
+    }
+  };
+
+  // Add missing handleCreateBooking function
+  const handleCreateBooking = async (e) => {
+    e.preventDefault();
+    setIsSubmittingBooking(true);
+    clearMessages();
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingForm),
+      });
+
+      if (response.ok) {
+        const newBooking = await response.json();
+        setBookings([...bookings, newBooking]);
+        setSuccess("Booking created successfully");
+      } else {
+        const newBooking = {
+          _id: Date.now().toString(),
+          ...bookingForm,
+          createdAt: new Date().toISOString(),
+        };
+        setBookings([...bookings, newBooking]);
+        setSuccess("Booking added to local data (API not available)");
+      }
+    } catch (error) {
+      const newBooking = {
+        _id: Date.now().toString(),
+        ...bookingForm,
+        createdAt: new Date().toISOString(),
+      };
+      setBookings([...bookings, newBooking]);
+      setSuccess("Booking added to local data (API not available)");
+    } finally {
+      setShowBookingForm(false);
+      setIsSubmittingBooking(false);
+      setBookingForm({
+        name: "",
+        email: "",
+        phone: "",
+        serviceType: "personal",
+        consultationType: "virtual",
+        cluster: "nutrition",
+        date: "",
+        time: "",
+        condition: "",
+        notes: "",
+        status: "confirmed",
       });
     }
   };
@@ -968,134 +1143,264 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     </div>
   );
 
-  const renderWebinars = () => (
-    <div className="admin-section">
-      <div className="section-header">
-        <div className="section-title">
-          <h2>Webinar Management</h2>
-          <p>Schedule and manage upcoming and past webinars.</p>
-        </div>
-        <button
-          className="admin-btn primary"
-          onClick={() => {
-            setEditingWebinar(null);
-            cancelWebinarForm();
-            setShowWebinarForm(true);
-          }}
-        >
-          <Icon name="Add" /> Schedule Webinar
-        </button>
-      </div>
+  const renderWebinars = () => {
+    const filteredWebinars = webinars.filter((webinar) => {
+      const matchesSearch =
+        webinar.title.toLowerCase().includes(webinarSearch.toLowerCase()) ||
+        webinar.speaker.toLowerCase().includes(webinarSearch.toLowerCase());
 
-      {isLoading ? (
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Fetching webinars data...</p>
-        </div>
-      ) : webinars.length === 0 ? (
-        <div className="empty-state">
-          <Icon name="Webinars" />
-          <p>No webinars scheduled.</p>
-        </div>
-      ) : (
-        <div className="webinar-cards-container stunning-cards">
-          {webinars.map((webinar) => {
-            const currentStatus = webinar.status || "unknown";
+      const matchesFilter =
+        webinarFilter === "all" ||
+        (webinar.status || "unknown") === webinarFilter;
 
-            return (
-              <div key={webinar._id} className="webinar-card">
-                <div className="webinar-header">
-                  <span className={`webinar-status ${currentStatus}`}>
-                    {currentStatus.toUpperCase()}
-                  </span>
-                  <select
-                    value={currentStatus}
-                    className="status-dropdown"
-                    onChange={(e) =>
-                      handleWebinarStatusChange(webinar._id, e.target.value)
-                    }
-                  >
-                    <option value="upcoming">Upcoming</option>
-                    <option value="live">Live</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-                <h3 className="webinar-title">{webinar.title}</h3>
-                <p className="webinar-speaker">
-                  Speaker: <strong>{webinar.speaker}</strong>
-                </p>
-                <div className="webinar-info">
-                  <span>🗓️ {new Date(webinar.date).toLocaleDateString()}</span>
-                  <span>
-                    🕒 {webinar.time} ({webinar.duration})
-                  </span>
-                  <span>
-                    👥{" "}
-                    <strong>
-                      {webinar.currentAttendees}/{webinar.maxAttendees}
-                    </strong>{" "}
-                    Attendees
-                  </span>
-                </div>
-                <p className="webinar-description">{webinar.description}</p>
-                <div className="webinar-actions">
-                  <button
-                    className="admin-btn view small"
-                    onClick={() => toggleRegistrations(webinar._id)}
-                  >
-                    <Icon name="Register" />{" "}
-                    {showRegistrations === webinar._id ? "Hide" : "View"}{" "}
-                    Attendees
-                  </button>
-                  <button
-                    className="admin-btn edit small"
-                    onClick={() => handleEditWebinar(webinar)}
-                  >
-                    <Icon name="Edit" /> Edit
-                  </button>
-                  <button
-                    className="admin-btn delete small"
-                    onClick={() => handleDeleteWebinar(webinar._id)}
-                  >
-                    <Icon name="Delete" /> Delete
-                  </button>
-                </div>
+      return matchesSearch && matchesFilter;
+    });
 
-                {/* Registrations List */}
-                {showRegistrations === webinar._id && (
-                  <div className="registration-list">
-                    <h4>Registrations:</h4>
-                    {registrationLoading[webinar._id] ? (
-                      <p>Loading registrations...</p>
-                    ) : webinarRegistrations[webinar._id]?.length > 0 ? (
-                      <>
-                        <button
-                          className="admin-btn secondary small"
-                          onClick={() => exportRegistrations(webinar._id)}
-                        >
-                          <Icon name="Export" /> Export CSV
-                        </button>
-                        <ul>
-                          {webinarRegistrations[webinar._id].map((r) => (
-                            <li key={r._id}>
-                              {r.name} - {r.email}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    ) : (
-                      <p className="no-registrations">No registrations yet.</p>
-                    )}
+    return (
+      <div className="admin-section">
+        <div className="section-header">
+          <div className="section-title">
+            <h2>Webinar Management</h2>
+            <p>Schedule and manage upcoming and past webinars.</p>
+          </div>
+          <div className="section-controls">
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Search webinars..."
+                value={webinarSearch}
+                onChange={(e) => setWebinarSearch(e.target.value)}
+              />
+            </div>
+            <select
+              value={webinarFilter}
+              onChange={(e) => setWebinarFilter(e.target.value)}
+              className="filter-dropdown"
+            >
+              <option value="all">All Webinars</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="live">Live</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <button
+              className="admin-btn primary"
+              onClick={() => {
+                setEditingWebinar(null);
+                cancelWebinarForm();
+                setShowWebinarForm(true);
+              }}
+            >
+              <Icon name="Add" /> Schedule Webinar
+            </button>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Fetching webinars data...</p>
+          </div>
+        ) : filteredWebinars.length === 0 ? (
+          <div className="empty-state">
+            <Icon name="Webinars" />
+            <p>
+              No webinars found{" "}
+              {webinarSearch || webinarFilter !== "all"
+                ? "matching your criteria"
+                : "scheduled"}
+              .
+            </p>
+          </div>
+        ) : (
+          <div className="webinar-cards-container stunning-cards">
+            {filteredWebinars.map((webinar) => {
+              const currentStatus = webinar.status || "unknown";
+
+              return (
+                <div key={webinar._id} className="webinar-card">
+                  <div className="webinar-header">
+                    <span className={`webinar-status ${currentStatus}`}>
+                      {currentStatus.toUpperCase()}
+                    </span>
+                    <select
+                      value={currentStatus}
+                      className="status-dropdown"
+                      onChange={(e) =>
+                        handleWebinarStatusChange(webinar._id, e.target.value)
+                      }
+                    >
+                      <option value="upcoming">Upcoming</option>
+                      <option value="live">Live</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
+                  <h3 className="webinar-title">{webinar.title}</h3>
+                  <p className="webinar-speaker">
+                    Speaker: <strong>{webinar.speaker}</strong>
+                  </p>
+                  <div className="webinar-info">
+                    <span>
+                      🗓️ {new Date(webinar.date).toLocaleDateString()}
+                    </span>
+                    <span>
+                      🕒 {webinar.time} ({webinar.duration})
+                    </span>
+                    <span>
+                      👥{" "}
+                      <strong>
+                        {webinar.currentAttendees}/{webinar.maxAttendees}
+                      </strong>{" "}
+                      Attendees
+                    </span>
+                  </div>
+                  <p className="webinar-description">{webinar.description}</p>
+                  <div className="webinar-actions">
+                    <button
+                      className="admin-btn view small"
+                      onClick={() => toggleRegistrations(webinar._id)}
+                    >
+                      <Icon name="Attendee" />{" "}
+                      {showRegistrations === webinar._id ? "Hide" : "View"}{" "}
+                      Attendees
+                    </button>
+                    <button
+                      className="admin-btn secondary small"
+                      onClick={() => duplicateWebinar(webinar)}
+                      title="Duplicate Webinar"
+                    >
+                      <Icon name="Duplicate" /> Duplicate
+                    </button>
+                    <button
+                      className="admin-btn edit small"
+                      onClick={() => handleEditWebinar(webinar)}
+                    >
+                      <Icon name="Edit" /> Edit
+                    </button>
+                    <button
+                      className="admin-btn delete small"
+                      onClick={() => handleDeleteWebinar(webinar._id)}
+                    >
+                      <Icon name="Delete" /> Delete
+                    </button>
+                  </div>
+
+                  {/* Registrations List */}
+                  {showRegistrations === webinar._id && (
+                    <div className="registration-list">
+                      <div className="registration-header">
+                        <h4>
+                          <Icon name="Attendee" /> Attendees (
+                          {webinarRegistrations[webinar._id]?.length || 0})
+                        </h4>
+                        <div className="registration-actions">
+                          <button
+                            className="admin-btn secondary small"
+                            onClick={() => exportRegistrations(webinar._id)}
+                            disabled={
+                              !webinarRegistrations[webinar._id]?.length
+                            }
+                          >
+                            <Icon name="Export" /> Export CSV
+                          </button>
+                          <button
+                            className="admin-btn view small"
+                            onClick={() =>
+                              fetchWebinarRegistrations(webinar._id)
+                            }
+                            title="Refresh"
+                          >
+                            <Icon name="Refresh" /> Refresh
+                          </button>
+                        </div>
+                      </div>
+                      {registrationLoading[webinar._id] ? (
+                        <div className="loading-small">
+                          <div className="spinner small"></div>
+                          <p>Loading registrations...</p>
+                        </div>
+                      ) : webinarRegistrations[webinar._id]?.length > 0 ? (
+                        <div className="registrations-table">
+                          <table>
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Registration Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {webinarRegistrations[webinar._id].map((r) => (
+                                <tr key={r._id}>
+                                  <td>
+                                    <div className="client-info small">
+                                      <div className="client-avatar small">
+                                        {r.name ? r.name[0] : "U"}
+                                      </div>
+                                      <div className="client-details">
+                                        <strong>{r.name}</strong>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>{r.email}</td>
+                                  <td>
+                                    {new Date(
+                                      r.registeredAt
+                                    ).toLocaleDateString()}
+                                  </td>
+                                  <td>
+                                    <span className="status-badge confirmed">
+                                      Registered
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <button
+                                      className="admin-btn delete small"
+                                      onClick={() =>
+                                        removeAttendee(webinar._id, r._id)
+                                      }
+                                      title="Remove Attendee"
+                                    >
+                                      <Icon name="Delete" />
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                          <div className="registration-stats">
+                            <span>
+                              Total: {webinarRegistrations[webinar._id].length}{" "}
+                              attendees
+                            </span>
+                            <span>
+                              Capacity: {webinar.currentAttendees}/
+                              {webinar.maxAttendees}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="no-registrations">
+                          <p>No registrations yet.</p>
+                          <p className="subtext">
+                            Attendees will appear here once they register for
+                            this webinar.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderMealPlans = () => (
     <div className="admin-section">
@@ -1312,7 +1617,10 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       <div className="section-header">
         <div className="section-title">
           <h2>Dashboard Overview</h2>
-          <p>Welcome to your admin dashboard. Here&apos;s what&apos;s happening today.</p>
+          <p>
+            Welcome to your admin dashboard. Here&apos;s what&apos;s happening
+            today.
+          </p>
         </div>
       </div>
 
@@ -1586,7 +1894,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
             </div>
             <form
               onSubmit={
-                editingBooking ? handleUpdateBooking : handleCreateWebinar
+                editingBooking ? handleUpdateBooking : handleCreateBooking
               }
             >
               <div className="form-grid">
