@@ -431,7 +431,11 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
           additionalComments: "",
         });
-        setShowLifestyleForm(false);
+
+        // Show success message in the modal before closing
+        setTimeout(() => {
+          setShowLifestyleForm(false);
+        }, 2000);
       } else {
         setError("Failed to submit lifestyle audit request");
       }
@@ -2227,1032 +2231,1158 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     );
   };
 
-  const renderLifestyleModal = () => (
-    <AnimatePresence>
-      {showLifestyleForm && (
-        <motion.div
-          className="healthcoaching-modal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
+  const renderLifestyleModal = () => {
+    const showSuccessMessage = success && success.includes("Lifestyle audit");
+
+    return (
+      <AnimatePresence>
+        {showLifestyleForm && (
           <motion.div
-            className="healthcoaching-modalcontent"
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -50, opacity: 0 }}
+            className="healthcoaching-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <button
-              className="healthcoaching-modalclose"
-              onClick={closeLifestyleForm}
+            <motion.div
+              className="healthcoaching-modalcontent"
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
             >
-              ×
-            </button>
-
-            <div className="healthcoaching-bookingheader">
-              <h2>Centre for Lifechange and Nutritional Healthcare (CLiNH)</h2>
-              <h3>LIFESTYLE ANALYSIS FORM</h3>
-              <p
-                style={{
-                  fontSize: "0.9rem",
-                  color: "#666",
-                  textAlign: "center",
-                  maxWidth: "800px",
-                  margin: "0 auto",
-                }}
+              <button
+                className="healthcoaching-modalclose"
+                onClick={closeLifestyleForm}
+                disabled={showSuccessMessage}
               >
-                Please fill this form as accurately as possible. The information
-                provided in this form will guide us in identifying risks and
-                discussing interventions that are suitable for your individual
-                health challenges.
-              </p>
-            </div>
+                ×
+              </button>
 
-            <form
-              className="healthcoaching-bookingstep lifestyle-form"
-              onSubmit={handleSubmitLifestyleAudit}
-              style={{
-                maxHeight: "70vh",
-                overflowY: "auto",
-                paddingRight: "10px",
-              }}
-            >
-              {/* Basic Information */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-person-circle"></i> Basic Information
-                </h4>
-                <div className="healthcoaching-formgroup">
-                  <label>Full Name *</label>
-                  <input
-                    type="text"
-                    placeholder="Your full name"
-                    value={lifestyleForm.name}
-                    onChange={(e) =>
-                      handleLifestyleFormChange("name", e.target.value)
-                    }
-                    required
-                  />
-                </div>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Age</label>
-                    <input
-                      type="number"
-                      placeholder="Age"
-                      value={lifestyleForm.age}
-                      onChange={(e) =>
-                        handleLifestyleFormChange("age", e.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Gender</label>
-                    <select
-                      value={lifestyleForm.gender}
-                      onChange={(e) =>
-                        handleLifestyleFormChange("gender", e.target.value)
-                      }
-                    >
-                      <option value="">Select Gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                      <option value="prefer-not-to-say">
-                        Prefer not to say
-                      </option>
-                    </select>
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Contact Number</label>
-                    <input
-                      type="tel"
-                      placeholder="Phone number"
-                      value={lifestyleForm.contact}
-                      onChange={(e) =>
-                        handleLifestyleFormChange("contact", e.target.value)
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Email Address *</label>
-                    <input
-                      type="email"
-                      placeholder="Email address"
-                      value={lifestyleForm.email}
-                      onChange={(e) =>
-                        handleLifestyleFormChange("email", e.target.value)
-                      }
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="healthcoaching-formgroup">
-                  <label>Occupation</label>
-                  <input
-                    type="text"
-                    placeholder="Your occupation"
-                    value={lifestyleForm.occupation}
-                    onChange={(e) =>
-                      handleLifestyleFormChange("occupation", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* 1. Nutrition */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-egg-fried"></i> 1. Nutrition
-                </h4>
-                <p className="form-subtitle">How frequently do you eat:</p>
-                <div className="form-grid">
-                  <div className="healthcoaching-formgroup">
-                    <label>Fruits</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.nutrition.fruits}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "nutrition",
-                          "fruits",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Vegetables</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.nutrition.vegetables}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "nutrition",
-                          "vegetables",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Grains & Legumes</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.nutrition.grainsLegumes}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "nutrition",
-                          "grainsLegumes",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Beef</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.nutrition.beef}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "nutrition",
-                          "beef",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Dairy</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.nutrition.dairy}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "nutrition",
-                          "dairy",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Nuts</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.nutrition.nuts}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "nutrition",
-                          "nuts",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Processed Foods & Drinks</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.nutrition.processedFoods}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "nutrition",
-                          "processedFoods",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-
-                <p className="form-subtitle">How much do you drink per day:</p>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Water (glasses)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 8 glasses"
-                      value={lifestyleForm.drinks.water}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "drinks",
-                          "water",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Tea/Coffee (cups)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 2 cups"
-                      value={lifestyleForm.drinks.teaCoffee}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "drinks",
-                          "teaCoffee",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Juices (glasses)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 1 glass"
-                      value={lifestyleForm.drinks.juices}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "drinks",
-                          "juices",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-
-                <p className="form-subtitle">Do you have these habits?</p>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Alcohol Consumption</label>
-                    <select
-                      value={lifestyleForm.habits.alcohol}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "habits",
-                          "alcohol",
-                          e.target.value
-                        )
-                      }
-                    >
-                      <option value="N">No</option>
-                      <option value="Y">Yes</option>
-                    </select>
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Cigarette Smoking</label>
-                    <select
-                      value={lifestyleForm.habits.smoking}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "habits",
-                          "smoking",
-                          e.target.value
-                        )
-                      }
-                    >
-                      <option value="N">No</option>
-                      <option value="Y">Yes</option>
-                    </select>
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Substances (Specify)</label>
-                    <input
-                      type="text"
-                      placeholder="If yes, please specify"
-                      value={lifestyleForm.habits.substances}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "habits",
-                          "substances",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-
-                <p className="form-subtitle">Do you have any:</p>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Allergies</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., peanuts, pollen"
-                      value={lifestyleForm.dietaryIssues.allergies}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "dietaryIssues",
-                          "allergies",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Sensitivities</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., gluten, lactose"
-                      value={lifestyleForm.dietaryIssues.sensitivities}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "dietaryIssues",
-                          "sensitivities",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Intolerances</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., lactose, fructose"
-                      value={lifestyleForm.dietaryIssues.intolerances}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "dietaryIssues",
-                          "intolerances",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 2. Physical Activity */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-bicycle"></i> 2. Physical Activity
-                </h4>
-                <p className="form-subtitle">
-                  Which of the following do you engage in weekly:
+              <div className="healthcoaching-bookingheader">
+                <h2>
+                  Centre for Lifechange and Nutritional Healthcare (CLiNH)
+                </h2>
+                <h3>LIFESTYLE ANALYSIS FORM</h3>
+                <p
+                  style={{
+                    fontSize: "0.9rem",
+                    color: "#666",
+                    textAlign: "center",
+                    maxWidth: "800px",
+                    margin: "0 auto",
+                  }}
+                >
+                  Please fill this form as accurately as possible. The
+                  information provided in this form will guide us in identifying
+                  risks and discussing interventions that are suitable for your
+                  individual health challenges.
                 </p>
-                <div className="form-grid">
-                  <div className="healthcoaching-formgroup">
-                    <label>Exercise (sports, gym)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 30 min, 2 hrs"
-                      value={lifestyleForm.physicalActivity.exercise}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "physicalActivity",
-                          "exercise",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Walking (kms)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 5 kms"
-                      value={lifestyleForm.physicalActivity.walking}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "physicalActivity",
-                          "walking",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Jogging/Running (kms)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 3 kms"
-                      value={lifestyleForm.physicalActivity.jogging}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "physicalActivity",
-                          "jogging",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Heavy Work (min/hrs)</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 1 hr"
-                      value={lifestyleForm.physicalActivity.heavyWork}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "physicalActivity",
-                          "heavyWork",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
               </div>
 
-              {/* 3. Sleep */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-moon"></i> 3. Sleep
-                </h4>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Hours of uninterrupted sleep per night</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 7 hrs"
-                      value={lifestyleForm.sleep.hours}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "sleep",
-                          "hours",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Do you wake up in the night?</label>
-                    <select
-                      value={lifestyleForm.sleep.wakesAtNight}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "sleep",
-                          "wakesAtNight",
-                          e.target.value
-                        )
-                      }
-                    >
-                      <option value="N">No</option>
-                      <option value="Y">Yes</option>
-                    </select>
-                  </div>
-                </div>
-                {lifestyleForm.sleep.wakesAtNight === "Y" && (
-                  <div className="healthcoaching-formgroup">
-                    <label>Why do you wake up?</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., bathroom, stress, noise"
-                      value={lifestyleForm.sleep.wakeReason}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "sleep",
-                          "wakeReason",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                )}
-                <div className="healthcoaching-formgroup">
-                  <label>Do you wake up feeling tired?</label>
-                  <select
-                    value={lifestyleForm.sleep.wakesTired}
-                    onChange={(e) =>
-                      handleNestedLifestyleFormChange(
-                        "sleep",
-                        "wakesTired",
-                        e.target.value
-                      )
-                    }
+              {showSuccessMessage ? (
+                <div className="healthcoaching-bookingstep confirmation-step">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    style={{ textAlign: "center" }}
                   >
-                    <option value="N">No</option>
-                    <option value="Y">Yes</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* 4. Occupation */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-briefcase"></i> 4. Occupation
-                </h4>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Are you employed/self-employed?</label>
-                    <select
-                      value={lifestyleForm.occupationDetails.isEmployed}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "occupationDetails",
-                          "isEmployed",
-                          e.target.value
-                        )
-                      }
+                    <i
+                      className="bi bi-check-circle-fill"
+                      style={{
+                        fontSize: "4rem",
+                        color: "var(--success)",
+                        marginBottom: "1rem",
+                      }}
+                    ></i>
+                    <h3>Thank you, {lifestyleForm.name}!</h3>
+                    <p>
+                      Your lifestyle audit request has been submitted
+                      successfully!
+                    </p>
+                    <p>
+                      Our health coaches will review your comprehensive
+                      lifestyle analysis and contact you at{" "}
+                      <strong>{lifestyleForm.email}</strong> within 2-3 business
+                      days to schedule your personalized consultation.
+                    </p>
+                    <p
+                      style={{
+                        fontSize: "0.9rem",
+                        color: "#666",
+                        marginTop: "1rem",
+                      }}
                     >
-                      <option value="N">No</option>
-                      <option value="Y">Yes</option>
-                    </select>
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Work hours per day</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 8 hrs"
-                      value={lifestyleForm.occupationDetails.workHours}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "occupationDetails",
-                          "workHours",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Do you enjoy your work?</label>
-                    <select
-                      value={lifestyleForm.occupationDetails.enjoysWork}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "occupationDetails",
-                          "enjoysWork",
-                          e.target.value
-                        )
-                      }
+                      You will receive a confirmation email with next steps
+                      shortly.
+                    </p>
+                    <button
+                      className="healthcoaching-cta"
+                      onClick={closeLifestyleForm}
+                      style={{ marginTop: "2rem" }}
                     >
-                      <option value="N">No</option>
-                      <option value="Y">Yes</option>
-                    </select>
-                  </div>
-                  {lifestyleForm.occupationDetails.enjoysWork === "N" && (
+                      Close
+                    </button>
+                  </motion.div>
+                </div>
+              ) : (
+                <form
+                  className="healthcoaching-bookingstep lifestyle-form"
+                  onSubmit={handleSubmitLifestyleAudit}
+                  style={{
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                    paddingRight: "10px",
+                  }}
+                >
+                  {/* Basic Information */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-person-circle"></i> Basic Information
+                    </h4>
                     <div className="healthcoaching-formgroup">
-                      <label>Why not?</label>
+                      <label>Full Name *</label>
                       <input
                         type="text"
-                        placeholder="Reason"
-                        value={
-                          lifestyleForm.occupationDetails.workEnjoymentReason
+                        placeholder="Your full name"
+                        value={lifestyleForm.name}
+                        onChange={(e) =>
+                          handleLifestyleFormChange("name", e.target.value)
                         }
+                        required
+                        disabled={isLoading}
+                      />
+                    </div>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Age</label>
+                        <input
+                          type="number"
+                          placeholder="Age"
+                          value={lifestyleForm.age}
+                          onChange={(e) =>
+                            handleLifestyleFormChange("age", e.target.value)
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Gender</label>
+                        <select
+                          value={lifestyleForm.gender}
+                          onChange={(e) =>
+                            handleLifestyleFormChange("gender", e.target.value)
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="">Select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Contact Number</label>
+                        <input
+                          type="tel"
+                          placeholder="Phone number"
+                          value={lifestyleForm.contact}
+                          onChange={(e) =>
+                            handleLifestyleFormChange("contact", e.target.value)
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Email Address *</label>
+                        <input
+                          type="email"
+                          placeholder="Email address"
+                          value={lifestyleForm.email}
+                          onChange={(e) =>
+                            handleLifestyleFormChange("email", e.target.value)
+                          }
+                          required
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                    <div className="healthcoaching-formgroup">
+                      <label>Occupation</label>
+                      <input
+                        type="text"
+                        placeholder="Your occupation"
+                        value={lifestyleForm.occupation}
+                        onChange={(e) =>
+                          handleLifestyleFormChange(
+                            "occupation",
+                            e.target.value
+                          )
+                        }
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 1. Nutrition */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-egg-fried"></i> 1. Nutrition
+                    </h4>
+                    <p className="form-subtitle">How frequently do you eat:</p>
+                    <div className="form-grid">
+                      <div className="healthcoaching-formgroup">
+                        <label>Fruits</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.nutrition.fruits}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "nutrition",
+                              "fruits",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Vegetables</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.nutrition.vegetables}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "nutrition",
+                              "vegetables",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Grains & Legumes</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.nutrition.grainsLegumes}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "nutrition",
+                              "grainsLegumes",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Beef</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.nutrition.beef}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "nutrition",
+                              "beef",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Dairy</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.nutrition.dairy}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "nutrition",
+                              "dairy",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Nuts</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.nutrition.nuts}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "nutrition",
+                              "nuts",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Processed Foods & Drinks</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.nutrition.processedFoods}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "nutrition",
+                              "processedFoods",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+
+                    <p className="form-subtitle">
+                      How much do you drink per day:
+                    </p>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Water (glasses)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 8 glasses"
+                          value={lifestyleForm.drinks.water}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "drinks",
+                              "water",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Tea/Coffee (cups)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 2 cups"
+                          value={lifestyleForm.drinks.teaCoffee}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "drinks",
+                              "teaCoffee",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Juices (glasses)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 1 glass"
+                          value={lifestyleForm.drinks.juices}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "drinks",
+                              "juices",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+
+                    <p className="form-subtitle">Do you have these habits?</p>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Alcohol Consumption</label>
+                        <select
+                          value={lifestyleForm.habits.alcohol}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "habits",
+                              "alcohol",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="N">No</option>
+                          <option value="Y">Yes</option>
+                        </select>
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Cigarette Smoking</label>
+                        <select
+                          value={lifestyleForm.habits.smoking}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "habits",
+                              "smoking",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="N">No</option>
+                          <option value="Y">Yes</option>
+                        </select>
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Substances (Specify)</label>
+                        <input
+                          type="text"
+                          placeholder="If yes, please specify"
+                          value={lifestyleForm.habits.substances}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "habits",
+                              "substances",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+
+                    <p className="form-subtitle">Do you have any:</p>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Allergies</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., peanuts, pollen"
+                          value={lifestyleForm.dietaryIssues.allergies}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "dietaryIssues",
+                              "allergies",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Sensitivities</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., gluten, lactose"
+                          value={lifestyleForm.dietaryIssues.sensitivities}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "dietaryIssues",
+                              "sensitivities",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Intolerances</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., lactose, fructose"
+                          value={lifestyleForm.dietaryIssues.intolerances}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "dietaryIssues",
+                              "intolerances",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 2. Physical Activity */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-bicycle"></i> 2. Physical Activity
+                    </h4>
+                    <p className="form-subtitle">
+                      Which of the following do you engage in weekly:
+                    </p>
+                    <div className="form-grid">
+                      <div className="healthcoaching-formgroup">
+                        <label>Exercise (sports, gym)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 30 min, 2 hrs"
+                          value={lifestyleForm.physicalActivity.exercise}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "physicalActivity",
+                              "exercise",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Walking (kms)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 5 kms"
+                          value={lifestyleForm.physicalActivity.walking}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "physicalActivity",
+                              "walking",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Jogging/Running (kms)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 3 kms"
+                          value={lifestyleForm.physicalActivity.jogging}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "physicalActivity",
+                              "jogging",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Heavy Work (min/hrs)</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 1 hr"
+                          value={lifestyleForm.physicalActivity.heavyWork}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "physicalActivity",
+                              "heavyWork",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. Sleep */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-moon"></i> 3. Sleep
+                    </h4>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Hours of uninterrupted sleep per night</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 7 hrs"
+                          value={lifestyleForm.sleep.hours}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "sleep",
+                              "hours",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Do you wake up in the night?</label>
+                        <select
+                          value={lifestyleForm.sleep.wakesAtNight}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "sleep",
+                              "wakesAtNight",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="N">No</option>
+                          <option value="Y">Yes</option>
+                        </select>
+                      </div>
+                    </div>
+                    {lifestyleForm.sleep.wakesAtNight === "Y" && (
+                      <div className="healthcoaching-formgroup">
+                        <label>Why do you wake up?</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., bathroom, stress, noise"
+                          value={lifestyleForm.sleep.wakeReason}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "sleep",
+                              "wakeReason",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    )}
+                    <div className="healthcoaching-formgroup">
+                      <label>Do you wake up feeling tired?</label>
+                      <select
+                        value={lifestyleForm.sleep.wakesTired}
                         onChange={(e) =>
                           handleNestedLifestyleFormChange(
-                            "occupationDetails",
-                            "workEnjoymentReason",
+                            "sleep",
+                            "wakesTired",
                             e.target.value
                           )
                         }
-                      />
+                        disabled={isLoading}
+                      >
+                        <option value="N">No</option>
+                        <option value="Y">Yes</option>
+                      </select>
                     </div>
-                  )}
-                </div>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Leave days per year</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 21 days"
-                      value={lifestyleForm.occupationDetails.leaveDays}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "occupationDetails",
-                          "leaveDays",
-                          e.target.value
-                        )
-                      }
-                    />
                   </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Resting/Relaxation activities</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., reading, walking, TV"
-                      value={
-                        lifestyleForm.occupationDetails.relaxationActivities
-                      }
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "occupationDetails",
-                          "relaxationActivities",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
 
-              {/* 5. Socialization */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-people"></i> 5. Socialization
-                </h4>
-                <p className="form-subtitle">
-                  Briefly explain your social activities and frequency of
-                  attendance:
-                </p>
-                {[1, 2, 3].map((num) => (
-                  <div key={num} className="form-row">
+                  {/* 4. Occupation */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-briefcase"></i> 4. Occupation
+                    </h4>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Are you employed/self-employed?</label>
+                        <select
+                          value={lifestyleForm.occupationDetails.isEmployed}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "occupationDetails",
+                              "isEmployed",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="N">No</option>
+                          <option value="Y">Yes</option>
+                        </select>
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Work hours per day</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 8 hrs"
+                          value={lifestyleForm.occupationDetails.workHours}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "occupationDetails",
+                              "workHours",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Do you enjoy your work?</label>
+                        <select
+                          value={lifestyleForm.occupationDetails.enjoysWork}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "occupationDetails",
+                              "enjoysWork",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="N">No</option>
+                          <option value="Y">Yes</option>
+                        </select>
+                      </div>
+                      {lifestyleForm.occupationDetails.enjoysWork === "N" && (
+                        <div className="healthcoaching-formgroup">
+                          <label>Why not?</label>
+                          <input
+                            type="text"
+                            placeholder="Reason"
+                            value={
+                              lifestyleForm.occupationDetails
+                                .workEnjoymentReason
+                            }
+                            onChange={(e) =>
+                              handleNestedLifestyleFormChange(
+                                "occupationDetails",
+                                "workEnjoymentReason",
+                                e.target.value
+                              )
+                            }
+                            disabled={isLoading}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Leave days per year</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 21 days"
+                          value={lifestyleForm.occupationDetails.leaveDays}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "occupationDetails",
+                              "leaveDays",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Resting/Relaxation activities</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., reading, walking, TV"
+                          value={
+                            lifestyleForm.occupationDetails.relaxationActivities
+                          }
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "occupationDetails",
+                              "relaxationActivities",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 5. Socialization */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-people"></i> 5. Socialization
+                    </h4>
+                    <p className="form-subtitle">
+                      Briefly explain your social activities and frequency of
+                      attendance:
+                    </p>
+                    {[1, 2, 3].map((num) => (
+                      <div key={num} className="form-row">
+                        <div className="healthcoaching-formgroup">
+                          <label>Activity {num}</label>
+                          <input
+                            type="text"
+                            placeholder="e.g., Church, Sports, Book Club"
+                            value={
+                              lifestyleForm.socialization[`activity${num}`].name
+                            }
+                            onChange={(e) =>
+                              handleSocialActivityChange(
+                                num,
+                                "name",
+                                e.target.value
+                              )
+                            }
+                            disabled={isLoading}
+                          />
+                        </div>
+                        <div className="healthcoaching-formgroup">
+                          <label>Weekly</label>
+                          <input
+                            type="text"
+                            placeholder="e.g., 1x"
+                            value={
+                              lifestyleForm.socialization[`activity${num}`]
+                                .weekly
+                            }
+                            onChange={(e) =>
+                              handleSocialActivityChange(
+                                num,
+                                "weekly",
+                                e.target.value
+                              )
+                            }
+                            disabled={isLoading}
+                          />
+                        </div>
+                        <div className="healthcoaching-formgroup">
+                          <label>Monthly</label>
+                          <input
+                            type="text"
+                            placeholder="e.g., 4x"
+                            value={
+                              lifestyleForm.socialization[`activity${num}`]
+                                .monthly
+                            }
+                            onChange={(e) =>
+                              handleSocialActivityChange(
+                                num,
+                                "monthly",
+                                e.target.value
+                              )
+                            }
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* 6. Spirituality */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-heart"></i> 6. Spirituality
+                    </h4>
                     <div className="healthcoaching-formgroup">
-                      <label>Activity {num}</label>
-                      <input
-                        type="text"
-                        placeholder="e.g., Church, Sports, Book Club"
-                        value={
-                          lifestyleForm.socialization[`activity${num}`].name
-                        }
+                      <label>
+                        Briefly expound on your spiritual activities
+                      </label>
+                      <textarea
+                        rows="3"
+                        placeholder="e.g., meditation, prayer, church attendance"
+                        value={lifestyleForm.spirituality}
                         onChange={(e) =>
-                          handleSocialActivityChange(
-                            num,
-                            "name",
+                          handleLifestyleFormChange(
+                            "spirituality",
                             e.target.value
                           )
                         }
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 7. Entertainment */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-film"></i> 7. Entertainment
+                    </h4>
+                    <div className="healthcoaching-formgroup">
+                      <label>
+                        What form of entertainment do you indulge in and how
+                        often?
+                      </label>
+                      <textarea
+                        rows="2"
+                        placeholder="e.g., Movies weekly, Concerts monthly"
+                        value={lifestyleForm.entertainment.forms}
+                        onChange={(e) =>
+                          handleNestedLifestyleFormChange(
+                            "entertainment",
+                            "forms",
+                            e.target.value
+                          )
+                        }
+                        disabled={isLoading}
                       />
                     </div>
                     <div className="healthcoaching-formgroup">
-                      <label>Weekly</label>
-                      <input
-                        type="text"
-                        placeholder="e.g., 1x"
-                        value={
-                          lifestyleForm.socialization[`activity${num}`].weekly
-                        }
+                      <label>List your hobbies</label>
+                      <textarea
+                        rows="2"
+                        placeholder="e.g., Gardening, Painting, Cooking"
+                        value={lifestyleForm.entertainment.hobbies}
                         onChange={(e) =>
-                          handleSocialActivityChange(
-                            num,
-                            "weekly",
+                          handleNestedLifestyleFormChange(
+                            "entertainment",
+                            "hobbies",
                             e.target.value
                           )
                         }
+                        disabled={isLoading}
                       />
                     </div>
+                  </div>
+
+                  {/* 8. Electronic Use */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-laptop"></i> 8. Electronic Use
+                    </h4>
+                    <p className="form-subtitle">
+                      Daily time spent on devices:
+                    </p>
+                    <div className="form-grid">
+                      <div className="healthcoaching-formgroup">
+                        <label>Mobile Phone</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 3 hrs"
+                          value={lifestyleForm.electronicUse.mobilePhone}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "electronicUse",
+                              "mobilePhone",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Computer</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 6 hrs"
+                          value={lifestyleForm.electronicUse.computer}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "electronicUse",
+                              "computer",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Radio</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 1 hr"
+                          value={lifestyleForm.electronicUse.radio}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "electronicUse",
+                              "radio",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>TV</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., 2 hrs"
+                          value={lifestyleForm.electronicUse.tv}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "electronicUse",
+                              "tv",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                    <p className="form-subtitle">Frequency of use for:</p>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Video Games</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.electronicUse.videoGames}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "electronicUse",
+                              "videoGames",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Music</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Daily, Weekly"
+                          value={lifestyleForm.electronicUse.music}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "electronicUse",
+                              "music",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>Movies</label>
+                        <input
+                          type="text"
+                          placeholder="e.g., Weekly, Monthly"
+                          value={lifestyleForm.electronicUse.movies}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "electronicUse",
+                              "movies",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 9. Environmental */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-tree"></i> 9. Environmental
+                    </h4>
                     <div className="healthcoaching-formgroup">
-                      <label>Monthly</label>
-                      <input
-                        type="text"
-                        placeholder="e.g., 4x"
-                        value={
-                          lifestyleForm.socialization[`activity${num}`].monthly
-                        }
+                      <label>
+                        What activities are you involved in to improve your
+                        living, working and natural environment?
+                      </label>
+                      <textarea
+                        rows="3"
+                        placeholder="e.g., Recycling, Gardening, Community cleanups"
+                        value={lifestyleForm.environmental}
                         onChange={(e) =>
-                          handleSocialActivityChange(
-                            num,
-                            "monthly",
+                          handleLifestyleFormChange(
+                            "environmental",
                             e.target.value
                           )
                         }
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
-                ))}
-              </div>
 
-              {/* 6. Spirituality */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-heart"></i> 6. Spirituality
-                </h4>
-                <div className="healthcoaching-formgroup">
-                  <label>Briefly expound on your spiritual activities</label>
-                  <textarea
-                    rows="3"
-                    placeholder="e.g., meditation, prayer, church attendance"
-                    value={lifestyleForm.spirituality}
-                    onChange={(e) =>
-                      handleLifestyleFormChange("spirituality", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
+                  {/* 10. Purpose */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-bullseye"></i> 10. Purpose
+                    </h4>
+                    <div className="form-row">
+                      <div className="healthcoaching-formgroup">
+                        <label>Readiness to improve habits (1-10)</label>
+                        <select
+                          value={lifestyleForm.purpose.readinessScore}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "purpose",
+                              "readinessScore",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="">Select score</option>
+                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                            <option key={num} value={num}>
+                              {num}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="healthcoaching-formgroup">
+                        <label>
+                          Do you know if lifestyle factors influence your
+                          health?
+                        </label>
+                        <select
+                          value={lifestyleForm.purpose.understandsHealthFactors}
+                          onChange={(e) =>
+                            handleNestedLifestyleFormChange(
+                              "purpose",
+                              "understandsHealthFactors",
+                              e.target.value
+                            )
+                          }
+                          disabled={isLoading}
+                        >
+                          <option value="N">No</option>
+                          <option value="Y">Yes</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
 
-              {/* 7. Entertainment */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-film"></i> 7. Entertainment
-                </h4>
-                <div className="healthcoaching-formgroup">
-                  <label>
-                    What form of entertainment do you indulge in and how often?
-                  </label>
-                  <textarea
-                    rows="2"
-                    placeholder="e.g., Movies weekly, Concerts monthly"
-                    value={lifestyleForm.entertainment.forms}
-                    onChange={(e) =>
-                      handleNestedLifestyleFormChange(
-                        "entertainment",
-                        "forms",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-                <div className="healthcoaching-formgroup">
-                  <label>List your hobbies</label>
-                  <textarea
-                    rows="2"
-                    placeholder="e.g., Gardening, Painting, Cooking"
-                    value={lifestyleForm.entertainment.hobbies}
-                    onChange={(e) =>
-                      handleNestedLifestyleFormChange(
-                        "entertainment",
-                        "hobbies",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-              </div>
+                  {/* Additional Comments */}
+                  <div className="form-section">
+                    <h4>
+                      <i className="bi bi-chat-left-text"></i> Additional
+                      Comments
+                    </h4>
+                    <div className="healthcoaching-formgroup">
+                      <label>Any other information you'd like to share</label>
+                      <textarea
+                        rows="3"
+                        placeholder="Additional comments or concerns..."
+                        value={lifestyleForm.additionalComments}
+                        onChange={(e) =>
+                          handleLifestyleFormChange(
+                            "additionalComments",
+                            e.target.value
+                          )
+                        }
+                        disabled={isLoading}
+                      />
+                    </div>
+                  </div>
 
-              {/* 8. Electronic Use */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-laptop"></i> 8. Electronic Use
-                </h4>
-                <p className="form-subtitle">Daily time spent on devices:</p>
-                <div className="form-grid">
-                  <div className="healthcoaching-formgroup">
-                    <label>Mobile Phone</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 3 hrs"
-                      value={lifestyleForm.electronicUse.mobilePhone}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "electronicUse",
-                          "mobilePhone",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Computer</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 6 hrs"
-                      value={lifestyleForm.electronicUse.computer}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "electronicUse",
-                          "computer",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Radio</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 1 hr"
-                      value={lifestyleForm.electronicUse.radio}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "electronicUse",
-                          "radio",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>TV</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 2 hrs"
-                      value={lifestyleForm.electronicUse.tv}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "electronicUse",
-                          "tv",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-                <p className="form-subtitle">Frequency of use for:</p>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Video Games</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.electronicUse.videoGames}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "electronicUse",
-                          "videoGames",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Music</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Daily, Weekly"
-                      value={lifestyleForm.electronicUse.music}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "electronicUse",
-                          "music",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>Movies</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., Weekly, Monthly"
-                      value={lifestyleForm.electronicUse.movies}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "electronicUse",
-                          "movies",
-                          e.target.value
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* 9. Environmental */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-tree"></i> 9. Environmental
-                </h4>
-                <div className="healthcoaching-formgroup">
-                  <label>
-                    What activities are you involved in to improve your living,
-                    working and natural environment?
-                  </label>
-                  <textarea
-                    rows="3"
-                    placeholder="e.g., Recycling, Gardening, Community cleanups"
-                    value={lifestyleForm.environmental}
-                    onChange={(e) =>
-                      handleLifestyleFormChange("environmental", e.target.value)
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* 10. Purpose */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-bullseye"></i> 10. Purpose
-                </h4>
-                <div className="form-row">
-                  <div className="healthcoaching-formgroup">
-                    <label>Readiness to improve habits (1-10)</label>
-                    <select
-                      value={lifestyleForm.purpose.readinessScore}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "purpose",
-                          "readinessScore",
-                          e.target.value
-                        )
-                      }
+                  {/* Submission Button */}
+                  <div
+                    className="healthcoaching-formactions"
+                    style={{
+                      marginTop: "2rem",
+                      paddingTop: "1rem",
+                      borderTop: "1px solid #eee",
+                    }}
+                  >
+                    <button
+                      type="submit"
+                      className="healthcoaching-cta"
+                      disabled={isLoading}
                     >
-                      <option value="">Select score</option>
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <option key={num} value={num}>
-                          {num}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="healthcoaching-formgroup">
-                    <label>
-                      Do you know if lifestyle factors influence your health?
-                    </label>
-                    <select
-                      value={lifestyleForm.purpose.understandsHealthFactors}
-                      onChange={(e) =>
-                        handleNestedLifestyleFormChange(
-                          "purpose",
-                          "understandsHealthFactors",
-                          e.target.value
-                        )
-                      }
+                      {isLoading ? (
+                        <>
+                          <i className="bi bi-arrow-clockwise spin"></i>{" "}
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <i className="bi bi-clipboard2-pulse"></i> Submit
+                          Lifestyle Analysis
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      className="healthcoaching-readmore"
+                      onClick={closeLifestyleForm}
+                      style={{ marginLeft: "1rem" }}
+                      disabled={isLoading}
                     >
-                      <option value="N">No</option>
-                      <option value="Y">Yes</option>
-                    </select>
+                      Cancel
+                    </button>
                   </div>
-                </div>
-              </div>
-
-              {/* Additional Comments */}
-              <div className="form-section">
-                <h4>
-                  <i className="bi bi-chat-left-text"></i> Additional Comments
-                </h4>
-                <div className="healthcoaching-formgroup">
-                  <label>Any other information you'd like to share</label>
-                  <textarea
-                    rows="3"
-                    placeholder="Additional comments or concerns..."
-                    value={lifestyleForm.additionalComments}
-                    onChange={(e) =>
-                      handleLifestyleFormChange(
-                        "additionalComments",
-                        e.target.value
-                      )
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* Submission Button */}
-              <div
-                className="healthcoaching-formactions"
-                style={{
-                  marginTop: "2rem",
-                  paddingTop: "1rem",
-                  borderTop: "1px solid #eee",
-                }}
-              >
-                <button
-                  type="submit"
-                  className="healthcoaching-cta"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <i className="bi bi-arrow-clockwise spin"></i>{" "}
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <i className="bi bi-clipboard2-pulse"></i> Submit
-                      Lifestyle Analysis
-                    </>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  className="healthcoaching-readmore"
-                  onClick={closeLifestyleForm}
-                  style={{ marginLeft: "1rem" }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+                </form>
+              )}
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+        )}
+      </AnimatePresence>
+    );
+  };
 
   const renderMealPlanModal = () => (
     <AnimatePresence>
