@@ -2201,9 +2201,9 @@ const AdminDashboard = ({ apiBaseUrl }) => {
     <div className="admin-section">
       <div className="section-header">
         <div className="section-title">
-          <h2>Lifestyle Audit Requests</h2>
+          <h2>Lifestyle Analysis Requests</h2>
           <p>
-            Manage lifestyle audit requests from clients (
+            Manage lifestyle analysis requests from clients (
             {lifestyleAudits.length} Total)
           </p>
         </div>
@@ -2216,7 +2216,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
               setShowLifestyleForm(true);
             }}
           >
-            <Icon name="Add" /> Create Audit
+            <Icon name="Add" /> Create Analysis
           </button>
           <button
             className="admin-btn secondary"
@@ -2236,7 +2236,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
       ) : lifestyleAudits.length === 0 ? (
         <div className="empty-state">
           <Icon name="Lifestyle" />
-          <p>No lifestyle audit requests found.</p>
+          <p>No lifestyle analysis requests found.</p>
           <button
             className="admin-btn primary"
             onClick={() => {
@@ -2501,7 +2501,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
           className={`tab ${activeTab === "lifestyle" ? "active" : ""}`}
           onClick={() => setActiveTab("lifestyle")}
         >
-          <Icon name="Lifestyle" /> Lifestyle Audits
+          <Icon name="Lifestyle" /> Lifestyle Analysis
         </button>
       </div>
 
@@ -2797,8 +2797,8 @@ const AdminDashboard = ({ apiBaseUrl }) => {
             <div className="modal-header">
               <h2>
                 {editingLifestyle
-                  ? "Edit Lifestyle Audit"
-                  : "Create New Lifestyle Audit"}
+                  ? "Edit Lifestyle Analysis"
+                  : "Create New Lifestyle Analysis"}
               </h2>
               <button onClick={cancelLifestyleForm} className="modal-close">
                 ×
@@ -3779,8 +3779,8 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                   {isSubmittingLifestyle
                     ? "Saving..."
                     : editingLifestyle
-                    ? "Update Audit"
-                    : "Create Audit"}
+                    ? "Update Analysis"
+                    : "Create Analysis"}
                 </button>
               </div>
             </form>
@@ -4328,7 +4328,7 @@ const AdminDashboard = ({ apiBaseUrl }) => {
                   }}
                   className="admin-btn primary"
                 >
-                  Edit Audit
+                  Edit Analysis
                 </button>
               )}
             </div>

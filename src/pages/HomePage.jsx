@@ -253,7 +253,7 @@ const HomePage = () => {
                   className="homepage-promotional-button"
                 >
                   <i className="bi bi-arrow-right-circle"></i>
-                  Claim Your Free Audit
+                  Claim Your Free Analysis
                 </Link>
               </div>
             </div>

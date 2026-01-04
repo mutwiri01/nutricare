@@ -341,7 +341,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       });
 
       if (response.ok) {
-        setSuccess("Lifestyle audit request submitted successfully!");
+        setSuccess("Lifestyle analysis request submitted successfully!");
         // Reset form to initial state
         setLifestyleForm({
           name: "",
@@ -437,10 +437,10 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           setShowLifestyleForm(false);
         }, 2000);
       } else {
-        setError("Failed to submit lifestyle audit request");
+        setError("Failed to submit lifestyle analysis request");
       }
     } catch (error) {
-      setError("Failed to submit lifestyle audit request");
+      setError("Failed to submit lifestyle analysis request");
     } finally {
       setIsLoading(false);
     }
@@ -1236,7 +1236,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h2>Lifestyle Audit</h2>
+        <h2>Lifestyle Analysis</h2>
         <p className="healthcoaching-subtitle">
           Comprehensive analysis of your daily habits and routines to identify
           areas for improvement and create a personalized wellness roadmap.
@@ -1249,7 +1249,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             style={{ marginRight: "1rem" }}
           >
             <i className="bi bi-clipboard2-pulse"></i>
-            Request Lifestyle Audit
+            Request Lifestyle Analysis
           </button>
           <button
             className="healthcoaching-readmore"
@@ -1275,9 +1275,9 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             animate={{ opacity: 1, height: "auto" }}
             transition={{ duration: 0.5 }}
           >
-            <h3>Comprehensive Lifestyle Assessment</h3>
+            <h3>Comprehensive Lifestyle Analysis</h3>
             <p>
-              Our lifestyle audit is a thorough evaluation of your daily habits,
+              Our lifestyle analysis is a thorough evaluation of your daily habits,
               routines, and environmental factors that impact your overall
               wellbeing. We analyze multiple dimensions of your lifestyle to
               provide actionable insights.
@@ -1315,7 +1315,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               </li>
             </ul>
 
-            <h4>Benefits of Lifestyle Audit:</h4>
+            <h4>Benefits of Lifestyle Analysis:</h4>
             <div className="healthcoaching-featuregrid">
               <div className="healthcoaching-featurecard">
                 <div className="healthcoaching-featureicon">
@@ -1347,7 +1347,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
             </div>
 
             <p>
-              Our lifestyle audit provides the foundation for sustainable
+              Our lifestyle analysis provides the foundation for sustainable
               change, helping you build healthier habits that last a lifetime.
             </p>
           </motion.div>
@@ -2232,7 +2232,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   };
 
   const renderLifestyleModal = () => {
-    const showSuccessMessage = success && success.includes("Lifestyle audit");
+    const showSuccessMessage = success && success.includes("Lifestyle analysis");
 
     return (
       <AnimatePresence>
@@ -2296,7 +2296,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                     ></i>
                     <h3>Thank you, {lifestyleForm.name}!</h3>
                     <p>
-                      Your lifestyle audit request has been submitted
+                      Your lifestyle analysis request has been submitted
                       successfully!
                     </p>
                     <p>
@@ -3607,7 +3607,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                 }}
               >
                 <i className="bi bi-clipboard2-pulse"></i>
-                Lifestyle Audit
+                Lifestyle Analysis
               </button>
             </li>
             <li>
