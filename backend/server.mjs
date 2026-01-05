@@ -63,6 +63,23 @@ const bookingSchema = new mongoose.Schema({
   time: String,
   condition: String,
   notes: String,
+
+  // Corporate specific fields
+  organizationName: String,
+  contactPerson: String,
+  roleInOrganization: String,
+  hasHealthAuditReport: {
+    type: String,
+    enum: ["yes", "no"],
+    default: "no",
+  },
+  healthAuditRequest: String,
+  numberOfStaff: Number,
+  staffAge18to45: Number,
+  staffAge46to60: Number,
+  coreActivities: String,
+
+  // Legacy corporate fields (keep for backward compatibility)
   corporateName: String,
   contactDetails: String,
   sector: String,
@@ -70,6 +87,7 @@ const bookingSchema = new mongoose.Schema({
   employeeHealthStatus: String,
   reasonsForCoaching: String,
   expectedOutcomes: String,
+
   status: {
     type: String,
     default: "confirmed",
@@ -397,12 +415,10 @@ app.post(
       res.status(201).json(savedRequest);
     } catch (error) {
       console.error("Error saving lifestyle request:", error);
-      res
-        .status(500)
-        .json({
-          error: "Failed to save lifestyle request",
-          details: error.message,
-        });
+      res.status(500).json({
+        error: "Failed to save lifestyle request",
+        details: error.message,
+      });
     }
   })
 );

@@ -25,6 +25,16 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     phone: "",
     condition: "",
     notes: "",
+    // Corporate specific fields
+    organizationName: "",
+    contactPerson: "",
+    roleInOrganization: "",
+    hasHealthAuditReport: "no",
+    healthAuditRequest: "",
+    numberOfStaff: "",
+    staffAge18to45: "",
+    staffAge46to60: "",
+    coreActivities: "",
   });
   const [availableTimes, setAvailableTimes] = useState([]);
   const [webinars, setWebinars] = useState([]);
@@ -493,19 +503,40 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
     const isPersonalBooking =
       formSource === "personal" || bookingData.serviceType === "personal";
 
-    // Validation
-    if (!formSource && !bookingData.serviceType) {
-      setError("Please select a Service Type.");
-      return;
+    // Validation for personal booking
+    if (isPersonalBooking) {
+      if (!formSource && !bookingData.serviceType) {
+        setError("Please select a Service Type.");
+        return;
+      }
+      if (!bookingData.cluster) {
+        setError("Please select a Health Cluster.");
+        return;
+      }
+      if (!bookingData.date || !bookingData.time) {
+        setError("Please select a Preferred Date and Time.");
+        return;
+      }
     }
-    if (isPersonalBooking && !bookingData.cluster) {
-      setError("Please select a Health Cluster.");
-      return;
+
+    // Validation for corporate booking
+    const isCorporateBooking =
+      formSource === "corporate" || bookingData.serviceType === "corporate";
+
+    if (isCorporateBooking) {
+      if (
+        !bookingData.organizationName ||
+        !bookingData.email ||
+        !bookingData.contactPerson
+      ) {
+        setError(
+          "Please provide Organization Name, Email, and Contact Person."
+        );
+        return;
+      }
     }
-    if (isPersonalBooking && (!bookingData.date || !bookingData.time)) {
-      setError("Please select a Preferred Date and Time.");
-      return;
-    }
+
+    // Common validation
     if (!bookingData.name || !bookingData.email) {
       setError("Please provide your Full Name and Email Address.");
       return;
@@ -529,7 +560,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
 
       if (response.ok) {
         const result = await response.json();
-        setSuccess("Your appointment has been booked successfully!");
+        setSuccess("Your request has been submitted successfully!");
         setBookingStep(4); // Move to confirmation screen
         // Reset form data
         setBookingData({
@@ -543,16 +574,26 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           phone: "",
           condition: "",
           notes: "",
+          // Corporate specific fields
+          organizationName: "",
+          contactPerson: "",
+          roleInOrganization: "",
+          hasHealthAuditReport: "no",
+          healthAuditRequest: "",
+          numberOfStaff: "",
+          staffAge18to45: "",
+          staffAge46to60: "",
+          coreActivities: "",
         });
         setFormSource("");
       } else {
         const errorData = await response.json();
         setError(
-          errorData.error || "Failed to book appointment. Please try again."
+          errorData.error || "Failed to submit request. Please try again."
         );
       }
     } catch (error) {
-      setError("Failed to book appointment. Please try again.");
+      setError("Failed to submit request. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -777,6 +818,16 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
       phone: "",
       condition: "",
       notes: "",
+      // Corporate specific fields
+      organizationName: "",
+      contactPerson: "",
+      roleInOrganization: "",
+      hasHealthAuditReport: "no",
+      healthAuditRequest: "",
+      numberOfStaff: "",
+      staffAge18to45: "",
+      staffAge46to60: "",
+      coreActivities: "",
     });
     setFormSource("");
     clearMessages();
@@ -1277,10 +1328,10 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
           >
             <h3>Comprehensive Lifestyle Analysis</h3>
             <p>
-              Our lifestyle analysis is a thorough evaluation of your daily habits,
-              routines, and environmental factors that impact your overall
-              wellbeing. We analyze multiple dimensions of your lifestyle to
-              provide actionable insights.
+              Our lifestyle analysis is a thorough evaluation of your daily
+              habits, routines, and environmental factors that impact your
+              overall wellbeing. We analyze multiple dimensions of your
+              lifestyle to provide actionable insights.
             </p>
 
             <h4>What We Assess:</h4>
@@ -1764,6 +1815,9 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   const renderBookingModal = () => {
     const isPersonalBooking =
       formSource === "personal" || bookingData.serviceType === "personal";
+    const isCorporateBooking =
+      formSource === "corporate" || bookingData.serviceType === "corporate";
+
     const modalTitle = isPersonalBooking
       ? "Book Your Personal Health Coaching Session"
       : "Corporate Wellness Information Request";
@@ -1791,7 +1845,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
               </button>
 
               <div className="healthcoaching-bookingheader">
-                <h2>{bookingStep === 4 ? "Booking Confirmed!" : modalTitle}</h2>
+                <h2>{bookingStep === 4 ? "Request Submitted!" : modalTitle}</h2>
                 {/* Removed Progress Bar and Step Indicator */}
               </div>
 
@@ -1812,7 +1866,13 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                         marginBottom: "1rem",
                       }}
                     ></i>
-                    <h3>Thank you, {bookingData.name}!</h3>
+                    <h3>
+                      Thank you,{" "}
+                      {isCorporateBooking
+                        ? bookingData.contactPerson
+                        : bookingData.name}
+                      !
+                    </h3>
                     <p>
                       Your{" "}
                       {isPersonalBooking ? "session" : "information request"}{" "}
@@ -1823,7 +1883,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                       <strong>{bookingData.email}</strong>.
                       {isPersonalBooking &&
                         ` We look forward to our ${bookingData.consultationType} consultation.`}
-                      {!isPersonalBooking &&
+                      {isCorporateBooking &&
                         ` Our corporate wellness team will contact you shortly to discuss your request.`}
                     </p>
                     <button
@@ -1924,6 +1984,191 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                     </div>
                   )}
 
+                  {/* Corporate Form Fields */}
+                  {isCorporateBooking && (
+                    <>
+                      <div className="healthcoaching-formgroup">
+                        <label>2. Organization Information *</label>
+                        <input
+                          type="text"
+                          placeholder="Name of Organization *"
+                          value={bookingData.organizationName}
+                          onChange={(e) =>
+                            handleBookingChange(
+                              "organizationName",
+                              e.target.value
+                            )
+                          }
+                          required
+                        />
+                        <input
+                          type="email"
+                          placeholder="Organization Email *"
+                          value={bookingData.email}
+                          onChange={(e) =>
+                            handleBookingChange("email", e.target.value)
+                          }
+                          required
+                        />
+                        <input
+                          type="tel"
+                          placeholder="Organization Phone"
+                          value={bookingData.phone}
+                          onChange={(e) =>
+                            handleBookingChange("phone", e.target.value)
+                          }
+                        />
+                      </div>
+
+                      <div className="healthcoaching-formgroup">
+                        <label>3. Contact Person Details *</label>
+                        <input
+                          type="text"
+                          placeholder="Contact Person Name *"
+                          value={bookingData.contactPerson}
+                          onChange={(e) =>
+                            handleBookingChange("contactPerson", e.target.value)
+                          }
+                          required
+                        />
+                        <input
+                          type="text"
+                          placeholder="Role in Organization"
+                          value={bookingData.roleInOrganization}
+                          onChange={(e) =>
+                            handleBookingChange(
+                              "roleInOrganization",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className="healthcoaching-formgroup">
+                        <label>4. Request Details</label>
+                        <div className="healthcoaching-radiogroup">
+                          <label className="healthcoaching-radio-label">
+                            <input
+                              type="radio"
+                              name="hasHealthAuditReport"
+                              value="yes"
+                              checked={
+                                bookingData.hasHealthAuditReport === "yes"
+                              }
+                              onChange={(e) =>
+                                handleBookingChange(
+                                  "hasHealthAuditReport",
+                                  e.target.value
+                                )
+                              }
+                            />
+                            <i className="bi bi-file-check"></i> Yes, we have a
+                            health audit report
+                          </label>
+                          <label className="healthcoaching-radio-label">
+                            <input
+                              type="radio"
+                              name="hasHealthAuditReport"
+                              value="no"
+                              checked={
+                                bookingData.hasHealthAuditReport === "no"
+                              }
+                              onChange={(e) =>
+                                handleBookingChange(
+                                  "hasHealthAuditReport",
+                                  e.target.value
+                                )
+                              }
+                            />
+                            <i className="bi bi-file-plus"></i> No, we need a
+                            health audit report
+                          </label>
+                        </div>
+
+                        {bookingData.hasHealthAuditReport === "no" && (
+                          <textarea
+                            placeholder="Please describe your health audit request..."
+                            rows="3"
+                            value={bookingData.healthAuditRequest}
+                            onChange={(e) =>
+                              handleBookingChange(
+                                "healthAuditRequest",
+                                e.target.value
+                              )
+                            }
+                          ></textarea>
+                        )}
+                      </div>
+
+                      <div className="healthcoaching-formgroup">
+                        <label>5. Staff Information</label>
+                        <input
+                          type="number"
+                          placeholder="Total Number of Staff Members"
+                          value={bookingData.numberOfStaff}
+                          onChange={(e) =>
+                            handleBookingChange("numberOfStaff", e.target.value)
+                          }
+                          min="1"
+                        />
+                        <div
+                          className="form-row"
+                          style={{
+                            display: "flex",
+                            gap: "1rem",
+                            marginTop: "1rem",
+                          }}
+                        >
+                          <div style={{ flex: 1 }}>
+                            <label>Aged 18-45</label>
+                            <input
+                              type="number"
+                              placeholder="Number"
+                              value={bookingData.staffAge18to45}
+                              onChange={(e) =>
+                                handleBookingChange(
+                                  "staffAge18to45",
+                                  e.target.value
+                                )
+                              }
+                              min="0"
+                            />
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <label>Aged 46-60</label>
+                            <input
+                              type="number"
+                              placeholder="Number"
+                              value={bookingData.staffAge46to60}
+                              onChange={(e) =>
+                                handleBookingChange(
+                                  "staffAge46to60",
+                                  e.target.value
+                                )
+                              }
+                              min="0"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="healthcoaching-formgroup">
+                        <label>6. Core Activities of Your Organization</label>
+                        <textarea
+                          placeholder="Briefly describe the main activities and industry of your organization..."
+                          rows="3"
+                          value={bookingData.coreActivities}
+                          onChange={(e) =>
+                            handleBookingChange(
+                              "coreActivities",
+                              e.target.value
+                            )
+                          }
+                        ></textarea>
+                      </div>
+                    </>
+                  )}
+
                   {/* Health Cluster Selection (Only for Personal Booking) */}
                   {isPersonalBooking && (
                     <div className="healthcoaching-formgroup">
@@ -1990,70 +2235,61 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                     </div>
                   )}
 
-                  {/* Contact Information */}
-                  <div
-                    className="healthcoaching-formgroup"
-                    style={{ marginTop: "2rem" }}
-                  >
-                    <label>
-                      {isPersonalBooking
-                        ? "5. Your Contact Information"
-                        : "2. Your Contact Information"}{" "}
-                      *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Full Name *"
-                      value={bookingData.name}
-                      onChange={(e) =>
-                        handleBookingChange("name", e.target.value)
-                      }
-                      required
-                    />
-                    <input
-                      type="email"
-                      placeholder="Email Address *"
-                      value={bookingData.email}
-                      onChange={(e) =>
-                        handleBookingChange("email", e.target.value)
-                      }
-                      required
-                    />
-                    <input
-                      type="tel"
-                      placeholder="Phone Number"
-                      value={bookingData.phone}
-                      onChange={(e) =>
-                        handleBookingChange("phone", e.target.value)
-                      }
-                    />
-                  </div>
+                  {/* Contact Information for Personal Booking */}
+                  {isPersonalBooking && (
+                    <div
+                      className="healthcoaching-formgroup"
+                      style={{ marginTop: "2rem" }}
+                    >
+                      <label>5. Your Contact Information *</label>
+                      <input
+                        type="text"
+                        placeholder="Full Name *"
+                        value={bookingData.name}
+                        onChange={(e) =>
+                          handleBookingChange("name", e.target.value)
+                        }
+                        required
+                      />
+                      <input
+                        type="email"
+                        placeholder="Email Address *"
+                        value={bookingData.email}
+                        onChange={(e) =>
+                          handleBookingChange("email", e.target.value)
+                        }
+                        required
+                      />
+                      <input
+                        type="tel"
+                        placeholder="Phone Number"
+                        value={bookingData.phone}
+                        onChange={(e) =>
+                          handleBookingChange("phone", e.target.value)
+                        }
+                      />
+                    </div>
+                  )}
 
-                  {/* Additional Details */}
-                  <div className="healthcoaching-formgroup">
-                    <label>
-                      {isPersonalBooking
-                        ? "6. Tell Us About Your Health"
-                        : "3. Corporate Request Details"}
-                    </label>
-                    <textarea
-                      placeholder={
-                        isPersonalBooking
-                          ? "Briefly describe your current condition or health goals..."
-                          : "Describe your organization's wellness needs or information request..."
-                      }
-                      rows="3"
-                      value={bookingData.condition}
-                      onChange={(e) =>
-                        handleBookingChange("condition", e.target.value)
-                      }
-                    ></textarea>
-                  </div>
+                  {/* Additional Details for Personal Booking */}
+                  {isPersonalBooking && (
+                    <div className="healthcoaching-formgroup">
+                      <label>6. Tell Us About Your Health</label>
+                      <textarea
+                        placeholder="Briefly describe your current condition or health goals..."
+                        rows="3"
+                        value={bookingData.condition}
+                        onChange={(e) =>
+                          handleBookingChange("condition", e.target.value)
+                        }
+                      ></textarea>
+                    </div>
+                  )}
 
                   <div className="healthcoaching-formgroup">
                     <label>Additional Notes</label>
                     <textarea
-                      placeholder="Any other notes or special requests (e.g., specific coach, referral code)..."
+                      placeholder="Any other notes or special requests..."
                       rows="2"
                       value={bookingData.notes}
                       onChange={(e) =>
@@ -2079,7 +2315,7 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
                           <i className="bi bi-calendar2-check"></i>{" "}
                           {isPersonalBooking
                             ? "Confirm Booking"
-                            : "Request Information"}
+                            : "Submit Request"}
                         </>
                       )}
                     </button>
@@ -2232,7 +2468,8 @@ const HealthCoachingPage = ({ apiBaseUrl }) => {
   };
 
   const renderLifestyleModal = () => {
-    const showSuccessMessage = success && success.includes("Lifestyle analysis");
+    const showSuccessMessage =
+      success && success.includes("Lifestyle analysis");
 
     return (
       <AnimatePresence>
