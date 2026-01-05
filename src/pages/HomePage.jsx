@@ -96,12 +96,12 @@ const HomePage = () => {
 
             <div className="homepage-lead-description">
               <p>
-                At CLiNH we apply a comprehensive and a holistic process that
-                guarantees you maximum health benefits. Here we track disease
+                Through a comprehensive and holistic process, we track disease
                 symptoms, trace causes and eliminate the offending factors
-                through a rigorous health coaching process. We support you to
-                overcome negative tendencies through a self driven, mindful and
-                transformational behaviour change process.
+                through health coaching programs that guarantee maximum
+                benefits. We support clients in overcoming negative tendencies
+                through a self driven, mindful and transformational behaviour
+                change approach
               </p>
               <p>
                 Furthermore, we provide you with ample data to help you make new
@@ -141,7 +141,8 @@ const HomePage = () => {
                   </span>
                   <div className="homepage-promotional-content">
                     <h3 className="homepage-promotional-title">
-                      <i className="bi bi-gift-fill"></i> FREE Lifestyle Analysis
+                      <i className="bi bi-gift-fill"></i> FREE Lifestyle
+                      Analysis
                     </h3>
                     <p className="homepage-promotional-description">
                       Know how your lifestyle affects your health.
