@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="footer-top">
           <div className="footer-brand">
             <Link to="/" className="footer-logo">
-              <img src="/l2.png" alt="CLINH Logo" className="footer-logo-img" />
+              <img src="lg101.jpeg" alt="CLINH Logo" className="footer-logo-img" />
             </Link>
             <p className="footer-tagline">
               Empowering healthier communities through lifestyle transformation

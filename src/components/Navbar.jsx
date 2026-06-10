@@ -26,7 +26,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo" onClick={closeMenu}>
-          <img src="/l2.png" alt="Brand Logo" className="logo-image" />
+          <img src="/lg101.jpeg" alt="Brand Logo" className="logo-image" />
         </Link>
         <div className="hamburger-container">
           <button
