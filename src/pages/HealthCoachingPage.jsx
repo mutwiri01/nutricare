@@ -8,7 +8,7 @@ import "../css/HealthCoachingPage.css";
 
 // Import logo image (assuming you have it in your assets)
 // If you don't have one yet, you can use a placeholder or icon
-import healthCoachLogo from "/hlo1.jpg"; // Adjust path as needed
+import healthCoachLogo from "/lg101.jpeg"; // Adjust path as needed
 
 const HealthCoachingPage = ({ apiBaseUrl }) => {
   const API_BASE_URL = apiBaseUrl || "https://nutricare-a1g7.vercel.app/api";
