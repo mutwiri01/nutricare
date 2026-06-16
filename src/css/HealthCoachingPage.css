@@ -1051,7 +1051,7 @@ body {
 .healthcoaching-fullcontent p {
   color: var(--gray);
   margin-bottom: 1rem;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .healthcoaching-fullcontent ul.healthcoaching-list,
@@ -1419,4 +1419,5 @@ body {
   .healthcoaching-formgroup textarea {
     padding: 1rem 1.25rem;
   }
+
 }
